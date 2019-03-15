@@ -30,7 +30,7 @@ public class FacultyDAOImpl implements FacultyDAO {
     }
 
     public ArrayList<Faculty> findAllByUniversityID(UUID id) {
-        return new ArrayList<Faculty>(faculties.values());
+        return new ArrayList<>(faculties.values());
     }
 
     public Faculty findByIdAndUniversityId(UUID facultyID, UUID universityID){

@@ -18,11 +18,11 @@ public class UniversityDAOImpl implements UniversityDAO {
         university.setName(newName);
     }
 
-    public void delete(int id){
+    public void delete(UUID id){
         universities.remove(id);
     }
 
-    public University getUniversity(int id){
+    public University getUniversity(UUID id){
         return universities.get(id);
     }
 

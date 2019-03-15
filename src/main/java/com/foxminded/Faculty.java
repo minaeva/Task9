@@ -28,7 +28,7 @@ public class Faculty {
         return group;
     }
 
-    public Group updateGroup(int groupID, String newName) {
+    public Group updateGroup(UUID groupID, String newName) {
         if (! groups.containsKey(groupID)) {
             System.out.println("Cannot find group with ID " + groupID);
             return null;

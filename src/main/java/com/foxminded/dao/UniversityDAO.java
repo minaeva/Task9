@@ -10,9 +10,9 @@ public interface UniversityDAO {
 
     void update(University university, String newName);
 
-    void delete(int id);
+    void delete(UUID id);
 
-    University getUniversity(int id);
+    University getUniversity(UUID id);
 
     Map<UUID, University> getAll();
 }

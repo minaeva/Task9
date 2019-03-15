@@ -22,7 +22,7 @@ public class Group {
     public void dissmissStudent(int studentID){}
 
     public ArrayList<StudentCard> findStudents(){
-        return new ArrayList<StudentCard>(students.values());
+        return new ArrayList<>(students.values());
     }
 
     public void dismantle(){}
