@@ -30,7 +30,7 @@ public class University {
     }
 
     public List<Faculty> findFaculties(){
-        return new ArrayList<Faculty>(faculties.values());
+        return new ArrayList<>(faculties.values());
     }
 
     public double calculateAverageMark(){ return 1.0; }
