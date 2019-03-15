@@ -1,24 +1,24 @@
 package com.foxminded;
 
+import java.util.UUID;
+
 public class StudentCard {
 
-    private int id = 0;
+    private UUID id;
     private String name;
-    private int groupID;
-    private int facultyID;
-    private static int counter = 0;
+    private UUID groupID;
+    private UUID facultyID;
 
     public StudentCard(String name){
-        counter++;
+        this.id = UUID.randomUUID();
         this.name = name;
-        this.id = counter;
     }
 
-    public void setGroupID(int groupID) {
+    public void setGroupID(UUID groupID) {
         this.groupID = groupID;
     }
 
-    public int getID() {
+    public UUID getID() {
         return id;
     }
 
@@ -26,11 +26,11 @@ public class StudentCard {
         return name;
     }
 
-    public int getGroupID() {
+    public UUID getGroupID() {
         return groupID;
     }
 
-    public int getFacultyID() {
+    public UUID getFacultyID() {
         return facultyID;
     }
 

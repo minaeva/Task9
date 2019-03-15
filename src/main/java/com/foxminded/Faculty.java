@@ -1,65 +1,63 @@
 package com.foxminded;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class Faculty {
 
-    private int id;
+    private UUID id;
     private String name;
-    private Set<Group> groups = new HashSet<>();
-    private Set<StudentCard> students = new HashSet<>();
-    private static int counter = 0;
+    private UUID univerityID;
+    private Map<UUID, Group> groups = new HashMap<>();
+    private Map<UUID, StudentCard> students = new HashMap<>();
+    private Map<UUID, MentorCard> mentors = new HashMap<>();
+    private Map<UUID, Subject> subjectss = new HashMap<>();
+    private Map<UUID, Auditorium> auditoria = new HashMap<>();
+    private Map<UUID, Journal> journals = new HashMap<>();
+
+    public Faculty(String name){
+        this.id =  UUID.randomUUID();
+        this.name = name;
+    }
 
     public void dismantle(){}
 
     public Group createGroup(String name){
-        if (groupExists(name)){
-            System.out.println("Group already exists");
-            return null;
-        }
         Group group = new Group(name);
         group.setFacultyID(this.id);
-        groups.add(group);
+        groups.put(group.getId(), group);
         return group;
     }
 
     public Group updateGroup(int groupID, String newName) {
-        for (Group group: groups){
-            if (group.getId() == groupID){
+        if (! groups.containsKey(groupID)) {
+            System.out.println("Cannot find group with ID " + groupID);
+            return null;
+        }
+        Group group = groups.get(groupID);
                 group.setName(newName);
                 return group;
-            }
-        }
-        System.out.println("Cannot find group with id " + groupID);
-        return null;
     }
 
     public void dismantleGroup(String name){}
 
-    public Set<Group> findGroups(){
+    public Map<UUID, Group> findGroups(){
         return groups;
     }
 
     public StudentCard takeStudent(String name){
-        if (studentExists(name) == true){
-            System.out.println("Student already exists");
-            return null;
-        }
         StudentCard studentCard = new StudentCard(name);
-        students.add(studentCard);
+        students.put(studentCard.getID(), studentCard);
         return studentCard;
     }
 
-     public StudentCard changeStudentGroup(int oldGroupID, int newGroupID){
-        for (StudentCard studentCard: students){
-            if(studentCard.getGroupID() == oldGroupID){
-                studentCard.setGroupID(newGroupID);
-                return studentCard;
-            }
+    public StudentCard changeStudentGroup(UUID studentID, UUID newGroupID){
+        if (! students.containsKey(studentID)) {
+            System.out.println("Cannot find student with ID " + studentID);
+            return null;
         }
-        System.out.println("Cannot find student with groupId " + oldGroupID);
-        return null;
+        StudentCard studentCard = students.get(studentID);
+        studentCard.setGroupID(newGroupID);
+                return studentCard;
     }
 
     public void dissmissStudent(int studentID){}
@@ -86,23 +84,19 @@ public class Faculty {
         this.name = name;
     }
 
-    private boolean groupExists(String name){
-        for (Group group:
-             groups) {
-            if (group.getName() == name){
-                return true;
-            }
-        }
-        return false;
+    public UUID getId() {
+        return id;
     }
 
-    private boolean studentExists(String name){
-        for (StudentCard studentCard:
-                students) {
-            if (studentCard.getName() == name){
-                return true;
-            }
-        }
-        return false;
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public UUID getUniverityID() {
+        return univerityID;
+    }
+
+    public void setUniverityID(UUID univerityID) {
+        this.univerityID = univerityID;
     }
 }
