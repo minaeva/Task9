@@ -7,10 +7,11 @@ public class Group {
     private UUID id;
     private String name;
     private UUID facultyID;
-    private Map<UUID, StudentCard> students = new HashMap<>();
+    private Map<UUID, StudentCard> students;// = new HashMap<>();
+
+    public Group(){}
 
     public Group(String name){
-        this.id =  UUID.randomUUID();
         this.name = name;
     }
 
@@ -31,6 +32,10 @@ public class Group {
         return this.id;
     }
 
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
     public String getName() {
         return this.name;
     }
@@ -46,4 +51,13 @@ public class Group {
     public void setFacultyID(UUID facultyID) {
         this.facultyID = facultyID;
     }
+
+    @Override
+    public boolean equals(Object groupToCheck){
+        if (groupToCheck == this) return true;
+        if (!(groupToCheck instanceof Group)) return false;
+        Group group = (Group) groupToCheck;
+        return group.getName().equals(name) && group.getId().equals(id);
+    }
+
 }

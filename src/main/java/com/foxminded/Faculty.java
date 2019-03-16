@@ -2,20 +2,21 @@ package com.foxminded;
 
 import java.util.*;
 
-public class Faculty {
+public class Faculty implements Cloneable{
 
     private UUID id;
     private String name;
-    private UUID univerityID;
-    private Map<UUID, Group> groups = new HashMap<>();
-    private Map<UUID, StudentCard> students = new HashMap<>();
-    private Map<UUID, MentorCard> mentors = new HashMap<>();
-    private Map<UUID, Subject> subjectss = new HashMap<>();
-    private Map<UUID, Auditorium> auditoria = new HashMap<>();
-    private Map<UUID, Journal> journals = new HashMap<>();
+    private UUID universityID;
+    private Map<UUID, Group> groups;// = new HashMap<>();
+    private Map<UUID, StudentCard> students;// = new HashMap<>();
+    private Map<UUID, MentorCard> mentors;// = new HashMap<>();
+    private Map<UUID, Subject> subjectss;// = new HashMap<>();
+    private Map<UUID, Auditorium> auditoria;// = new HashMap<>();
+    private Map<UUID, Journal> journals;// = new HashMap<>();
+
+    public Faculty(){}
 
     public Faculty(String name){
-        this.id =  UUID.randomUUID();
         this.name = name;
     }
 
@@ -29,7 +30,7 @@ public class Faculty {
     }
 
     public Group updateGroup(UUID groupID, String newName) {
-        if (! groups.containsKey(groupID)) {
+        if (!groups.containsKey(groupID)) {
             System.out.println("Cannot find group with ID " + groupID);
             return null;
         }
@@ -76,14 +77,6 @@ public class Faculty {
 
     public double calculateAverageMark(){ return 1.0; }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public UUID getId() {
         return id;
     }
@@ -92,11 +85,32 @@ public class Faculty {
         this.id = id;
     }
 
-    public UUID getUniverityID() {
-        return univerityID;
+    public String getName() {
+        return name;
     }
 
-    public void setUniverityID(UUID univerityID) {
-        this.univerityID = univerityID;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public UUID getUniversityID() {
+        return universityID;
+    }
+
+    public void setUniversityID(UUID universityID) {
+        this.universityID = universityID;
+    }
+
+    @Override
+    public boolean equals(Object facultyToCheck){
+        if (facultyToCheck == this) return true;
+        if (!(facultyToCheck instanceof Faculty)) return false;
+        Faculty faculty = (Faculty) facultyToCheck;
+        return faculty.getName().equals(name) && faculty.getId().equals(id);
+    }
+
+    @Override
+    public Object clone() throws CloneNotSupportedException{
+        return super.clone();
     }
 }

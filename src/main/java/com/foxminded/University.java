@@ -6,12 +6,7 @@ public class University {
 
     private UUID id;
     private String name;
-    private Map<UUID, Faculty> faculties = new HashMap<>();
-
-    public University(String name){
-        this.id =  UUID.randomUUID();
-        this.name = name;
-    }
+    private Map<UUID, Faculty> faculties;// = new HashMap<>();
 
     public Faculty createFaculty(String name){
         return new Faculty(name);
@@ -49,6 +44,14 @@ public class University {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object universityToCheck){
+        if (universityToCheck == this) return true;
+        if (!(universityToCheck instanceof University)) return false;
+        University university = (University) universityToCheck;
+        return university.getName().equals(name) && university.getId().equals(id);
     }
 
 }

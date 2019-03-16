@@ -6,13 +6,13 @@ import java.util.UUID;
 
 public interface UniversityDAO {
 
-    void save(University university);
+    University save(University university);
 
-    void update(University university, String newName);
+    University update(University university, String newName);
 
     void delete(UUID id);
 
-    University getUniversity(UUID id);
+    University findByID(UUID id);
 
-    Map<UUID, University> getAll();
+    Map<UUID, University> findAll();
 }

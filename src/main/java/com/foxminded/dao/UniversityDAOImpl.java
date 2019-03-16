@@ -9,24 +9,27 @@ public class UniversityDAOImpl implements UniversityDAO {
 
     static private Map<UUID, University> universities = new HashMap<>();
 
-    public void save(University university){
-        UUID uuid = UUID.randomUUID();
-        universities.put(uuid, university);
+    public University save(University university){
+        UUID id = UUID.randomUUID();
+        university.setId(id);
+        universities.put(id, university);
+        return university;
     }
 
-    public void update(University university, String newName){
+    public University update(University university, String newName){
         university.setName(newName);
+        return university;
     }
 
     public void delete(UUID id){
         universities.remove(id);
     }
 
-    public University getUniversity(UUID id){
+    public University findByID(UUID id){
         return universities.get(id);
     }
 
-    public Map<UUID, University> getAll(){
+    public Map<UUID, University> findAll(){
         return universities;
     }
 
