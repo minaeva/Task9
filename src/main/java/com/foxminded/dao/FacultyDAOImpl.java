@@ -9,22 +9,26 @@ public class FacultyDAOImpl implements FacultyDAO{
 
     static private Map<UUID, Faculty> faculties = new HashMap<>();
 
-    public Faculty save(Faculty faculty) throws ValidationException{
+    public Faculty save(Faculty faculty) throws ValidationException, CloneNotSupportedException{
         if (faculty == null) throw new ValidationException("Null faculty");
-        for (Faculty f: faculties.values()) {
-            if (f.getName().equals(faculty.getName())) throw new ValidationException("Faculty " + faculty.getName() + " already exists");
+        if (faculty.getId() != null) throw new ValidationException("Faculty with ID " + faculty.getId() + " already exists");
+        for (UUID id: faculties.keySet()){
+            if (id == faculty.getId()) throw new ValidationException("Faculty with ID " + faculty.getId() + " already exists");
         }
+
         UUID id = UUID.randomUUID();
         faculty.setId(id);
         faculties.put(id, faculty);
-        return faculty;
+        return faculty.clone();
     }
 
-    public Faculty update(Faculty faculty, String newName) throws ValidationException, EntityNotFoundException {
+    public Faculty update(Faculty faculty, String newName) throws ValidationException, EntityNotFoundException, CloneNotSupportedException {
         if (faculty == null) throw new ValidationException("Null faculty");
+        if (faculty.getId() == null) throw new EntityNotFoundException("Null ID => Faculty doesn't exist");
         if (!faculties.containsValue(faculty)) throw new EntityNotFoundException("Faculty " + faculty.getName() + " doesn't exist");
         faculty.setName(newName);
-        return faculty;
+        faculties.put(faculty.getId(), faculty);
+        return faculty.clone();
     }
 
     public void delete(UUID id) throws ValidationException, EntityNotFoundException {
@@ -33,29 +37,30 @@ public class FacultyDAOImpl implements FacultyDAO{
         faculties.remove(id);
     }
 
-    public Faculty findByID(UUID id) throws CloneNotSupportedException{
-        return (Faculty) faculties.get(id).clone();
+    public Faculty findByID(UUID id) throws ValidationException, EntityNotFoundException, CloneNotSupportedException{
+        if (id == null) throw new ValidationException("Null ID");
+        if (!faculties.containsKey(id)) throw new EntityNotFoundException("Faculty with id " + id + " doesn't exist");
+        return faculties.get(id).clone();
     }
 
-    public List<Faculty> findAllByUniversityID(UUID id) throws CloneNotSupportedException{
+    public Faculty findByIdAndUniversityId(UUID facultyID, UUID universityID) throws ValidationException, EntityNotFoundException, CloneNotSupportedException{
+        if ((facultyID == null)||(universityID == null)) throw new ValidationException("Null ID");
+        if (!faculties.containsKey(facultyID)) throw new EntityNotFoundException("Faculty with id " + facultyID + " doesn't exist");
+        if (!(faculties.get(facultyID).getUniversityID() == universityID)) throw new EntityNotFoundException("Faculty with university ID " + universityID + " doesn't exist");
+
+        Faculty foundFaculty = faculties.get(facultyID);
+        return foundFaculty.clone();
+    }
+
+    public List<Faculty> findByUniversityID(UUID id) throws CloneNotSupportedException, ValidationException{
+        if (id == null) throw new ValidationException("Null ID");
         List<Faculty> allUniversityFaculties = new ArrayList<>(faculties.values());
         List<Faculty> clonedFaculties = new ArrayList<>();
-        for (Faculty faculty: allUniversityFaculties
-             ) {
-            clonedFaculties.add((Faculty) faculty.clone());
+        for (Faculty faculty: allUniversityFaculties) {
+            clonedFaculties.add(faculty.clone());
         }
         return clonedFaculties;
     }
-
-    public Faculty findByIdAndUniversityId(UUID facultyID, UUID universityID) throws CloneNotSupportedException{
-        if (faculties.get(facultyID).getUniversityID() == universityID) {
-            Faculty foundFaculty = faculties.get(facultyID);
-            return (Faculty) foundFaculty.clone();
-        }
-        System.out.println("Cannot find faculty with id " + facultyID + " and university " + universityID);
-        return null;
-    }
-
 }
 
 

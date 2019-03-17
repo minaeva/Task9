@@ -2,7 +2,7 @@ package com.foxminded;
 
 import java.util.*;
 
-public class Faculty implements Cloneable{
+public class Faculty implements Cloneable {
 
     private UUID id;
     private String name;
@@ -14,15 +14,23 @@ public class Faculty implements Cloneable{
     private Map<UUID, Auditorium> auditoria;// = new HashMap<>();
     private Map<UUID, Journal> journals;// = new HashMap<>();
 
-    public Faculty(){}
+    public Faculty() {
+    }
 
-    public Faculty(String name){
+    public Faculty(String name) {
         this.name = name;
     }
 
-    public void dismantle(){}
+    public Faculty(UUID id, String name, UUID universityID) {
+        this.id = id;
+        this.name = name;
+        this.universityID = universityID;
+    }
 
-    public Group createGroup(String name){
+    public void dismantle() {
+    }
+
+    public Group createGroup(String name) {
         Group group = new Group(name);
         group.setFacultyID(this.id);
         groups.put(group.getId(), group);
@@ -35,47 +43,53 @@ public class Faculty implements Cloneable{
             return null;
         }
         Group group = groups.get(groupID);
-                group.setName(newName);
-                return group;
+        group.setName(newName);
+        return group;
     }
 
-    public void dismantleGroup(String name){}
+    public void dismantleGroup(String name) {
+    }
 
-    public Map<UUID, Group> findGroups(){
+    public Map<UUID, Group> findGroups() {
         return groups;
     }
 
-    public StudentCard takeStudent(String name){
+    public StudentCard takeStudent(String name) {
         StudentCard studentCard = new StudentCard(name);
         students.put(studentCard.getID(), studentCard);
         return studentCard;
     }
 
-    public StudentCard changeStudentGroup(UUID studentID, UUID newGroupID){
-        if (! students.containsKey(studentID)) {
+    public StudentCard changeStudentGroup(UUID studentID, UUID newGroupID) {
+        if (!students.containsKey(studentID)) {
             System.out.println("Cannot find student with ID " + studentID);
             return null;
         }
         StudentCard studentCard = students.get(studentID);
         studentCard.setGroupID(newGroupID);
-                return studentCard;
+        return studentCard;
     }
 
-    public void dissmissStudent(int studentID){}
+    public void dissmissStudent(int studentID) {
+    }
 
-    public Schedule createScedule(){
+    public Schedule createScedule() {
         return new Schedule();
     }
 
-    public void removeSchedule(int id){}
+    public void removeSchedule(int id) {
+    }
 
-    public MentorCard hireMentor(String name){
+    public MentorCard hireMentor(String name) {
         return new MentorCard();
     }
 
-    public void fireMentor(int id){}
+    public void fireMentor(int id) {
+    }
 
-    public double calculateAverageMark(){ return 1.0; }
+    public double calculateAverageMark() {
+        return 1.0;
+    }
 
     public UUID getId() {
         return id;
@@ -102,7 +116,7 @@ public class Faculty implements Cloneable{
     }
 
     @Override
-    public boolean equals(Object facultyToCheck){
+    public boolean equals(Object facultyToCheck) {
         if (facultyToCheck == this) return true;
         if (!(facultyToCheck instanceof Faculty)) return false;
         Faculty faculty = (Faculty) facultyToCheck;
@@ -110,7 +124,11 @@ public class Faculty implements Cloneable{
     }
 
     @Override
-    public Object clone() throws CloneNotSupportedException{
-        return super.clone();
+    public Faculty clone() throws CloneNotSupportedException {
+        try {
+            return (Faculty) super.clone();
+        } catch (ClassCastException e) {
+            return new Faculty(this.getId(), this.getName(), this.getUniversityID());
+        }
     }
 }
