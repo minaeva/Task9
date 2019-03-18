@@ -8,11 +8,10 @@ public class University implements Cloneable {
     private UUID id;
     private String name;
     private Map<UUID, Faculty> faculties;
-    private UniversityDAO universityDAO = new UniversityDAOImpl();
+//    private UniversityDAO universityDAO = new UniversityDAOImpl();
     private FacultyDAO facultyDAO = new FacultyDAOImpl();
 
-    public University() {
-   }
+    public University() { }
 
     public University(String name) {
         this.name = name;
