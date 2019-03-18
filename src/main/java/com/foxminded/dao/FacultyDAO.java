@@ -18,5 +18,5 @@ public interface FacultyDAO{
 
     Faculty findByIdAndUniversityId(UUID facultyID, UUID universityID) throws ValidationException, EntityNotFoundException, CloneNotSupportedException;
 
-    List<Faculty> findByUniversityID(UUID id) throws CloneNotSupportedException, ValidationException;
+    List<Faculty> findByUniversityID(UUID id) throws ValidationException;
 }

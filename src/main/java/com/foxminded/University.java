@@ -1,31 +1,55 @@
 package com.foxminded;
 
 import java.util.*;
+import com.foxminded.dao.*;
 
-public class University {
+public class University implements Cloneable {
 
     private UUID id;
     private String name;
-    private Map<UUID, Faculty> faculties;// = new HashMap<>();
+    private Map<UUID, Faculty> faculties;
+    private UniversityDAO universityDAO = new UniversityDAOImpl();
+    private FacultyDAO facultyDAO = new FacultyDAOImpl();
 
-    public Faculty createFaculty(String name){
-        return new Faculty(name);
+    public University() {
+   }
+
+    public University(String name) {
+        this.name = name;
     }
 
-    public Faculty updateFaculty(UUID id, String newName){
+    public University(UUID id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Faculty createFaculty(String name) throws ValidationException, CloneNotSupportedException{
+        Faculty newFaculty = new Faculty(name);
+        Faculty savedFaculty = facultyDAO.save(newFaculty);
+        faculties.put(savedFaculty.getId(), savedFaculty);
+        return savedFaculty;
+    }
+
+    public Faculty updateFaculty(UUID id, String newName) throws EntityNotFoundException, ValidationException, CloneNotSupportedException{
         Faculty faculty = faculties.get(id);
-        faculty.setName(newName);
-        return faculty;
+        Faculty updatedFaculty = facultyDAO.update(faculty, newName);
+        faculties.put(id, updatedFaculty);
+        return updatedFaculty;
     }
 
-    public void dismantleFaculty(UUID id){}
-
-    public Faculty findFaculty(UUID id){
-        return faculties.get(id);
+    public void dismantleFaculty(UUID id) throws ValidationException, EntityNotFoundException{
+        Faculty faculty = faculties.get(id);
+        facultyDAO.delete(id);
+        if (faculties.containsValue(faculty)) faculties.remove(faculty);
     }
 
-    public List<Faculty> findFaculties(){
-        return new ArrayList<>(faculties.values());
+    public Faculty findFaculty(UUID id) throws ValidationException, EntityNotFoundException, CloneNotSupportedException{
+        UUID universityID = faculties.get(id).getUniversityID();
+        return facultyDAO.findByIdAndUniversityId(id, universityID);
+    }
+
+    public List<Faculty> findFaculties() throws ValidationException{
+        return facultyDAO.findByUniversityID(id);
     }
 
     public double calculateAverageMark(){ return 1.0; }
@@ -52,6 +76,15 @@ public class University {
         if (!(universityToCheck instanceof University)) return false;
         University university = (University) universityToCheck;
         return university.getName().equals(name) && university.getId().equals(id);
+    }
+
+    @Override
+    public University clone() throws CloneNotSupportedException {
+        try {
+            return (University) super.clone();
+        } catch (ClassCastException e) {
+            return new University(this.getId(), this.getName());
+        }
     }
 
 }

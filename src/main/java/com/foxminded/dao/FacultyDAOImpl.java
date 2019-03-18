@@ -4,6 +4,8 @@ import com.foxminded.EntityNotFoundException;
 import com.foxminded.ValidationException;
 import com.foxminded.Faculty;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class FacultyDAOImpl implements FacultyDAO{
 
@@ -15,7 +17,6 @@ public class FacultyDAOImpl implements FacultyDAO{
         for (UUID id: faculties.keySet()){
             if (id == faculty.getId()) throw new ValidationException("Faculty with ID " + faculty.getId() + " already exists");
         }
-
         UUID id = UUID.randomUUID();
         faculty.setId(id);
         faculties.put(id, faculty);
@@ -47,19 +48,19 @@ public class FacultyDAOImpl implements FacultyDAO{
         if ((facultyID == null)||(universityID == null)) throw new ValidationException("Null ID");
         if (!faculties.containsKey(facultyID)) throw new EntityNotFoundException("Faculty with id " + facultyID + " doesn't exist");
         if (!(faculties.get(facultyID).getUniversityID() == universityID)) throw new EntityNotFoundException("Faculty with university ID " + universityID + " doesn't exist");
-
         Faculty foundFaculty = faculties.get(facultyID);
         return foundFaculty.clone();
     }
 
-    public List<Faculty> findByUniversityID(UUID id) throws CloneNotSupportedException, ValidationException{
+    public List<Faculty> findByUniversityID(UUID id) throws ValidationException{
         if (id == null) throw new ValidationException("Null ID");
         List<Faculty> allUniversityFaculties = new ArrayList<>(faculties.values());
-        List<Faculty> clonedFaculties = new ArrayList<>();
-        for (Faculty faculty: allUniversityFaculties) {
-            clonedFaculties.add(faculty.clone());
-        }
-        return clonedFaculties;
+
+        Predicate<Faculty> p = f -> f.getUniversityID() == id;
+        if (!allUniversityFaculties.stream().anyMatch(p)) return null;
+
+        List<Faculty> foundFaculties = allUniversityFaculties.stream().filter(p).collect(Collectors.toList());
+        return new ArrayList(foundFaculties);
     }
 }
 

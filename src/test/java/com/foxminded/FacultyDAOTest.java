@@ -5,6 +5,8 @@ import com.foxminded.dao.FacultyDAOImpl;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class FacultyDAOTest {
@@ -67,33 +69,32 @@ public class FacultyDAOTest {
     @Test
     public void save_returnsCopy() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
         UUID universityID = UUID.randomUUID();
-        Faculty facultyToSave = createStubFaculty("MGMT", universityID);
-        Faculty beforeSave = facultyToSave;
+        Faculty beforeSave = createStubFaculty("MGMT", universityID);
 
-        Faculty savedFaculty = facultyDAO.save(facultyToSave);
-        Assert.assertNotSame(beforeSave, savedFaculty);
+        Faculty afterSave = facultyDAO.save(beforeSave);
+        Assert.assertNotSame(beforeSave, afterSave);
 
-        Faculty foundFaculty = facultyDAO.findByID(savedFaculty.getId());
+        Faculty foundFaculty = facultyDAO.findByID(afterSave.getId());
         Assert.assertNotSame(beforeSave, foundFaculty);
 
         Faculty expected = createStubFaculty("MGMT", universityID);
-        expected.setId(savedFaculty.getId());
+        expected.setId(afterSave.getId());
 
-        Assert.assertNotNull(savedFaculty.getId());
-        Assert.assertEquals(expected, savedFaculty);
+        Assert.assertNotNull(afterSave.getId());
+        Assert.assertEquals(expected, afterSave);
         Assert.assertEquals(expected, foundFaculty);
     }
 
     @Test
     public void update() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
         UUID universityID = UUID.randomUUID();
-        Faculty facultyToSave = createStubFaculty("PHT", universityID);
+        Faculty facultyToSave = createStubFaculty("Old name", universityID);
 
         Faculty savedFaculty = facultyDAO.save(facultyToSave);
-        Faculty updatedFaculty = facultyDAO.update(savedFaculty, "PHTECH");
+        Faculty updatedFaculty = facultyDAO.update(savedFaculty, "New name");
         Faculty foundFaculty = facultyDAO.findByID(updatedFaculty.getId());
 
-        Faculty expected = createStubFaculty("PHTECH", universityID);
+        Faculty expected = createStubFaculty("New name", universityID);
         expected.setId(savedFaculty.getId());
 
         Assert.assertNotNull(savedFaculty.getId());
@@ -104,21 +105,21 @@ public class FacultyDAOTest {
 
     @Test(expected = ValidationException.class)
     public void update_null_throwsException() throws ValidationException, EntityNotFoundException, CloneNotSupportedException {
-        facultyDAO.update(null, "Name");
+        facultyDAO.update(null, "New name");
     }
 
     @Test(expected = EntityNotFoundException.class)
     public void update_withoutId_throwsException() throws ValidationException, EntityNotFoundException, CloneNotSupportedException {
         UUID universityID = UUID.randomUUID();
-        Faculty facultyToSave = createStubFaculty("PHT", universityID);
+        Faculty facultyToSave = createStubFaculty("Non Saved", universityID);
 
-        facultyDAO.update(facultyToSave, "PHTECH");
+        facultyDAO.update(facultyToSave, "New name");
     }
 
     @Test(expected = EntityNotFoundException.class)
     public void update_notExists_throwsException() throws ValidationException, EntityNotFoundException, CloneNotSupportedException{
         UUID universityID = UUID.randomUUID();
-        Faculty facultyToSave = createStubFaculty("RTF", universityID);
+        Faculty facultyToSave = createStubFaculty("Non Saved, With ID", universityID);
         UUID diffID = UUID.randomUUID();
         facultyToSave.setId(diffID);
 
@@ -129,32 +130,23 @@ public class FacultyDAOTest {
     public void update_returnsCopy() throws ValidationException, EntityNotFoundException, CloneNotSupportedException {
         UUID universityID = UUID.randomUUID();
         Faculty facultyToSave = createStubFaculty("ITS", universityID);
-        Faculty savedFaculty = facultyDAO.save(facultyToSave);
+        Faculty beforeUpdate = facultyDAO.save(facultyToSave);
 
-        Faculty beforeUpdate = savedFaculty;
-
-        Faculty afterUpdate = facultyDAO.update(savedFaculty, "NEW ITS");
+        Faculty afterUpdate = facultyDAO.update(beforeUpdate, "NEW ITS");
         Assert.assertNotSame(beforeUpdate, afterUpdate);
 
 
         Faculty expected = createStubFaculty("NEW ITS", universityID);
-        expected.setId(savedFaculty.getId());
+        expected.setId(beforeUpdate.getId());
 
-        Assert.assertNotNull(savedFaculty.getId());
+        Assert.assertNotNull(beforeUpdate.getId());
         Assert.assertEquals(expected, afterUpdate);
-    }
-
-    private Faculty createStubFaculty(String name, UUID universityID){
-        Faculty faculty = new Faculty();
-        faculty.setName(name);
-        faculty.setUniversityID(universityID);
-        return faculty;
     }
 
     @Test(expected = EntityNotFoundException.class)
     public void delete() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
         UUID universityID = UUID.randomUUID();
-        Faculty facultyToSave = createStubFaculty("TEMP", universityID);
+        Faculty facultyToSave = createStubFaculty("Saved", universityID);
 
         Faculty savedFaculty = facultyDAO.save(facultyToSave);
         Faculty foundFaculty = facultyDAO.findByID(savedFaculty.getId());
@@ -167,7 +159,7 @@ public class FacultyDAOTest {
     @Test(expected = EntityNotFoundException.class)
     public void delete_notExists_throwsException() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
         UUID universityID = UUID.randomUUID();
-        Faculty facultyToSave = createStubFaculty("TEMP", universityID);
+        Faculty facultyToSave = createStubFaculty("To be deleted twice", universityID);
 
         Faculty savedFaculty = facultyDAO.save(facultyToSave);
         facultyDAO.delete(savedFaculty.getId());
@@ -177,7 +169,7 @@ public class FacultyDAOTest {
     @Test(expected = ValidationException.class)
     public void delete_idIsNull_throwsException() throws ValidationException, EntityNotFoundException {
         UUID universityID = UUID.randomUUID();
-        Faculty facultyToSave = createStubFaculty("TEMP", universityID);
+        Faculty facultyToSave = createStubFaculty("Non saved", universityID);
 
         facultyDAO.delete(facultyToSave.getId());
     }
@@ -185,8 +177,8 @@ public class FacultyDAOTest {
     @Test
     public void findById() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
         UUID universityID = UUID.randomUUID();
-        Faculty facultyToSave1 = createStubFaculty("PHMF", universityID);
-        Faculty facultyToSave2 = createStubFaculty("PHMF", universityID);
+        Faculty facultyToSave1 = createStubFaculty("Same name, diff objects", universityID);
+        Faculty facultyToSave2 = createStubFaculty("Same name, diff objects", universityID);
 
         Faculty savedFaculty1 = facultyDAO.save(facultyToSave1);
         Faculty foundFaculty1 = facultyDAO.findByID(savedFaculty1.getId());
@@ -194,9 +186,9 @@ public class FacultyDAOTest {
         Faculty savedFaculty2 = facultyDAO.save(facultyToSave2);
         Faculty foundFaculty2 = facultyDAO.findByID(savedFaculty2.getId());
 
-        Faculty expected1 = createStubFaculty("PHMF", universityID);
+        Faculty expected1 = createStubFaculty("Same name, diff objects", universityID);
         expected1.setId(savedFaculty1.getId());
-        Faculty expected2 = createStubFaculty("PHMF", universityID);
+        Faculty expected2 = createStubFaculty("Same name, diff objects", universityID);
         expected2.setId(savedFaculty2.getId());
 
         Assert.assertNotNull(savedFaculty1.getId());
@@ -228,7 +220,7 @@ public class FacultyDAOTest {
     @Test(expected = EntityNotFoundException.class)
     public void findById_notExists_throwsException() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
         UUID universityID = UUID.randomUUID();
-        Faculty facultyToSave = createStubFaculty("TEMP", universityID);
+        Faculty facultyToSave = createStubFaculty("Saved and deleted", universityID);
 
         Faculty savedFaculty = facultyDAO.save(facultyToSave);
         facultyDAO.delete(savedFaculty.getId());
@@ -259,7 +251,7 @@ public class FacultyDAOTest {
     @Test(expected = EntityNotFoundException.class)
     public void findByIdAndUniversityId_universityIdNotExists_throwsException() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
         UUID universityID = UUID.randomUUID();
-        Faculty facultyToSave = createStubFaculty("PHTF", universityID);
+        Faculty facultyToSave = createStubFaculty("Saved faculty, other university", universityID);
 
         Faculty savedFaculty = facultyDAO.save(facultyToSave);
         UUID otherID = UUID.randomUUID();
@@ -269,7 +261,7 @@ public class FacultyDAOTest {
     @Test(expected = EntityNotFoundException.class)
     public void findByIdAndUniversityId_facultyIdNotExists_throwsException() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
         UUID universityID = UUID.randomUUID();
-        Faculty facultyToSave = createStubFaculty("RTF", universityID);
+        Faculty facultyToSave = createStubFaculty("Deleted", universityID);
 
         Faculty savedFaculty = facultyDAO.save(facultyToSave);
         facultyDAO.delete(savedFaculty.getId());
@@ -287,15 +279,106 @@ public class FacultyDAOTest {
         facultyDAO.findByIdAndUniversityId(UUID.randomUUID(), null);
     }
 
+    @Test
+    public void findByIdAndUniversityId_returnsCopy() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
+        UUID universityID = UUID.randomUUID();
+        Faculty facultyToSave = createStubFaculty("FEL", universityID);
+
+        Faculty savedFaculty = facultyDAO.save(facultyToSave);
+        Faculty foundFaculty = facultyDAO.findByIdAndUniversityId(savedFaculty.getId(), universityID);
+
+        Assert.assertNotSame(savedFaculty, foundFaculty);
+        Assert.assertEquals(savedFaculty, foundFaculty);
+
+        Faculty expected = createStubFaculty("FEL", universityID);
+        expected.setId(savedFaculty.getId());
+
+        Assert.assertNotNull(savedFaculty.getId());
+        Assert.assertEquals(expected, savedFaculty);
+        Assert.assertEquals(expected, foundFaculty);
+    }
+
+    @Test
+    public void findByUniversityId() throws ValidationException, CloneNotSupportedException {
+        UUID universityID = UUID.randomUUID();
+        Faculty facultyToSave1 = createStubFaculty("F1", universityID);
+        Faculty facultyToSave2 = createStubFaculty("F2", universityID);
+        Faculty facultyToSave3 = createStubFaculty("F3", universityID);
+
+        Faculty savedFaculty1 = facultyDAO.save(facultyToSave1);
+        Faculty savedFaculty2 = facultyDAO.save(facultyToSave2);
+        Faculty savedFaculty3 = facultyDAO.save(facultyToSave3);
+        List<Faculty> foundFaculties = facultyDAO.findByUniversityID(universityID);
+
+        Faculty expected1 = createStubFaculty("F1", universityID);
+        expected1.setId(savedFaculty1.getId());
+        Faculty expected2 = createStubFaculty("F2", universityID);
+        expected2.setId(savedFaculty2.getId());
+        Faculty expected3 = createStubFaculty("F3", universityID);
+        expected3.setId(savedFaculty3.getId());
+
+        List<Faculty> expected = new ArrayList<>();
+        expected.add(expected1);
+        expected.add(expected2);
+        expected.add(expected3);
+        Assert.assertTrue(areListsEqual(expected, foundFaculties));
+    }
+
+    @Test
+    public void findByUniversityId_universityIdNotExists_returnsEmptyList() throws ValidationException, CloneNotSupportedException {
+        UUID universityID = UUID.randomUUID();
+        Faculty facultyToSave = createStubFaculty("FTF", universityID);
+
+        facultyDAO.save(facultyToSave);
+        UUID otherID = UUID.randomUUID();
+        List<Faculty> foundFaculties = facultyDAO.findByUniversityID(otherID);
+        Assert.assertNull(foundFaculties);
+    }
+
+    @Test
+    public void findByUniversityId_returnsCopy() throws ValidationException, CloneNotSupportedException {
+        UUID universityID = UUID.randomUUID();
+
+         Faculty facultyToSave1 = createStubFaculty("F1", universityID);
+         Faculty facultyToSave2 = createStubFaculty("F2", universityID);
+         Faculty facultyToSave3 = createStubFaculty("F3", universityID);
+
+         Faculty savedFaculty1 = facultyDAO.save(facultyToSave1);
+         Faculty savedFaculty2 = facultyDAO.save(facultyToSave2);
+         Faculty savedFaculty3 = facultyDAO.save(facultyToSave3);
+
+         List<Faculty> savedFaculties = new ArrayList<>();
+         savedFaculties.add(savedFaculty1);
+         savedFaculties.add(savedFaculty2);
+         savedFaculties.add(savedFaculty3);
+
+         List<Faculty> foundFaculties = facultyDAO.findByUniversityID(universityID);
+        Assert.assertNotSame(savedFaculties, foundFaculties);
+    }
+
+    @Test(expected = ValidationException.class)
+    public void findByUniversityId_idIsNull_throwsException() throws ValidationException {
+        facultyDAO.findByUniversityID(null);
+    }
+
+    private boolean areListsEqual(List<Faculty> first, List<Faculty> second) {
+        if (first.size() != second.size()) return false;
+        int equalCounter = 0;
+        for (Faculty faculty1: first) {
+            for (Faculty faculty2: second){
+                if ((faculty1.getName().equals(faculty2.getName())) && (faculty1.getId() == faculty2.getId()))
+                    equalCounter++;
+            }
+        }
+        return equalCounter == first.size();
+    }
+
+    private Faculty createStubFaculty(String name, UUID universityID){
+        Faculty faculty = new Faculty();
+        faculty.setName(name);
+        faculty.setUniversityID(universityID);
+        return faculty;
+    }
+
+
 }
-
-/*
-
-
-
-findByIdAndUniversityId_returnsCopy
-findByUniversityId
-findByUniversityId_universityIdNotExists_returnsEmptyList
-findByUniversityId_returnsCopy
-findByUniversityId_idIsNull_throwsException
- */

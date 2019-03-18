@@ -7,11 +7,11 @@ public class Faculty implements Cloneable {
     private UUID id;
     private String name;
     private UUID universityID;
-    private Map<UUID, Group> groups;// = new HashMap<>();
-    private Map<UUID, StudentCard> students;// = new HashMap<>();
-    private Map<UUID, MentorCard> mentors;// = new HashMap<>();
-    private Map<UUID, Subject> subjectss;// = new HashMap<>();
-    private Map<UUID, Auditorium> auditoria;// = new HashMap<>();
+    private Map<UUID, Group> groups;
+    private Map<UUID, StudentCard> students;
+    private Map<UUID, MentorCard> mentors;
+    private Map<UUID, Subject> subjectss;
+    private Map<UUID, Auditorium> auditoria;
     private Map<UUID, Journal> journals;// = new HashMap<>();
 
     public Faculty() {
