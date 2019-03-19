@@ -10,29 +10,42 @@ public class StudentCard {
     private UUID facultyID;
 
     public StudentCard(String name){
-        this.id = UUID.randomUUID();
         this.name = name;
+    }
+
+    public void dissmiss(){
+        //todo
     }
 
     public void setGroupID(UUID groupID) {
         this.groupID = groupID;
     }
 
-    public UUID getID() {
+    public UUID getGroupID() {
+        return groupID;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public UUID getId() {
         return id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getName() {
         return name;
     }
 
-    public UUID getGroupID() {
-        return groupID;
+    public void setFacultyID(UUID facultyID) {
+        this.facultyID = facultyID;
     }
 
     public UUID getFacultyID() {
         return facultyID;
     }
-
-    public void dissmiss(){}
 }

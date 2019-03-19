@@ -13,9 +13,9 @@ public class Faculty implements Cloneable {
     private Map<UUID, Subject> subjectss;
     private Map<UUID, Auditorium> auditoria;
     private Map<UUID, Journal> journals;// = new HashMap<>();
+    private Schedule schedule;
 
-    public Faculty() {
-    }
+    public Faculty() { }
 
     public Faculty(String name) {
         this.name = name;
@@ -28,11 +28,13 @@ public class Faculty implements Cloneable {
     }
 
     public void dismantle() {
+        //todo
     }
 
     public Group createGroup(String name) {
         Group group = new Group(name);
         group.setFacultyID(this.id);
+        //?DAO to get id
         groups.put(group.getId(), group);
         return group;
     }
@@ -48,6 +50,7 @@ public class Faculty implements Cloneable {
     }
 
     public void dismantleGroup(String name) {
+        //todo
     }
 
     public Map<UUID, Group> findGroups() {
@@ -56,7 +59,9 @@ public class Faculty implements Cloneable {
 
     public StudentCard takeStudent(String name) {
         StudentCard studentCard = new StudentCard(name);
-        students.put(studentCard.getID(), studentCard);
+        studentCard.setFacultyID(this.id);
+        //?DAO
+        students.put(studentCard.getId(), studentCard);
         return studentCard;
     }
 
@@ -71,25 +76,36 @@ public class Faculty implements Cloneable {
     }
 
     public void dissmissStudent(int studentID) {
+        //todo
     }
 
     public Schedule createScedule() {
-        return new Schedule();
+        Schedule newSchedule = new Schedule();
+        newSchedule.setFacultyID(this.id);
+        this.schedule = newSchedule;
+        return newSchedule;
     }
 
     public void removeSchedule(int id) {
+        //if id is correct
+        this.schedule = null;
     }
 
     public MentorCard hireMentor(String name) {
-        return new MentorCard();
+        MentorCard newMentor = new MentorCard(name);
+        newMentor.setFacultyID(this.id);
+        mentors.put(newMentor.getId(),newMentor);
+        return newMentor;
     }
 
     public void fireMentor(int id) {
+        //todo
     }
 
     public double calculateAverageMark() {
+        //todo
         return 1.0;
-    }
+        }
 
     public UUID getId() {
         return id;

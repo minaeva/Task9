@@ -51,7 +51,10 @@ public class University implements Cloneable {
         return facultyDAO.findByUniversityID(id);
     }
 
-    public double calculateAverageMark(){ return 1.0; }
+    public double calculateAverageMark(){
+        //todo
+         return 1.0;
+    }
 
     public UUID getId(){
         return id;

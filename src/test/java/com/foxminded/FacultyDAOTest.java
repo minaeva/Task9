@@ -2,7 +2,7 @@ package com.foxminded;
 
 import com.foxminded.dao.FacultyDAO;
 import com.foxminded.dao.FacultyDAOImpl;
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import java.util.ArrayList;
@@ -30,9 +30,9 @@ public class FacultyDAOTest {
         Faculty expected = createStubFaculty("AM", universityID);
         expected.setId(savedFaculty.getId());
 
-        Assert.assertNotNull(savedFaculty.getId());
-        Assert.assertEquals(expected, savedFaculty);
-        Assert.assertEquals(expected, foundFaculty);
+        assertNotNull(savedFaculty.getId());
+        assertEquals(expected, savedFaculty);
+        assertEquals(expected, foundFaculty);
     }
 
     @Test
@@ -47,9 +47,9 @@ public class FacultyDAOTest {
         UUID diffID = UUID.randomUUID();
         expected.setId(diffID);
 
-        Assert.assertNotNull(savedFaculty.getId());
-        Assert.assertNotEquals(expected, savedFaculty);
-        Assert.assertNotEquals(expected, receivedFaculty);
+        assertNotNull(savedFaculty.getId());
+        assertNotEquals(expected, savedFaculty);
+        assertNotEquals(expected, receivedFaculty);
     }
 
     @Test(expected = ValidationException.class)
@@ -72,17 +72,17 @@ public class FacultyDAOTest {
         Faculty beforeSave = createStubFaculty("MGMT", universityID);
 
         Faculty afterSave = facultyDAO.save(beforeSave);
-        Assert.assertNotSame(beforeSave, afterSave);
+        assertNotSame(beforeSave, afterSave);
 
         Faculty foundFaculty = facultyDAO.findByID(afterSave.getId());
-        Assert.assertNotSame(beforeSave, foundFaculty);
+        assertNotSame(beforeSave, foundFaculty);
 
         Faculty expected = createStubFaculty("MGMT", universityID);
         expected.setId(afterSave.getId());
 
-        Assert.assertNotNull(afterSave.getId());
-        Assert.assertEquals(expected, afterSave);
-        Assert.assertEquals(expected, foundFaculty);
+        assertNotNull(afterSave.getId());
+        assertEquals(expected, afterSave);
+        assertEquals(expected, foundFaculty);
     }
 
     @Test
@@ -97,10 +97,10 @@ public class FacultyDAOTest {
         Faculty expected = createStubFaculty("New name", universityID);
         expected.setId(savedFaculty.getId());
 
-        Assert.assertNotNull(savedFaculty.getId());
-        Assert.assertEquals(expected, savedFaculty);
-        Assert.assertEquals(expected, updatedFaculty);
-        Assert.assertEquals(expected, foundFaculty);
+        assertNotNull(savedFaculty.getId());
+        assertEquals(expected, savedFaculty);
+        assertEquals(expected, updatedFaculty);
+        assertEquals(expected, foundFaculty);
     }
 
     @Test(expected = ValidationException.class)
@@ -133,14 +133,14 @@ public class FacultyDAOTest {
         Faculty beforeUpdate = facultyDAO.save(facultyToSave);
 
         Faculty afterUpdate = facultyDAO.update(beforeUpdate, "NEW ITS");
-        Assert.assertNotSame(beforeUpdate, afterUpdate);
+        assertNotSame(beforeUpdate, afterUpdate);
 
 
         Faculty expected = createStubFaculty("NEW ITS", universityID);
         expected.setId(beforeUpdate.getId());
 
-        Assert.assertNotNull(beforeUpdate.getId());
-        Assert.assertEquals(expected, afterUpdate);
+        assertNotNull(beforeUpdate.getId());
+        assertEquals(expected, afterUpdate);
     }
 
     @Test(expected = EntityNotFoundException.class)
@@ -150,7 +150,7 @@ public class FacultyDAOTest {
 
         Faculty savedFaculty = facultyDAO.save(facultyToSave);
         Faculty foundFaculty = facultyDAO.findByID(savedFaculty.getId());
-        Assert.assertNotNull(foundFaculty);
+        assertNotNull(foundFaculty);
 
         facultyDAO.delete(savedFaculty.getId());
         facultyDAO.findByID(savedFaculty.getId());
@@ -191,12 +191,12 @@ public class FacultyDAOTest {
         Faculty expected2 = createStubFaculty("Same name, diff objects", universityID);
         expected2.setId(savedFaculty2.getId());
 
-        Assert.assertNotNull(savedFaculty1.getId());
-        Assert.assertNotNull(savedFaculty2.getId());
-        Assert.assertNotEquals(savedFaculty1, savedFaculty2);
-        Assert.assertNotEquals(foundFaculty1, foundFaculty2);
-        Assert.assertEquals(expected1, foundFaculty1);
-        Assert.assertEquals(expected2, foundFaculty2);
+        assertNotNull(savedFaculty1.getId());
+        assertNotNull(savedFaculty2.getId());
+        assertNotEquals(savedFaculty1, savedFaculty2);
+        assertNotEquals(foundFaculty1, foundFaculty2);
+        assertEquals(expected1, foundFaculty1);
+        assertEquals(expected2, foundFaculty2);
     }
 
     @Test
@@ -207,14 +207,14 @@ public class FacultyDAOTest {
         Faculty savedFaculty = facultyDAO.save(facultyToSave);
         Faculty foundFaculty = facultyDAO.findByID(savedFaculty.getId());
 
-        Assert.assertNotSame(savedFaculty, foundFaculty);
+        assertNotSame(savedFaculty, foundFaculty);
 
         Faculty expected = createStubFaculty("SMM", universityID);
         expected.setId(savedFaculty.getId());
 
-        Assert.assertNotNull(savedFaculty.getId());
-        Assert.assertEquals(expected, savedFaculty);
-        Assert.assertEquals(expected, foundFaculty);
+        assertNotNull(savedFaculty.getId());
+        assertEquals(expected, savedFaculty);
+        assertEquals(expected, foundFaculty);
     }
 
     @Test(expected = EntityNotFoundException.class)
@@ -244,8 +244,8 @@ public class FacultyDAOTest {
         Faculty expected = createStubFaculty("FMM", universityID);
         expected.setId(savedFaculty.getId());
 
-        Assert.assertNotNull(savedFaculty.getId());
-        Assert.assertEquals(expected, foundFaculty);
+        assertNotNull(savedFaculty.getId());
+        assertEquals(expected, foundFaculty);
     }
 
     @Test(expected = EntityNotFoundException.class)
@@ -287,15 +287,15 @@ public class FacultyDAOTest {
         Faculty savedFaculty = facultyDAO.save(facultyToSave);
         Faculty foundFaculty = facultyDAO.findByIdAndUniversityId(savedFaculty.getId(), universityID);
 
-        Assert.assertNotSame(savedFaculty, foundFaculty);
-        Assert.assertEquals(savedFaculty, foundFaculty);
+        assertNotSame(savedFaculty, foundFaculty);
+        assertEquals(savedFaculty, foundFaculty);
 
         Faculty expected = createStubFaculty("FEL", universityID);
         expected.setId(savedFaculty.getId());
 
-        Assert.assertNotNull(savedFaculty.getId());
-        Assert.assertEquals(expected, savedFaculty);
-        Assert.assertEquals(expected, foundFaculty);
+        assertNotNull(savedFaculty.getId());
+        assertEquals(expected, savedFaculty);
+        assertEquals(expected, foundFaculty);
     }
 
     @Test
@@ -321,7 +321,7 @@ public class FacultyDAOTest {
         expected.add(expected1);
         expected.add(expected2);
         expected.add(expected3);
-        Assert.assertTrue(areListsEqual(expected, foundFaculties));
+        assertTrue(areListsEqual(expected, foundFaculties));
     }
 
     @Test
@@ -332,7 +332,7 @@ public class FacultyDAOTest {
         facultyDAO.save(facultyToSave);
         UUID otherID = UUID.randomUUID();
         List<Faculty> foundFaculties = facultyDAO.findByUniversityID(otherID);
-        Assert.assertNull(foundFaculties);
+        assertNull(foundFaculties);
     }
 
     @Test
@@ -353,7 +353,7 @@ public class FacultyDAOTest {
          savedFaculties.add(savedFaculty3);
 
          List<Faculty> foundFaculties = facultyDAO.findByUniversityID(universityID);
-        Assert.assertNotSame(savedFaculties, foundFaculties);
+        assertNotSame(savedFaculties, foundFaculties);
     }
 
     @Test(expected = ValidationException.class)

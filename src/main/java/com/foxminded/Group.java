@@ -7,7 +7,7 @@ public class Group {
     private UUID id;
     private String name;
     private UUID facultyID;
-    private Map<UUID, StudentCard> students;// = new HashMap<>();
+    private Map<UUID, StudentCard> students;
 
     public Group(){}
 
@@ -16,17 +16,24 @@ public class Group {
     }
 
     public StudentCard takeStudent(StudentCard studentCard){
-        students.put(studentCard.getID(), studentCard);
+        students.put(studentCard.getId(), studentCard);
+        studentCard.setGroupID(this.id);
         return studentCard;
     }
 
-    public void dissmissStudent(int studentID){}
+    public void dissmissStudent(UUID studentID){
+        //todo
+        students.remove(studentID);
+    }
 
     public ArrayList<StudentCard> findStudents(){
+        //todo
         return new ArrayList<>(students.values());
     }
 
-    public void dismantle(){}
+    public void dismantle(){
+        //todo
+    }
 
     public UUID getId(){
         return this.id;

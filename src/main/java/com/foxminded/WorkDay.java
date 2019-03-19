@@ -1,4 +1,9 @@
 package com.foxminded;
 
-public class WorkDay {
+public enum WorkDay {
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY;
 }
