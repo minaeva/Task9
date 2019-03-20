@@ -1,13 +1,14 @@
 package com.foxminded;
 
-import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 
 public class StudentCard {
 
-    private UUID id;
-    private String name;
-    private UUID groupID;
-    private UUID facultyID;
+    @Getter @Setter private long id;
+    @Getter @Setter private String name;
+    @Getter @Setter private long groupId;
+    @Getter @Setter private long facultyId;
 
     public StudentCard(String name){
         this.name = name;
@@ -15,37 +16,5 @@ public class StudentCard {
 
     public void dissmiss(){
         //todo
-    }
-
-    public void setGroupID(UUID groupID) {
-        this.groupID = groupID;
-    }
-
-    public UUID getGroupID() {
-        return groupID;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setFacultyID(UUID facultyID) {
-        this.facultyID = facultyID;
-    }
-
-    public UUID getFacultyID() {
-        return facultyID;
     }
 }

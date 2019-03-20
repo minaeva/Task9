@@ -1,13 +1,15 @@
 package com.foxminded;
 
+import lombok.Getter;
+import lombok.Setter;
 import java.util.*;
 
 public class Group {
 
-    private UUID id;
-    private String name;
-    private UUID facultyID;
-    private Map<UUID, StudentCard> students;
+    @Getter @Setter private long id;
+    @Getter @Setter private String name;
+    @Getter @Setter private long facultyId;
+    @Getter @Setter private Map<Long, StudentCard> students;
 
     public Group(){}
 
@@ -17,13 +19,13 @@ public class Group {
 
     public StudentCard takeStudent(StudentCard studentCard){
         students.put(studentCard.getId(), studentCard);
-        studentCard.setGroupID(this.id);
+        studentCard.setGroupId(this.id);
         return studentCard;
     }
 
-    public void dissmissStudent(UUID studentID){
+    public void dissmissStudent(long studentId){
         //todo
-        students.remove(studentID);
+        students.remove(studentId);
     }
 
     public ArrayList<StudentCard> findStudents(){
@@ -35,36 +37,11 @@ public class Group {
         //todo
     }
 
-    public UUID getId(){
-        return this.id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public void setName(String name){
-        this.name = name;
-    }
-
-    public UUID getFacultyID() {
-        return facultyID;
-    }
-
-    public void setFacultyID(UUID facultyID) {
-        this.facultyID = facultyID;
-    }
-
     @Override
     public boolean equals(Object groupToCheck){
         if (groupToCheck == this) return true;
         if (!(groupToCheck instanceof Group)) return false;
         Group group = (Group) groupToCheck;
-        return group.getName().equals(name) && group.getId().equals(id);
+        return group.getName().equals(name) && group.getId() == id;
     }
-
 }

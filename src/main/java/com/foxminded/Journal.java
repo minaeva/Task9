@@ -1,26 +1,27 @@
 package com.foxminded;
 
+import lombok.Getter;
+import lombok.Setter;
 import java.util.List;
-import java.util.UUID;
 
 public class Journal {
 
-    private UUID id;
-    private UUID groupID;
-    private UUID facultyID;
-    private List<Section> sections;
-    private List<StudentMarks> studentMarks;
+    @Getter @Setter private long id;
+    @Getter @Setter private long groupId;
+    @Getter @Setter private long facultyId;
+    @Getter @Setter private List<Section> sections;
+    @Getter @Setter private List<StudentMarks> studentMarks;
 
     public Journal(){}
 
-    public Journal(Group group){
-        this.groupID = group.getId();
-        this.facultyID = group.getFacultyID();
+ /*   public Journal(Group group){
+        this.groupId = group.getId();
+        this.facultyId = group.getFacultyId();
     }
-
+*/
     public Section createSection(Subject subject){
         Section section = new Section(subject);
-        section.setJournalID(this.id);
+    //    section.setJournalId(this.id);
         sections.add(section);
         return section;
     }
@@ -37,29 +38,5 @@ public class Journal {
 
     public void addMark(StudentCard studentCard, Subject subject, int mark){
         //todo
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public UUID getGroupID() {
-        return groupID;
-    }
-
-    public void setGroupID(UUID groupID) {
-        this.groupID = groupID;
-    }
-
-    public UUID getFacultyID() {
-        return facultyID;
-    }
-
-    public void setFacultyID(UUID facultyID) {
-        this.facultyID = facultyID;
     }
 }

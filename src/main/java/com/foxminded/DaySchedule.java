@@ -2,14 +2,15 @@ package com.foxminded;
 
 import java.time.LocalTime;
 import java.util.List;
-import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 
-public class DaySchedule {
+    public class DaySchedule {
 
-    private UUID id;
-    private WorkDay workDay;
-    private UUID scheduleID;
-    private List<Pair> pairs;
+        @Getter @Setter private long id;
+        @Getter @Setter private WorkDay workDay;
+        @Getter @Setter private long scheduleId;
+        @Getter @Setter private List<Pair> pairs;
 
     public DaySchedule(){}
 
@@ -23,7 +24,7 @@ public class DaySchedule {
 
     public Pair createPair (LocalTime startTime) {
         Pair pair = new Pair(startTime);
-        pair.setDayScheduleID(this.id);
+        //pair.setDayScheduleId(this.id);
         pairs.add(pair);
         return pair;
     }
@@ -31,29 +32,5 @@ public class DaySchedule {
     public void removePair (Pair pair) throws ValidationException{
         if (!pairs.contains(pair)) throw new ValidationException("Pair with id " + pair.getId() + " doesn't exist");
     }
-
-    public UUID getId() {
-        return id;
     }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public WorkDay getWorkDay() {
-        return workDay;
-    }
-
-    public void setWorkDay(WorkDay workDay) {
-        this.workDay = workDay;
-    }
-
-    public UUID getScheduleID() {
-        return scheduleID;
-    }
-
-    public void setScheduleID(UUID scheduleID) {
-        this.scheduleID = scheduleID;
-    }
-}
 

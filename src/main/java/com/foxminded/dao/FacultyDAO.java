@@ -4,7 +4,6 @@ import com.foxminded.EntityNotFoundException;
 import com.foxminded.ValidationException;
 import com.foxminded.Faculty;
 import java.util.List;
-import java.util.UUID;
 
 public interface FacultyDAO{
 
@@ -12,11 +11,11 @@ public interface FacultyDAO{
 
     Faculty update(Faculty faculty, String newName) throws ValidationException, EntityNotFoundException, CloneNotSupportedException;
 
-    void delete(UUID id) throws ValidationException, EntityNotFoundException;
+    void delete(long id) throws ValidationException, EntityNotFoundException;
 
-    Faculty findByID(UUID id) throws ValidationException, EntityNotFoundException, CloneNotSupportedException;
+    Faculty findById(long id) throws ValidationException, EntityNotFoundException, CloneNotSupportedException;
 
-    Faculty findByIdAndUniversityId(UUID facultyID, UUID universityID) throws ValidationException, EntityNotFoundException, CloneNotSupportedException;
+    Faculty findByIdAndUniversityId(long facultyId, long universityId) throws ValidationException, EntityNotFoundException, CloneNotSupportedException;
 
-    List<Faculty> findByUniversityID(UUID id) throws ValidationException;
+    List<Faculty> findByUniversityId(long id) throws ValidationException;
 }

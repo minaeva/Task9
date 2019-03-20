@@ -1,38 +1,15 @@
 package com.foxminded;
 
-import java.util.UUID;
+import lombok.Getter;
+import lombok.Setter;
 
 public class Auditorium {
 
-    private UUID id;
-    private int number;
-    private UUID facultyID;
+    @Getter @Setter private long id;
+    @Getter @Setter private int number;
+    @Getter @Setter private long facultyID;
 
     public Auditorium(){}
 
     public Auditorium(int number){ this.number = number;}
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public int getNumber() {
-        return number;
-    }
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
-    public UUID getFacultyID() {
-        return facultyID;
-    }
-
-    public void setFacultyID(UUID facultyID) {
-        this.facultyID = facultyID;
-    }
 }

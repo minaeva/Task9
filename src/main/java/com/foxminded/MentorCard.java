@@ -1,15 +1,16 @@
 package com.foxminded;
 
+import lombok.Getter;
+import lombok.Setter;
 import java.util.List;
-import java.util.UUID;
 
 public class MentorCard {
 
-    private UUID id;
-    private String name;
-    private UUID subjectID;
-    private UUID facultyID;
-    private List<Journal> journals;
+    @Getter @Setter private long id;
+    @Getter @Setter private String name;
+    @Getter @Setter private long subjectId;
+    @Getter @Setter private long facultyId;
+    @Getter @Setter private List<Journal> journals;
 
     public MentorCard(){}
 
@@ -23,37 +24,5 @@ public class MentorCard {
 
     public void addMark(StudentCard studentCard, Subject subject, int mark){
         //todo
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public UUID getSubjectID() {
-        return subjectID;
-    }
-
-    public void setSubjectID(UUID subjectID) {
-        this.subjectID = subjectID;
-    }
-
-    public UUID getFacultyID() {
-        return facultyID;
-    }
-
-    public void setFacultyID(UUID facultyID) {
-        this.facultyID = facultyID;
     }
 }

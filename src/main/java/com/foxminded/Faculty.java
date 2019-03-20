@@ -1,19 +1,21 @@
 package com.foxminded;
 
+import lombok.Getter;
+import lombok.Setter;
 import java.util.*;
 
 public class Faculty implements Cloneable {
 
-    private UUID id;
-    private String name;
-    private UUID universityID;
-    private Map<UUID, Group> groups;
-    private Map<UUID, StudentCard> students;
-    private Map<UUID, MentorCard> mentors;
-    private Map<UUID, Subject> subjectss;
-    private Map<UUID, Auditorium> auditoria;
-    private Map<UUID, Journal> journals;// = new HashMap<>();
-    private Schedule schedule;
+    @Getter @Setter private long id;
+    @Getter @Setter private String name;
+    @Getter @Setter private long universityId;
+    @Getter @Setter private Map<Long, Group> groups;
+    @Getter @Setter private Map<Long, StudentCard> students;
+    @Getter @Setter private Map<Long, MentorCard> mentors;
+    @Getter @Setter private Map<Long, Subject> subjects;
+    @Getter @Setter private Map<Long, Auditorium> auditoria;
+    @Getter @Setter private Map<Long, Journal> journals;
+    @Getter @Setter private Schedule schedule;
 
     public Faculty() { }
 
@@ -21,10 +23,10 @@ public class Faculty implements Cloneable {
         this.name = name;
     }
 
-    public Faculty(UUID id, String name, UUID universityID) {
+    public Faculty(long id, String name, long universityId) {
         this.id = id;
         this.name = name;
-        this.universityID = universityID;
+        this.universityId = universityId;
     }
 
     public void dismantle() {
@@ -33,18 +35,18 @@ public class Faculty implements Cloneable {
 
     public Group createGroup(String name) {
         Group group = new Group(name);
-        group.setFacultyID(this.id);
+        group.setFacultyId(this.id);
         //?DAO to get id
         groups.put(group.getId(), group);
         return group;
     }
 
-    public Group updateGroup(UUID groupID, String newName) {
-        if (!groups.containsKey(groupID)) {
-            System.out.println("Cannot find group with ID " + groupID);
+    public Group updateGroup(long groupId, String newName) {
+        if (!groups.containsKey(groupId)) {
+            System.out.println("Cannot find group with Id " + groupId);
             return null;
         }
-        Group group = groups.get(groupID);
+        Group group = groups.get(groupId);
         group.setName(newName);
         return group;
     }
@@ -53,35 +55,35 @@ public class Faculty implements Cloneable {
         //todo
     }
 
-    public Map<UUID, Group> findGroups() {
+    public Map<Long, Group> findGroups() {
         return groups;
     }
 
     public StudentCard takeStudent(String name) {
         StudentCard studentCard = new StudentCard(name);
-        studentCard.setFacultyID(this.id);
+        studentCard.setFacultyId(this.id);
         //?DAO
         students.put(studentCard.getId(), studentCard);
         return studentCard;
     }
 
-    public StudentCard changeStudentGroup(UUID studentID, UUID newGroupID) {
-        if (!students.containsKey(studentID)) {
-            System.out.println("Cannot find student with ID " + studentID);
+    public StudentCard changeStudentGroup(long studentId, long newGroupId) {
+        if (!students.containsKey(studentId)) {
+            System.out.println("Cannot find student with Id " + studentId);
             return null;
         }
-        StudentCard studentCard = students.get(studentID);
-        studentCard.setGroupID(newGroupID);
+        StudentCard studentCard = students.get(studentId);
+        studentCard.setGroupId(newGroupId);
         return studentCard;
     }
 
-    public void dissmissStudent(int studentID) {
+    public void dissmissStudent(int studentId) {
         //todo
     }
 
     public Schedule createScedule() {
         Schedule newSchedule = new Schedule();
-        newSchedule.setFacultyID(this.id);
+        newSchedule.setFacultyId(this.id);
         this.schedule = newSchedule;
         return newSchedule;
     }
@@ -93,7 +95,7 @@ public class Faculty implements Cloneable {
 
     public MentorCard hireMentor(String name) {
         MentorCard newMentor = new MentorCard(name);
-        newMentor.setFacultyID(this.id);
+        newMentor.setFacultyId(this.id);
         mentors.put(newMentor.getId(),newMentor);
         return newMentor;
     }
@@ -107,36 +109,12 @@ public class Faculty implements Cloneable {
         return 1.0;
         }
 
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public UUID getUniversityID() {
-        return universityID;
-    }
-
-    public void setUniversityID(UUID universityID) {
-        this.universityID = universityID;
-    }
-
     @Override
     public boolean equals(Object facultyToCheck) {
         if (facultyToCheck == this) return true;
         if (!(facultyToCheck instanceof Faculty)) return false;
         Faculty faculty = (Faculty) facultyToCheck;
-        return faculty.getName().equals(name) && faculty.getId().equals(id);
+        return faculty.getName().equals(name) && (faculty.getId() == id);
     }
 
     @Override
@@ -144,7 +122,7 @@ public class Faculty implements Cloneable {
         try {
             return (Faculty) super.clone();
         } catch (ClassCastException e) {
-            return new Faculty(this.getId(), this.getName(), this.getUniversityID());
+            return new Faculty(this.getId(), this.getName(), this.getUniversityId());
         }
     }
 }

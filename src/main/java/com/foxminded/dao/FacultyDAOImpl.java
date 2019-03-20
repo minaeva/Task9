@@ -3,21 +3,22 @@ package com.foxminded.dao;
 import com.foxminded.EntityNotFoundException;
 import com.foxminded.ValidationException;
 import com.foxminded.Faculty;
+import com.foxminded.IdGenerator;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class FacultyDAOImpl implements FacultyDAO{
 
-    static private Map<UUID, Faculty> faculties = new HashMap<>();
+    static private Map<Long, Faculty> faculties = new HashMap<>();
 
     public Faculty save(Faculty faculty) throws ValidationException, CloneNotSupportedException{
         if (faculty == null) throw new ValidationException("Null faculty");
-        if (faculty.getId() != null) throw new ValidationException("Faculty with ID " + faculty.getId() + " already exists");
-        for (UUID id: faculties.keySet()){
-            if (id == faculty.getId()) throw new ValidationException("Faculty with ID " + faculty.getId() + " already exists");
+        if (faculty.getId() != 0) throw new ValidationException("Faculty with Id " + faculty.getId() + " already exists");
+        for (long id: faculties.keySet()){
+            if (id == faculty.getId()) throw new ValidationException("Faculty with Id " + faculty.getId() + " already exists");
         }
-        UUID id = UUID.randomUUID();
+        long id = IdGenerator.newId();
         faculty.setId(id);
         faculties.put(id, faculty);
         return faculty.clone();
@@ -25,38 +26,38 @@ public class FacultyDAOImpl implements FacultyDAO{
 
     public Faculty update(Faculty faculty, String newName) throws ValidationException, EntityNotFoundException, CloneNotSupportedException {
         if (faculty == null) throw new ValidationException("Null faculty");
-        if (faculty.getId() == null) throw new EntityNotFoundException("Null ID => Faculty doesn't exist");
+        if (faculty.getId() == 0) throw new EntityNotFoundException("Null is not set => Faculty doesn't exist");
         if (!faculties.containsValue(faculty)) throw new EntityNotFoundException("Faculty " + faculty.getName() + " doesn't exist");
         faculty.setName(newName);
         faculties.put(faculty.getId(), faculty);
         return faculty.clone();
     }
 
-    public void delete(UUID id) throws ValidationException, EntityNotFoundException {
-        if (id == null) throw new ValidationException("Null ID");
+    public void delete(long id) throws ValidationException, EntityNotFoundException {
+        if (id == 0) throw new ValidationException("Id is not set");
         if (!faculties.containsKey(id)) throw new EntityNotFoundException("Faculty with id " + id + " doesn't exist");
         faculties.remove(id);
     }
 
-    public Faculty findByID(UUID id) throws ValidationException, EntityNotFoundException, CloneNotSupportedException{
-        if (id == null) throw new ValidationException("Null ID");
+    public Faculty findById(long id) throws ValidationException, EntityNotFoundException, CloneNotSupportedException{
+        if (id == 0) throw new ValidationException("Id is not");
         if (!faculties.containsKey(id)) throw new EntityNotFoundException("Faculty with id " + id + " doesn't exist");
         return faculties.get(id).clone();
     }
 
-    public Faculty findByIdAndUniversityId(UUID facultyID, UUID universityID) throws ValidationException, EntityNotFoundException, CloneNotSupportedException{
-        if ((facultyID == null)||(universityID == null)) throw new ValidationException("Null ID");
-        if (!faculties.containsKey(facultyID)) throw new EntityNotFoundException("Faculty with id " + facultyID + " doesn't exist");
-        if (!(faculties.get(facultyID).getUniversityID() == universityID)) throw new EntityNotFoundException("Faculty with university ID " + universityID + " doesn't exist");
-        Faculty foundFaculty = faculties.get(facultyID);
+    public Faculty findByIdAndUniversityId(long facultyId, long universityId) throws ValidationException, EntityNotFoundException, CloneNotSupportedException{
+        if ((facultyId == 0)||(universityId == 0)) throw new ValidationException("Id is not set");
+        if (!faculties.containsKey(facultyId)) throw new EntityNotFoundException("Faculty with id " + facultyId + " doesn't exist");
+        if (!(faculties.get(facultyId).getUniversityId() == universityId)) throw new EntityNotFoundException("Faculty with university Id " + universityId + " doesn't exist");
+        Faculty foundFaculty = faculties.get(facultyId);
         return foundFaculty.clone();
     }
 
-    public List<Faculty> findByUniversityID(UUID id) throws ValidationException{
-        if (id == null) throw new ValidationException("Null ID");
+    public List<Faculty> findByUniversityId(long id) throws ValidationException{
+        if (id == 0) throw new ValidationException("Id is not set");
         List<Faculty> allUniversityFaculties = new ArrayList<>(faculties.values());
 
-        Predicate<Faculty> p = f -> f.getUniversityID() == id;
+        Predicate<Faculty> p = f -> f.getUniversityId() == id;
         if (!allUniversityFaculties.stream().anyMatch(p)) return null;
 
         List<Faculty> foundFaculties = allUniversityFaculties.stream().filter(p).collect(Collectors.toList());

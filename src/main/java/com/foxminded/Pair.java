@@ -1,14 +1,15 @@
 package com.foxminded;
 
+import lombok.Getter;
+import lombok.Setter;
 import java.time.LocalTime;
-import java.util.UUID;
 
 public class Pair {
 
-    private UUID id;
-    private UUID dayScheduleID;
-    private LocalTime startTime;
-    private Lesson lesson;
+    @Getter @Setter private long id;
+    @Getter @Setter private long dayScheduleId;
+    @Getter @Setter private LocalTime startTime;
+    @Getter @Setter private Lesson lesson;
 
     public Pair(){}
 
@@ -22,45 +23,14 @@ public class Pair {
         lesson.setSubject(subject);
         lesson.setMentorCard(mentorCard);
         lesson.setAuditorium(auditorium);
-        //Lesson saved = lessonDAO.save(lesson); lesson.setID(saved.getID());
+        //Lesson saved = lessonDAO.save(lesson);
+        lesson.setId(IdGenerator.newId());
         return lesson;
     }
 
-    public void removeLesson(UUID id) throws ValidationException{
+    public void removeLesson(long id) throws ValidationException{
         if (this.lesson.getId() != id)
             throw new ValidationException("Lesson with id " + id + " does't exist");
         this.lesson = null;
-    }
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public UUID getDayScheduleID() {
-        return dayScheduleID;
-    }
-
-    public void setDayScheduleID(UUID dayScheduleID) {
-        this.dayScheduleID = dayScheduleID;
-    }
-
-    public LocalTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public Lesson getLesson() {
-        return lesson;
-    }
-
-    public void setLesson(Lesson lesson) {
-        this.lesson = lesson;
     }
 }
