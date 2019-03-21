@@ -354,8 +354,7 @@ public class FacultyDAOTest {
     }
 
     private Faculty createStubFaculty(String name, long universityId){
-        Faculty faculty = new Faculty();
-        faculty.setName(name);
+        Faculty faculty = new Faculty(name);
         faculty.setUniversityId(universityId);
         return faculty;
     }

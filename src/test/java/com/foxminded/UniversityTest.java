@@ -1,67 +1,97 @@
 package com.foxminded;
 
 import static org.junit.Assert.*;
-import com.foxminded.dao.FacultyDAO;
-import com.foxminded.dao.FacultyDAOImpl;
-import com.foxminded.dao.UniversityDAO;
-import com.foxminded.dao.UniversityDAOImpl;
 import org.junit.Test;
+import java.util.List;
 
 public class UniversityTest {
 
-    private static UniversityDAO universityDAO = new UniversityDAOImpl();
-//    private static FacultyDAO facultyDAO = new FacultyDAOImpl();
-
     @Test
-    public void createFaculty() throws ValidationException, CloneNotSupportedException{
-    University university = new University("Oxford");
-    University savedUniversity = universityDAO.save(university);
-    Faculty createdFaculty = savedUniversity.createFaculty("IT");
+    public void createFaculty() throws ValidationException{
+    University university = new University();
+    university.createFaculty("IT");
+    int size = university.findFaculties().size();
+    assertEquals(1, size);
 
-    Faculty expected = createStubFaculty("IT", savedUniversity.getId());
-    expected.setId(createdFaculty.getId());
-    assertEquals(expected, createdFaculty);
+    university.createFaculty("AM");
+    int secondSize = university.findFaculties().size();
+    assertEquals(2, secondSize);
     }
 
-    @Test
-    public void updateFaculty() throws ValidationException, CloneNotSupportedException, EntityNotFoundException{
-        University university = new University("Cambridge");
-        University savedUniversity = universityDAO.save(university);
-        Faculty createdFaculty = savedUniversity.createFaculty("MGMT");
-        Faculty updatedFaculty = savedUniversity.updateFaculty(createdFaculty.getId(), "NEW");
+    @Test(expected = ValidationException.class)
+    public void createFaculty_same_throwsException() throws ValidationException{
+        University university = new University();
+        university.createFaculty("F1");
+        university.createFaculty("F1");
+    }
 
-        Faculty expected = createStubFaculty("NEW", savedUniversity.getId());
-        expected.setId(createdFaculty.getId());
-        assertEquals(expected, updatedFaculty);
+   @Test
+    public void updateFaculty() throws ValidationException, EntityNotFoundException{
+        University university = new University();
+        Faculty faculty1 = university.createFaculty("F1");
+        long id = IdGenerator.newId();
+        faculty1.setId(id);
+        university.updateFaculty(id, "F1NEW");
+
+        List<Faculty> foundFaculties = university.findFaculties();
+        assertEquals("F1NEW", foundFaculties.get(0).getName());
+        int size = university.findFaculties().size();
+        assertEquals(1, size);
+
+        Faculty faculty2 = university.createFaculty("F2");
+        university.updateFaculty(id, "F1NEW2");
+        size = university.findFaculties().size();
+        assertEquals(2, size);
     }
 
     @Test(expected = EntityNotFoundException.class)
-    public void dismantleFaculty() throws ValidationException, CloneNotSupportedException, EntityNotFoundException{
-        University university = new University("KPI");
-        University savedUniversity = universityDAO.save(university);
-        Faculty createdFaculty = savedUniversity.createFaculty("IASA");
-        savedUniversity.dismantleFaculty(createdFaculty.getId());
-        savedUniversity.findFaculty(createdFaculty.getId());
+    public void updateFaculty_notExists_throwsException() throws EntityNotFoundException{
+        University university = new University();
+        long id = IdGenerator.newId();
+        university.updateFaculty(id, "NEW");
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void dismantleFaculty() throws EntityNotFoundException, ValidationException{
+        University university = new University();
+        Faculty createdFaculty = university.createFaculty("IASA");
+        long id = IdGenerator.newId();
+        createdFaculty.setId(id);
+        university.dismantleFaculty(createdFaculty.getId());
+        university.findFaculty(createdFaculty.getId());
+    }
+
+    @Test(expected = EntityNotFoundException.class)
+    public void dismantleFaculty_notExists_throwsException() throws EntityNotFoundException{
+        University university = new University();
+        long id = IdGenerator.newId();
+        university.updateFaculty(id, "NEW");
     }
 
     @Test
-    public void findFaculty() throws ValidationException, CloneNotSupportedException, EntityNotFoundException{
-        University university = new University("Berkley");
-        University savedUniversity = universityDAO.save(university);
-        Faculty createdFaculty = savedUniversity.createFaculty("CMP");
-        Faculty foundFaculty = savedUniversity.findFaculty(createdFaculty.getId());
-
-        Faculty expected = createStubFaculty("CMP", savedUniversity.getId());
-        expected.setId(createdFaculty.getId());
-        assertEquals(expected, foundFaculty);
+    public void findFaculty() throws ValidationException, EntityNotFoundException{
+        University university = new University();
+        Faculty createdFaculty = university.createFaculty("CMP");
+        long id = IdGenerator.newId();
+        createdFaculty.setId(id);
+        Faculty foundFaculty = university.findFaculty(createdFaculty.getId());
+        assertEquals(createdFaculty.getName(), foundFaculty.getName());
     }
 
-    private long newId(){
-        return IdGenerator.newId();
+    @Test
+    public void calculateAverageMark() throws ValidationException{
+        University university = new University();
+        university.createFaculty("1");
+        university.createFaculty("2");
+        university.createFaculty("3");
+        university.createFaculty("4");
+        double average = university.calculateAverageMark();
+        double expected = 1.0;
+        assertEquals(expected , average, 0.005);
     }
 
     private Faculty createStubFaculty(String name, long universityId){
-        Faculty faculty = new Faculty();
+        Faculty faculty = new Faculty(name);
         faculty.setName(name);
         faculty.setUniversityId(universityId);
         return faculty;

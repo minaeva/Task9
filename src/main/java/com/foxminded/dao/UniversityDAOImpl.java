@@ -12,7 +12,7 @@ public class UniversityDAOImpl implements UniversityDAO {
 
     public University save(University university) throws ValidationException, CloneNotSupportedException{
         if (university == null) throw new ValidationException("Null university");
-        if (university.getId() != 0L) throw new ValidationException("University with ID " + university.getId() + " already exists");
+        if (university.getId() != 0) throw new ValidationException("University with ID " + university.getId() + " already exists");
         for (long id: universities.keySet()){
             if (id == university.getId()) throw new ValidationException("University with ID " + university.getId() + " already exists");
         }
