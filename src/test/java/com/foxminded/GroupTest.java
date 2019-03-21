@@ -2,62 +2,53 @@ package com.foxminded;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
-import java.util.ArrayList;
 import java.util.List;
 
 public class GroupTest {
 
     @Test
-    public void findStudents_correct(){
-        String student1 = "Jinny";
-        String student2 = "Barbara";
-        String student3 = "Serge";
-        String student4 = "Olga";
-        String student5 = "Helen";
-        String student6 = "Ann";
-        String student7 = "Maria";
+    public void takeStudent() throws ValidationException, EntityNotFoundException{
+        University university = new University();
+        Faculty faculty = university.createFaculty("Faculty");
+        StudentCard student = faculty.takeStudent("John");
+        Group group = faculty.createGroup("Group");
+        StudentCard takenStudent = group.takeStudent(student);
 
-        List<StudentCard> expected = new ArrayList<>();
-        expected.add(new StudentCard(student1));
-        expected.add(new StudentCard(student2));
-        expected.add(new StudentCard(student3));
-        expected.add(new StudentCard(student4));
-        expected.add(new StudentCard(student5));
-        expected.add(new StudentCard(student6));
-        expected.add(new StudentCard(student7));
+        long id = IdGenerator.newId();
+        takenStudent.setId(id);
+        StudentCard foundStudent = group.findStudent(id);
+        assertEquals(takenStudent, foundStudent);
+    }
 
-        System.out.println("****EXPECTED");
-        for (StudentCard s: expected
-             ) {
-            System.out.println(s.getName());
-        }
+    @Test
+    public void findStudent() throws ValidationException, EntityNotFoundException{
+        University university = new University();
+        Faculty faculty = university.createFaculty("Faculty");
+        Group group = faculty.createGroup("Group");
+        StudentCard student = faculty.takeStudent("Madonna");
+        StudentCard takenStudent = group.takeStudent(student);
+        long studentId = IdGenerator.newId();
+        takenStudent.setId(studentId);
 
-        Faculty faculty = new Faculty("IASA");
-        //doesn't work without ids, DAO needed
-/*        StudentCard studentCard1 = faculty.takeStudent(student1);
-        StudentCard studentCard2 = faculty.takeStudent(student2);
-        StudentCard studentCard3 = faculty.takeStudent(student3);
-        StudentCard studentCard4 = faculty.takeStudent(student4);
-        StudentCard studentCard5 = faculty.takeStudent(student5);
-        StudentCard studentCard6 = faculty.takeStudent(student6);
-        StudentCard studentCard7 = faculty.takeStudent(student7);
-        Group group = new Group("KA-11");
-        group.takeStudent(studentCard1);
-        group.takeStudent(studentCard2);
-        group.takeStudent(studentCard3);
-        group.takeStudent(studentCard4);
-        group.takeStudent(studentCard5);
-        group.takeStudent(studentCard6);
-        group.takeStudent(studentCard7);
-        ArrayList<StudentCard> actual = group.findStudents();
+        StudentCard foundStudent = faculty.findStudent(studentId);
+        assertEquals(takenStudent, foundStudent);
+    }
 
-        System.out.println("****ACTUAL");
-        for (StudentCard s: actual) {
-            System.out.println(s.getName());
-        }
+    @Test
+    public void dismissStudent() throws ValidationException, EntityNotFoundException{
+        University university = new University();
+        Faculty faculty = university.createFaculty("Faculty");
+        Group group = faculty.createGroup("Group");
+        StudentCard student = faculty.takeStudent("Bach");
+        StudentCard takenStudent =  group.takeStudent(student);
+        int size = group.findStudents().size();
+        assertEquals(1, size);
 
-        assertTrue(areListsEqual(expected, actual));
- */
+        long studentId = IdGenerator.newId();
+        takenStudent.setId(studentId);
+        group.dismissStudent(studentId);
+        size = group.findStudents().size();
+        assertEquals(0, size);
     }
 
     private boolean areListsEqual(List<StudentCard> first, List<StudentCard> second) {

@@ -24,13 +24,24 @@ public class Faculty implements Cloneable {
     }
 
     public void dismantle() {
-        //todo
+        for (Group group : groups) {
+            group.dismantle();
+        }
+        groups =  null;
+        for (StudentCard student : students) {
+            student.dismiss();
+        }
+        students = null;
+        for (MentorCard mentor: mentors){
+            mentor.fire();
+        }
+        mentors = null;
     }
 
     public Group createGroup(String groupName) throws ValidationException{
-        Predicate<Group> p = g -> g.getName() == groupName;
+        Predicate<Group> p = g -> g.getName().equals(groupName);
         if (groups.stream().anyMatch(p)) throw new ValidationException("Group with name " + groupName + " already exists");
-        if (groupName == "") throw new ValidationException("Name cannot be empty");
+        if (groupName.equals("")) throw new ValidationException("Name cannot be empty");
         Group newGroup = new Group(groupName);
         groups.add(newGroup);
         return newGroup;
@@ -38,7 +49,7 @@ public class Faculty implements Cloneable {
 
     public Group findGroup(long groupId) throws EntityNotFoundException{
         Predicate<Group> p = g -> g.getId() == groupId;
-        if (!groups.stream().anyMatch(p)) throw new EntityNotFoundException("Group with id " + groupId + " doesn't exist");
+        if (groups.stream().noneMatch(p)) throw new EntityNotFoundException("Group with id " + groupId + " doesn't exist");
         return groups.stream().filter(p).collect(Collectors.toList()).get(0);
     }
 
@@ -60,7 +71,7 @@ public class Faculty implements Cloneable {
     }
 
     public StudentCard takeStudent(String studentName) throws  ValidationException{
-        if (studentName == "") throw new ValidationException("Name cannot be empty");
+        if (studentName.equals("")) throw new ValidationException("Name cannot be empty");
         StudentCard newStudent = new StudentCard(studentName);
         students.add(newStudent);
         return newStudent;
@@ -68,7 +79,7 @@ public class Faculty implements Cloneable {
 
     public StudentCard findStudent(long studentId) throws EntityNotFoundException{
         Predicate<StudentCard> p = s -> s.getId() == studentId;
-        if (!students.stream().anyMatch(p)) throw new EntityNotFoundException("Student with id " + studentId + " doesn't exist");
+        if (students.stream().noneMatch(p)) throw new EntityNotFoundException("Student with id " + studentId + " doesn't exist");
         return students.stream().filter(p).collect(Collectors.toList()).get(0);
     }
 
@@ -102,7 +113,7 @@ public class Faculty implements Cloneable {
     }
 
     public MentorCard hireMentor(String mentorName) throws ValidationException{
-        if (mentorName == "") throw new ValidationException("Name cannot be empty");
+        if (mentorName.equals("")) throw new ValidationException("Name cannot be empty");
         MentorCard newMentor = new MentorCard(mentorName);
         mentors.add(newMentor);
         return newMentor;
@@ -110,7 +121,7 @@ public class Faculty implements Cloneable {
 
     public MentorCard findMentor(long mentorId) throws EntityNotFoundException{
         Predicate<MentorCard> p = m -> m.getId() == mentorId;
-        if (!mentors.stream().anyMatch(p)) throw new EntityNotFoundException("Mentor with id " + mentorId + " doesn't exist");
+        if (mentors.stream().noneMatch(p)) throw new EntityNotFoundException("Mentor with id " + mentorId + " doesn't exist");
         return mentors.stream().filter(p).collect(Collectors.toList()).get(0);
     }
 

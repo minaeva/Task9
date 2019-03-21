@@ -1,15 +1,17 @@
 package com.foxminded;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
+@Data
 public class Group {
 
-    @Getter @Setter private long id;
-    @Getter @Setter private String name;
-    @Getter @Setter private long facultyId;
-    @Getter @Setter private Map<Long, StudentCard> students;
+     private long id;
+     private String name;
+     private long facultyId;
+     private List<StudentCard> students = new ArrayList<>();
 
     public Group(){}
 
@@ -18,23 +20,31 @@ public class Group {
     }
 
     public StudentCard takeStudent(StudentCard studentCard){
-        students.put(studentCard.getId(), studentCard);
+        students.add(studentCard);
         studentCard.setGroupId(this.id);
         return studentCard;
     }
 
-    public void dissmissStudent(long studentId){
-        //todo
-        students.remove(studentId);
+    public StudentCard findStudent(long studentId) throws EntityNotFoundException{
+        Predicate<StudentCard> p = s -> s.getId() == studentId;
+        if (students.stream().noneMatch(p)) throw new EntityNotFoundException("Student with id " + studentId + " doesn't exist");
+        return students.stream().filter(p).collect(Collectors.toList()).get(0);
     }
 
-    public ArrayList<StudentCard> findStudents(){
-        //todo
-        return new ArrayList<>(students.values());
+    public void dismissStudent(long studentId) throws EntityNotFoundException{
+        StudentCard student = findStudent(studentId);
+        student.dismiss();
+        students.remove(student);
+    }
+
+    public List<StudentCard> findStudents(){
+        return students;
     }
 
     public void dismantle(){
-        //todo
+        for (StudentCard student: students) {
+            student.setGroupId(0);
+        }
     }
 
     @Override
@@ -43,5 +53,14 @@ public class Group {
         if (!(groupToCheck instanceof Group)) return false;
         Group group = (Group) groupToCheck;
         return group.getName().equals(name) && group.getId() == id;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 17;
+        result = 31 * result + name.hashCode();
+        result = 31 * result + (int)id;
+        result = 31 * result + (int)facultyId;
+        return result;
     }
 }

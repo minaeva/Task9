@@ -1,20 +1,20 @@
 package com.foxminded;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
+@Data
 public class StudentCard {
 
-    @Getter @Setter private long id;
-    @Getter @Setter private String name;
-    @Getter @Setter private long groupId;
-    @Getter @Setter private long facultyId;
+    private long id;
+    private String name;
+    private long groupId;
+    private long facultyId;
 
     public StudentCard(String name){
         this.name = name;
     }
 
-    public void dissmiss(){
-        //todo
+    public void dismiss(){
+        System.out.println("Permission received. Student " + this.name + " can now be dismissed");
     }
 }
