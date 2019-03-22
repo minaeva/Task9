@@ -36,6 +36,10 @@ public class Faculty implements Cloneable {
             mentor.fire();
         }
         mentors = null;
+        for (Journal journal: journals){
+            journal.dismantle();
+        }
+        journals = null;
     }
 
     public Group createGroup(String groupName) throws ValidationException{
@@ -45,12 +49,6 @@ public class Faculty implements Cloneable {
         Group newGroup = new Group(groupName);
         groups.add(newGroup);
         return newGroup;
-    }
-
-    public Group findGroup(long groupId) throws EntityNotFoundException{
-        Predicate<Group> p = g -> g.getId() == groupId;
-        if (groups.stream().noneMatch(p)) throw new EntityNotFoundException("Group with id " + groupId + " doesn't exist");
-        return groups.stream().filter(p).collect(Collectors.toList()).get(0);
     }
 
     public Group updateGroup(long groupId, String newName) throws EntityNotFoundException {
@@ -66,13 +64,29 @@ public class Faculty implements Cloneable {
         groups.remove(group);
     }
 
+    public Group findGroup(long groupId) throws EntityNotFoundException{
+        Predicate<Group> p = g -> g.getId() == groupId;
+        if (groups.stream().noneMatch(p)) throw new EntityNotFoundException("Group with id " + groupId + " doesn't exist");
+        return groups.stream().filter(p).collect(Collectors.toList()).get(0);
+    }
+
     public List<Group> findGroups() {
         return groups;
     }
 
-    public StudentCard takeStudent(String studentName) throws  ValidationException{
+ /*   public StudentCard takeStudent(String studentName) throws ValidationException{
         if (studentName.equals("")) throw new ValidationException("Name cannot be empty");
         StudentCard newStudent = new StudentCard(studentName);
+        students.add(newStudent);
+        return newStudent;
+    }
+    */
+
+    public StudentCard takeStudent(String studentName, long groupId) throws EntityNotFoundException, ValidationException{
+        if (studentName.equals("")) throw new ValidationException("Name cannot be empty");
+        Group group = findGroup(groupId);
+        StudentCard newStudent = new StudentCard(studentName);
+        group.takeStudent(newStudent);
         students.add(newStudent);
         return newStudent;
     }
@@ -132,6 +146,26 @@ public class Faculty implements Cloneable {
     public void fireMentor(long mentorId) throws EntityNotFoundException{
         MentorCard mentor = findMentor(mentorId);
         mentors.remove(mentor);
+    }
+
+    public Journal createJournal(long groupId){
+        Journal journal = new Journal();
+        journal.setGroupId(groupId);
+        journal.setFacultyId(this.id);
+        journals.add(journal);
+        return journal;
+    }
+
+    public Journal findJournal(long journalId) throws EntityNotFoundException{
+        Predicate<Journal> p = j -> j.getId() == journalId;
+        if (journals.stream().noneMatch(p)) throw new EntityNotFoundException("Journal with id " + journalId + " doesn't exist");
+        return journals.stream().filter(p).collect(Collectors.toList()).get(0);
+    }
+
+    public void removeJournal(long journalId) throws EntityNotFoundException{
+        Journal journal = findJournal(journalId);
+        journal.dismantle();
+        journals.remove(journal);
     }
 
     public double calculateAverageMark() {

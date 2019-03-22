@@ -1,13 +1,13 @@
 package com.foxminded;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
+@Data
 public class Subject {
 
-    @Getter @Setter private long id;
-    @Getter @Setter private String name;
-    @Getter @Setter private long facultyId;
+    private long id;
+    private String name;
+    private long facultyId;
 
     public Subject(String name){
         this.name = name;

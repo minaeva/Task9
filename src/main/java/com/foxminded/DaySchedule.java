@@ -1,21 +1,24 @@
 package com.foxminded;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import lombok.Data;
 
-    public class DaySchedule {
+@Data
+public class DaySchedule {
 
-        @Getter @Setter private long id;
-        @Getter @Setter private WorkDay workDay;
-        @Getter @Setter private long scheduleId;
-        @Getter @Setter private List<Pair> pairs;
+        private long id;
+        private WorkDay workDay;
+        private long scheduleId;
+        private List<Pair> pairs = new ArrayList<>();
 
     public DaySchedule(){}
 
     public DaySchedule(WorkDay workDay){
-        this.workDay =  workDay;
+        this.workDay = workDay;
     }
 
     public DaySchedule getDaySchedule(){
@@ -29,8 +32,16 @@ import lombok.Setter;
         return pair;
     }
 
-    public void removePair (Pair pair) throws ValidationException{
-        if (!pairs.contains(pair)) throw new ValidationException("Pair with id " + pair.getId() + " doesn't exist");
+    public Pair findPair(long pairId) throws EntityNotFoundException{
+        Predicate<Pair> p = pr -> pr.getId() == pairId;
+        if (pairs.stream().noneMatch(p)) throw new EntityNotFoundException("Pair with id " + pairId + " doesn't exist");
+        return pairs.stream().filter(p).collect(Collectors.toList()).get(0);
     }
+
+
+    public void removePair (long pairId) throws EntityNotFoundException{
+        Pair pair = findPair(pairId);
+        pairs.remove(pair);
     }
+}
 

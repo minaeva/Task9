@@ -1,14 +1,17 @@
 package com.foxminded;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
+@Data
 public class Schedule {
 
-    @Getter @Setter private long id;
-    @Getter @Setter private List<DaySchedule> daySchedules;
-    @Getter @Setter private long facultyId;
+    private long id;
+    private List<DaySchedule> daySchedules = new ArrayList<>();
+    private long facultyId;
 
     public DaySchedule createDaySchedule(WorkDay workDay){
         DaySchedule daySchedule = new DaySchedule(workDay);
@@ -17,8 +20,14 @@ public class Schedule {
         return daySchedule;
     }
 
-    public void removeDaySchedule(DaySchedule daySchedule){
-        //todo
+    public void removeDaySchedule(long dayScheduleId) throws EntityNotFoundException{
+        DaySchedule daySchedule = findDaySchedule(dayScheduleId);
         daySchedules.remove(daySchedule);
+    }
+
+    public DaySchedule findDaySchedule(long dayScheduleId) throws EntityNotFoundException{
+        Predicate<DaySchedule> p = d -> d.getId() == dayScheduleId;
+        if (daySchedules.stream().noneMatch(p)) throw new EntityNotFoundException("Day schedule with id " + dayScheduleId + " doesn't exist");
+        return daySchedules.stream().filter(p).collect(Collectors.toList()).get(0);
     }
 }

@@ -1,15 +1,15 @@
 package com.foxminded;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import java.time.LocalTime;
 
+@Data
 public class Pair {
 
-    @Getter @Setter private long id;
-    @Getter @Setter private long dayScheduleId;
-    @Getter @Setter private LocalTime startTime;
-    @Getter @Setter private Lesson lesson;
+    private long id;
+    private long dayScheduleId;
+    private LocalTime startTime;
+    private Lesson lesson;
 
     public Pair(){}
 
@@ -23,8 +23,6 @@ public class Pair {
         lesson.setSubject(subject);
         lesson.setMentorCard(mentorCard);
         lesson.setAuditorium(auditorium);
-        //Lesson saved = lessonDAO.save(lesson);
-        lesson.setId(IdGenerator.newId());
         return lesson;
     }
 

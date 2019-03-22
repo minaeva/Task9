@@ -8,10 +8,10 @@ import java.util.stream.Collectors;
 @Data
 public class Group {
 
-     private long id;
-     private String name;
-     private long facultyId;
-     private List<StudentCard> students = new ArrayList<>();
+    private long id;
+    private String name;
+    private long facultyId;
+    private List<StudentCard> students = new ArrayList<>();
 
     public Group(){}
 

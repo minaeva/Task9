@@ -1,15 +1,16 @@
 package com.foxminded;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import java.util.ArrayList;
 import java.util.List;
 
+@Data
 public class StudentMarks {
 
-    @Getter @Setter private long id;
-    @Getter @Setter private StudentCard studentCard;
-    @Getter @Setter private long sectionId;
-    private List<Integer> marks;
+    private long id;
+    private StudentCard studentCard;
+    private long sectionId;
+    private List<Integer> marks = new ArrayList<>();
 
     public StudentMarks(){}
 
@@ -19,11 +20,18 @@ public class StudentMarks {
     }
 
     public double calculateAverageMark() {
-        //todo
-        return 1.0;
+        if (marks.size() == 0) return 0;
+        double result =  0.0;
+        int counter = 0;
+        for(Integer mark: marks){
+            result += mark;
+            counter++;
+        }
+        return result/counter;
     }
 
-    public void addMark(int mark){
-        //todo
+    public void addMark(int mark) throws ValidationException{
+        if ((mark < 1) || (mark > 12)) throw new ValidationException("Mark should be [1;12]");
+        marks.add(mark);
     }
 }

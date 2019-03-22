@@ -1,13 +1,13 @@
 package com.foxminded;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
+@Data
 public class Auditorium {
 
-    @Getter @Setter private long id;
-    @Getter @Setter private int number;
-    @Getter @Setter private long facultyID;
+    private long id;
+    private int number;
+    private long facultyID;
 
     public Auditorium(){}
 
