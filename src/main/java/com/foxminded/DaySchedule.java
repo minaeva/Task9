@@ -15,8 +15,6 @@ public class DaySchedule {
         private long scheduleId;
         private List<Pair> pairs = new ArrayList<>();
 
-    public DaySchedule(){}
-
     public DaySchedule(WorkDay workDay){
         this.workDay = workDay;
     }
@@ -27,7 +25,7 @@ public class DaySchedule {
 
     public Pair createPair (LocalTime startTime) {
         Pair pair = new Pair(startTime);
-        //pair.setDayScheduleId(this.id);
+        //? pair.setDayScheduleId(this.id);
         pairs.add(pair);
         return pair;
     }
@@ -37,7 +35,6 @@ public class DaySchedule {
         if (pairs.stream().noneMatch(p)) throw new EntityNotFoundException("Pair with id " + pairId + " doesn't exist");
         return pairs.stream().filter(p).collect(Collectors.toList()).get(0);
     }
-
 
     public void removePair (long pairId) throws EntityNotFoundException{
         Pair pair = findPair(pairId);

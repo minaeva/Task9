@@ -9,7 +9,5 @@ public class Auditorium {
     private int number;
     private long facultyID;
 
-    public Auditorium(){}
-
     public Auditorium(int number){ this.number = number;}
 }

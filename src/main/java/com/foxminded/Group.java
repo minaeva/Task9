@@ -3,7 +3,6 @@ package com.foxminded;
 import lombok.Data;
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @Data
 public class Group {
@@ -12,11 +11,14 @@ public class Group {
     private String name;
     private long facultyId;
     private List<StudentCard> students = new ArrayList<>();
-
-    public Group(){}
+    private Journal journal;
 
     public Group(String name){
         this.name = name;
+        Journal journal = new Journal();
+        journal.setGroupId(this.id);
+        journal.setFacultyId(this.getFacultyId());
+        this.journal = journal;
     }
 
     public StudentCard takeStudent(StudentCard studentCard){
@@ -27,8 +29,8 @@ public class Group {
 
     public StudentCard findStudent(long studentId) throws EntityNotFoundException{
         Predicate<StudentCard> p = s -> s.getId() == studentId;
-        if (students.stream().noneMatch(p)) throw new EntityNotFoundException("Student with id " + studentId + " doesn't exist");
-        return students.stream().filter(p).collect(Collectors.toList()).get(0);
+        validateIfExists(students, p, "Student", studentId);
+        return students.stream().filter(p).findFirst().get();
     }
 
     public void dismissStudent(long studentId) throws EntityNotFoundException{
@@ -41,26 +43,15 @@ public class Group {
         return students;
     }
 
+    //???
     public void dismantle(){
         for (StudentCard student: students) {
             student.setGroupId(0);
         }
     }
 
-    @Override
-    public boolean equals(Object groupToCheck){
-        if (groupToCheck == this) return true;
-        if (!(groupToCheck instanceof Group)) return false;
-        Group group = (Group) groupToCheck;
-        return group.getName().equals(name) && group.getId() == id;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = 17;
-        result = 31 * result + name.hashCode();
-        result = 31 * result + (int)id;
-        result = 31 * result + (int)facultyId;
-        return result;
+    private <T> void validateIfExists(List<T> list, Predicate<T> predicate, String objectName, long id) throws EntityNotFoundException{
+        if (list.stream().noneMatch(predicate))
+            throw new EntityNotFoundException(objectName + " with id " + id + " doesn't exist");
     }
 }

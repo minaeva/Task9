@@ -4,7 +4,6 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @Data
 public class Journal {
@@ -19,15 +18,21 @@ public class Journal {
 
     public Section createSection(Subject subject){
         Section section = new Section(subject);
-    //    section.setJournalId(this.id);
+    //?    section.setJournalId(this.id);
         sections.add(section);
         return section;
     }
 
     public Section findSection(long sectionId) throws EntityNotFoundException{
-        Predicate<Section> p = s -> s.getId() == sectionId;
-        if (sections.stream().noneMatch(p)) throw new EntityNotFoundException("Section with id " + sectionId + " doesn't exist");
-        return sections.stream().filter(p).collect(Collectors.toList()).get(0);
+        Predicate<Section> p = section -> section.getId() == sectionId;
+        validateIfExists(sections, p, "Section", sectionId);
+        return sections.stream().filter(p).findFirst().get();
+    }
+
+    public Section findSection(Subject subject) throws EntityNotFoundException{
+        Predicate<Section> p = s -> s.getSubject() == subject;
+        validateIfExists(sections, p, "Subject", subject.getId());
+        return sections.stream().filter(p).findFirst().get();
     }
 
     public void removeSection(long sectionId) throws EntityNotFoundException{
@@ -50,7 +55,14 @@ public class Journal {
         return result/counter;
     }
 
-    public void addMark(StudentCard studentCard, Subject subject, int mark){
-        //todo
+    public void addMark(StudentCard studentCard, Subject subject, byte mark) throws EntityNotFoundException, ValidationException{
+        Section section =  findSection(subject);
+        section.addMark(studentCard, mark);
     }
+
+    private <T> void validateIfExists(List<T> list, Predicate<T> predicate, String objectName, long id) throws EntityNotFoundException{
+        if (list.stream().noneMatch(predicate))
+            throw new EntityNotFoundException(objectName + " with id " + id + " doesn't exist");
+    }
+
 }

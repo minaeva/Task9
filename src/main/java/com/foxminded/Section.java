@@ -4,7 +4,6 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @Data
 public class Section {
@@ -13,8 +12,6 @@ public class Section {
     private Subject subject;
     private long journalId;
     private List<StudentMarks> studentMarks = new ArrayList<>();
-
-    public Section(){}
 
     public Section(Subject subject){
         this.subject = subject;
@@ -29,13 +26,13 @@ public class Section {
     public StudentMarks findStudentMarks(long marksId) throws EntityNotFoundException{
         Predicate<StudentMarks> p = m -> m.getId() == marksId;
         if (studentMarks.stream().noneMatch(p)) throw new EntityNotFoundException("Student marks with id " + marksId + " doesn't exist");
-        return studentMarks.stream().filter(p).collect(Collectors.toList()).get(0);
+        return studentMarks.stream().filter(p).findFirst().get();
     }
 
     public StudentMarks findStudentMarks(StudentCard studentCard) throws EntityNotFoundException{
         Predicate<StudentMarks> p = m -> m.getStudentCard() == studentCard;
         if (studentMarks.stream().noneMatch(p)) throw new EntityNotFoundException("Marks for student " + studentCard.getName() + " don't exist");
-        return studentMarks.stream().filter(p).collect(Collectors.toList()).get(0);
+        return studentMarks.stream().filter(p).findFirst().get();
     }
 
     public void removeStudentMarks(long marksId) throws EntityNotFoundException{

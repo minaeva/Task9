@@ -11,8 +11,6 @@ public class Pair {
     private LocalTime startTime;
     private Lesson lesson;
 
-    public Pair(){}
-
     public Pair(LocalTime startTime){
         this.startTime = startTime;
     }

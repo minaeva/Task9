@@ -15,8 +15,6 @@ public class MentorCard {
     private long facultyId;
     private List<Journal> journals = new ArrayList<>();
 
-    public MentorCard(){}
-
     public MentorCard(String name){
         this.name = name;
     }
@@ -25,7 +23,7 @@ public class MentorCard {
         System.out.println("Permission received. Mentor " + this.name + " can now be fired");
     }
 
-    public void addMark(StudentCard studentCard, Subject subject, int mark) throws EntityNotFoundException{
+    public void addMark(StudentCard studentCard, Subject subject, byte mark) throws ValidationException, EntityNotFoundException{
         long groupId = studentCard.getGroupId();
         Journal journal = findJournal(groupId);
         journal.addMark(studentCard, subject, mark);

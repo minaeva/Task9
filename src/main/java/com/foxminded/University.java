@@ -2,7 +2,6 @@ package com.foxminded;
 
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import lombok.Data;
 
 @Data
@@ -13,9 +12,9 @@ public class University implements Cloneable {
     private List<Faculty> faculties = new ArrayList<>();
 
     public Faculty createFaculty(String facultyName) throws ValidationException{
-        Predicate<Faculty> p = f -> f.getName() == facultyName;
-        if (faculties.stream().anyMatch(p)) throw new ValidationException("Faculty with name " + facultyName + " already exists");
-        if (facultyName == "") throw new ValidationException("Name cannot be empty");
+        if (facultyName.equals("")) throw new ValidationException("Name cannot be empty");
+        Predicate<Faculty> p = faculty -> faculty.getName() == facultyName;
+        validateIfNew(faculties, p, "Faculty", name);
         Faculty newFaculty = new Faculty(facultyName);
         faculties.add(newFaculty);
         return newFaculty;
@@ -23,9 +22,7 @@ public class University implements Cloneable {
 
     public Faculty updateFaculty(long facultyId, String newName) throws EntityNotFoundException{
         Faculty faculty = findFaculty(facultyId);
-        faculties.remove(faculty);
         faculty.setName(newName);
-        faculties.add(faculty);
         return faculty;
     }
 
@@ -35,9 +32,9 @@ public class University implements Cloneable {
     }
 
     public Faculty findFaculty(long facultyId) throws EntityNotFoundException{
-        Predicate<Faculty> p = f -> f.getId() == facultyId;
-        if (!faculties.stream().anyMatch(p)) throw new EntityNotFoundException("Faculty with id " + facultyId + " doesn't exist");
-        return faculties.stream().filter(p).collect(Collectors.toList()).get(0);
+        Predicate<Faculty> p = faculty -> faculty.getId() == facultyId;
+        validateIfExists(faculties, p, "Faculty", facultyId);
+        return faculties.stream().filter(p).findFirst().get();
     }
 
     public List<Faculty> findFaculties(){
@@ -54,32 +51,13 @@ public class University implements Cloneable {
         return result/counter;
     }
 
-   @Override
-    public boolean equals(Object universityToCheck) {
-       if (universityToCheck == this) return true;
-       if (!(universityToCheck instanceof University)) return false;
-       University university = (University) universityToCheck;
-       return university.getName().equals(name) && (university.getId() == id);
-   }
-
-       @Override
-       public int hashCode() {
-           int result = 17;
-           result = 31 * result + name.hashCode();
-           result = 31 * result + (int)id;
-           return result;
-       }
-
-    @Override
-    public University clone() throws CloneNotSupportedException {
-        try {
-            return (University) super.clone();
-        } catch (ClassCastException e) {
-            University newUniversity = new University();
-            newUniversity.setId(this.id);
-            newUniversity.setName(this.name);
-            return newUniversity;
-        }
+    private <T> void validateIfNew(List<T> list, Predicate<T> predicate, String objectName, String name) throws ValidationException{
+        if (list.stream().anyMatch(predicate))
+            throw new ValidationException(objectName + " with name " + name + " already exists");
     }
 
+    private <T> void validateIfExists(List<T> list, Predicate<T> predicate, String objectName, long id) throws EntityNotFoundException{
+        if (list.stream().noneMatch(predicate))
+            throw new EntityNotFoundException(objectName + " with id " + id + " doesn't exist");
+    }
 }

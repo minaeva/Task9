@@ -2,7 +2,6 @@ package com.foxminded;
 
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import lombok.Data;
 
 @Data
@@ -12,7 +11,6 @@ public class Faculty implements Cloneable {
     private String name;
     private long universityId;
     private List<Group> groups = new ArrayList<>();
-    private List<StudentCard> students = new ArrayList<>();
     private List<MentorCard> mentors = new ArrayList<>();
     private List<Subject> subjects = new ArrayList<>();
     private List<Auditorium> auditoria = new ArrayList<>();
@@ -23,29 +21,10 @@ public class Faculty implements Cloneable {
         this.name = name;
     }
 
-    public void dismantle() {
-        for (Group group : groups) {
-            group.dismantle();
-        }
-        groups =  null;
-        for (StudentCard student : students) {
-            student.dismiss();
-        }
-        students = null;
-        for (MentorCard mentor: mentors){
-            mentor.fire();
-        }
-        mentors = null;
-        for (Journal journal: journals){
-            journal.dismantle();
-        }
-        journals = null;
-    }
-
     public Group createGroup(String groupName) throws ValidationException{
-        Predicate<Group> p = g -> g.getName().equals(groupName);
-        if (groups.stream().anyMatch(p)) throw new ValidationException("Group with name " + groupName + " already exists");
         if (groupName.equals("")) throw new ValidationException("Name cannot be empty");
+        Predicate<Group> p = group -> group.getName().equals(groupName);
+        validateIfNew(groups, p, "Group", groupName);
         Group newGroup = new Group(groupName);
         groups.add(newGroup);
         return newGroup;
@@ -53,9 +32,7 @@ public class Faculty implements Cloneable {
 
     public Group updateGroup(long groupId, String newName) throws EntityNotFoundException {
         Group group = findGroup(groupId);
-        groups.remove(group);
         group.setName(newName);
-        groups.add(group);
         return group;
     }
 
@@ -65,53 +42,58 @@ public class Faculty implements Cloneable {
     }
 
     public Group findGroup(long groupId) throws EntityNotFoundException{
-        Predicate<Group> p = g -> g.getId() == groupId;
-        if (groups.stream().noneMatch(p)) throw new EntityNotFoundException("Group with id " + groupId + " doesn't exist");
-        return groups.stream().filter(p).collect(Collectors.toList()).get(0);
+        Predicate<Group> p = group -> group.getId() == groupId;
+        validateIfExists(groups, p, "Group", groupId);
+        return groups.stream().filter(p).findFirst().get();
     }
 
     public List<Group> findGroups() {
         return groups;
     }
 
- /*   public StudentCard takeStudent(String studentName) throws ValidationException{
-        if (studentName.equals("")) throw new ValidationException("Name cannot be empty");
-        StudentCard newStudent = new StudentCard(studentName);
-        students.add(newStudent);
-        return newStudent;
-    }
-    */
-
     public StudentCard takeStudent(String studentName, long groupId) throws EntityNotFoundException, ValidationException{
         if (studentName.equals("")) throw new ValidationException("Name cannot be empty");
         Group group = findGroup(groupId);
         StudentCard newStudent = new StudentCard(studentName);
         group.takeStudent(newStudent);
-        students.add(newStudent);
         return newStudent;
     }
 
     public StudentCard findStudent(long studentId) throws EntityNotFoundException{
-        Predicate<StudentCard> p = s -> s.getId() == studentId;
-        if (students.stream().noneMatch(p)) throw new EntityNotFoundException("Student with id " + studentId + " doesn't exist");
-        return students.stream().filter(p).collect(Collectors.toList()).get(0);
+        List<StudentCard> students = new ArrayList<>();
+        for (Group group: groups){
+            students.addAll(group.getStudents());
+        }
+        Predicate<StudentCard> p = student -> student.getId() == studentId;
+        validateIfExists(students, p, "Student", studentId);
+        return students.stream().filter(p).findFirst().get();
     }
 
     public StudentCard changeStudentGroup(long studentId, long newGroupId) throws EntityNotFoundException{
         StudentCard student = findStudent(studentId);
-        students.remove(student);
         student.setGroupId(newGroupId);
-        students.add(student);
         return student;
     }
 
     public List<StudentCard> findStudents(){
+        List<StudentCard> students = new ArrayList<>();
+        for (Group group: groups){
+            students.addAll(group.getStudents());
+        }
         return students;
     }
 
     public void dismissStudent(long studentId) throws EntityNotFoundException{
-        StudentCard student = findStudent(studentId);
-        students.remove(student);
+        for (Group group: groups){
+            try {
+                List<StudentCard> students = new ArrayList<>();
+                students.addAll(group.getStudents());
+                StudentCard student = findStudent(studentId);
+                group.dismissStudent(student.getId());
+                break;
+            }
+            catch (EntityNotFoundException e){}
+        }
     }
 
     public Schedule createSchedule() {
@@ -120,8 +102,8 @@ public class Faculty implements Cloneable {
         return newSchedule;
     }
 
-    public void removeSchedule(long scheduleId) throws EntityNotFoundException{
-        if (this.schedule == null) throw new EntityNotFoundException("No schedule exists");
+    public void removeSchedule(long scheduleId) throws ValidationException, EntityNotFoundException{
+        if (this.schedule == null) throw new ValidationException("NULL schedule is not accepted");
         if (this.schedule.getId() != scheduleId) throw new EntityNotFoundException("Schedule with id " + scheduleId + " doesn't exist");
         this.schedule = null;
     }
@@ -134,9 +116,9 @@ public class Faculty implements Cloneable {
     }
 
     public MentorCard findMentor(long mentorId) throws EntityNotFoundException{
-        Predicate<MentorCard> p = m -> m.getId() == mentorId;
-        if (mentors.stream().noneMatch(p)) throw new EntityNotFoundException("Mentor with id " + mentorId + " doesn't exist");
-        return mentors.stream().filter(p).collect(Collectors.toList()).get(0);
+        Predicate<MentorCard> p = mentor -> mentor.getId() == mentorId;
+        validateIfExists(mentors, p, "Mentor", mentorId);
+        return mentors.stream().filter(p).findFirst().get();
     }
 
     public List<MentorCard> findMentors(){
@@ -148,24 +130,14 @@ public class Faculty implements Cloneable {
         mentors.remove(mentor);
     }
 
-    public Journal createJournal(long groupId){
-        Journal journal = new Journal();
-        journal.setGroupId(groupId);
-        journal.setFacultyId(this.id);
-        journals.add(journal);
-        return journal;
+    private <T> void validateIfNew(List<T> list, Predicate<T> predicate, String objectName, String name) throws ValidationException{
+        if (list.stream().anyMatch(predicate))
+            throw new ValidationException(objectName + " with name " + name + " already exists");
     }
 
-    public Journal findJournal(long journalId) throws EntityNotFoundException{
-        Predicate<Journal> p = j -> j.getId() == journalId;
-        if (journals.stream().noneMatch(p)) throw new EntityNotFoundException("Journal with id " + journalId + " doesn't exist");
-        return journals.stream().filter(p).collect(Collectors.toList()).get(0);
-    }
-
-    public void removeJournal(long journalId) throws EntityNotFoundException{
-        Journal journal = findJournal(journalId);
-        journal.dismantle();
-        journals.remove(journal);
+    private <T> void validateIfExists(List<T> list, Predicate<T> predicate, String objectName, long id) throws EntityNotFoundException{
+        if (list.stream().noneMatch(predicate))
+            throw new EntityNotFoundException(objectName + " with id " + id + " doesn't exist");
     }
 
     public double calculateAverageMark() {
@@ -177,34 +149,5 @@ public class Faculty implements Cloneable {
             counter++;
         }
         return result/counter;
-    }
-
-    @Override
-    public boolean equals(Object facultyToCheck) {
-        if (facultyToCheck == this) return true;
-        if (!(facultyToCheck instanceof Faculty)) return false;
-        Faculty faculty = (Faculty) facultyToCheck;
-        return faculty.getName().equals(name) && (faculty.getId() == id);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = 17;
-        result = 31 * result + name.hashCode();
-        result = 31 * result + (int)id;
-        result = 31 * result + (int)universityId;
-        return result;
-    }
-
-    @Override
-    public Faculty clone() throws CloneNotSupportedException {
-        try {
-            return (Faculty) super.clone();
-        } catch (ClassCastException e) {
-            Faculty clonedFaculty = new Faculty(this.name);
-            clonedFaculty.setId(this.id);
-            clonedFaculty.setUniversityId(this.universityId);
-            return clonedFaculty;
-            }
     }
 }

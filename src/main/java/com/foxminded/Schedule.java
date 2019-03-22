@@ -4,7 +4,6 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 @Data
 public class Schedule {
@@ -27,7 +26,12 @@ public class Schedule {
 
     public DaySchedule findDaySchedule(long dayScheduleId) throws EntityNotFoundException{
         Predicate<DaySchedule> p = d -> d.getId() == dayScheduleId;
-        if (daySchedules.stream().noneMatch(p)) throw new EntityNotFoundException("Day schedule with id " + dayScheduleId + " doesn't exist");
-        return daySchedules.stream().filter(p).collect(Collectors.toList()).get(0);
+        validateIfExists(daySchedules, p, "Day schedule",dayScheduleId );
+        return daySchedules.stream().filter(p).findFirst().get();
+    }
+
+    private <T> void validateIfExists(List<T> list, Predicate<T> predicate, String objectName, long id) throws EntityNotFoundException{
+        if (list.stream().noneMatch(predicate))
+            throw new EntityNotFoundException(objectName + " with id " + id + " doesn't exist");
     }
 }
