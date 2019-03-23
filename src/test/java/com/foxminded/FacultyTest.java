@@ -14,7 +14,7 @@ public class FacultyTest {
         int size = faculty.findGroups().size();
         assertEquals(1, size);
 
-        long id = IdGenerator.newId();
+        long id = Helper.generateNewId();
         createdGroup.setId(id);
         Group foundGroup = faculty.findGroup(id);
         assertEquals(createdGroup, foundGroup);
@@ -25,7 +25,7 @@ public class FacultyTest {
         University university = new University();
         Faculty faculty = university.createFaculty("F1");
         Group createdGroup = faculty.createGroup("G1");
-        long id = IdGenerator.newId();
+        long id = Helper.generateNewId();
         createdGroup.setId(id);
         faculty.updateGroup(id, "NEW");
 
@@ -40,7 +40,7 @@ public class FacultyTest {
         University university = new University();
         Faculty faculty = university.createFaculty("Faculty");
         Group group = faculty.createGroup("Group");
-        long groupId = IdGenerator.newId();
+        long groupId = Helper.generateNewId();
         group.setId(groupId);
 
         Group foundGroup = faculty.findGroup(groupId);
@@ -55,7 +55,7 @@ public class FacultyTest {
         int size = faculty.findGroups().size();
         assertEquals(1, size);
 
-        long groupId = IdGenerator.newId();
+        long groupId = Helper.generateNewId();
         group.setId(groupId);
         faculty.dismantleGroup(groupId);
         size = faculty.findGroups().size();
@@ -65,11 +65,16 @@ public class FacultyTest {
     @Test
     public void takeStudent() throws ValidationException, EntityNotFoundException{
         University university = new University();
-        Faculty createdFaculty = university.createFaculty("Faculty");
-        StudentCard takenStudent = createdFaculty.takeStudent("John");
-        long id = IdGenerator.newId();
-        takenStudent.setId(id);
-        StudentCard foundStudent = createdFaculty.findStudent(id);
+        Faculty faculty = university.createFaculty("Faculty");
+        Group group = faculty.createGroup("Group");
+        long groupId = Helper.generateNewId();
+        group.setId(groupId);
+
+        StudentCard takenStudent = faculty.takeStudent("John", groupId);
+        long studentId = Helper.generateNewId();
+        takenStudent.setId(studentId);
+
+        StudentCard foundStudent = group.findStudent(studentId);
         assertEquals(takenStudent, foundStudent);
     }
 
@@ -78,14 +83,17 @@ public class FacultyTest {
         University university = new University();
         Faculty faculty = university.createFaculty("F1");
         Group group = faculty.createGroup("G1");
-        StudentCard student = faculty.takeStudent("Igor");
-        long newGroupId = IdGenerator.newId();
+        long groupId = Helper.generateNewId();
+        group.setId(groupId);
+
+        StudentCard student = faculty.takeStudent("Igor", groupId);
+        long newGroupId = Helper.generateNewId();
         group.setId(newGroupId);
-        long studentId = IdGenerator.newId();
+        long studentId = Helper.generateNewId();
         student.setId(studentId);
         faculty.changeStudentGroup(studentId, newGroupId);
 
-        StudentCard foundStudent = faculty.findStudent(studentId);
+        StudentCard foundStudent = group.findStudent(studentId);
         assertEquals(newGroupId, foundStudent.getGroupId());
     }
 
@@ -93,11 +101,15 @@ public class FacultyTest {
     public void findStudent() throws ValidationException, EntityNotFoundException{
         University university = new University();
         Faculty faculty = university.createFaculty("Faculty");
-        StudentCard student = faculty.takeStudent("Madonna");
-        long studentId = IdGenerator.newId();
+        Group group = faculty.createGroup("G1");
+        long groupId = Helper.generateNewId();
+        group.setId(groupId);
+
+        StudentCard student = faculty.takeStudent("Madonna", groupId);
+        long studentId = Helper.generateNewId();
         student.setId(studentId);
 
-        StudentCard foundStudent = faculty.findStudent(studentId);
+        StudentCard foundStudent = group.findStudent(studentId);
         assertEquals("Madonna", foundStudent.getName());
     }
 
@@ -105,11 +117,15 @@ public class FacultyTest {
     public void dismissStudent() throws ValidationException, EntityNotFoundException{
         University university = new University();
         Faculty faculty = university.createFaculty("Faculty");
-        StudentCard takenStudent = faculty.takeStudent("John");
+        Group group = faculty.createGroup("G1");
+        long groupId = Helper.generateNewId();
+        group.setId(groupId);
+
+        StudentCard takenStudent = faculty.takeStudent("John", groupId);
         int size = faculty.findStudents().size();
         assertEquals(1, size);
 
-        long studentId = IdGenerator.newId();
+        long studentId = Helper.generateNewId();
         takenStudent.setId(studentId);
         faculty.dismissStudent(studentId);
         size = faculty.findStudents().size();
@@ -121,18 +137,18 @@ public class FacultyTest {
         University university = new University();
         Faculty faculty = university.createFaculty("Faculty");
         Schedule schedule =  faculty.createSchedule();
-        long scheduleId = IdGenerator.newId();
+        long scheduleId = Helper.generateNewId();
         schedule.setId(scheduleId);
 
         assertEquals(scheduleId, faculty.getSchedule().getId());
     }
 
-    @Test(expected = EntityNotFoundException.class)
+    @Test(expected = ValidationException.class)
     public void removeSchedule() throws ValidationException, EntityNotFoundException{
         University university = new University();
         Faculty faculty = university.createFaculty("Faculty");
         Schedule schedule =  faculty.createSchedule();
-        long scheduleId = IdGenerator.newId();
+        long scheduleId = Helper.generateNewId();
         schedule.setId(scheduleId);
 
         faculty.removeSchedule(scheduleId);
@@ -153,7 +169,7 @@ public class FacultyTest {
         University university = new University();
         Faculty faculty = university.createFaculty("Faculty");
         MentorCard mentor = faculty.hireMentor("Plank");
-        long mentorId = IdGenerator.newId();
+        long mentorId = Helper.generateNewId();
         mentor.setId(mentorId);
 
         MentorCard foundMentor = faculty.findMentor(mentorId);
@@ -168,12 +184,77 @@ public class FacultyTest {
         int size = faculty.findMentors().size();
         assertEquals(1, size);
 
-        long mentorId = IdGenerator.newId();
+        long mentorId = Helper.generateNewId();
         mentor.setId(mentorId);
 
         faculty.fireMentor(mentorId);
         size = faculty.findMentors().size();
         assertEquals(0, size);
+    }
+
+    @Test
+    public void addAuditorium() throws ValidationException{
+        University university = new University();
+        Faculty faculty = university.createFaculty("Faculty");
+        faculty.addAuditorium(123);
+        faculty.addAuditorium(124);
+        int size = faculty.findAuditoria().size();
+        assertEquals(2, size);
+    }
+
+    @Test
+    public void findAuditorium() throws ValidationException, EntityNotFoundException{
+        University university = new University();
+        Faculty faculty = university.createFaculty("Faculty");
+        Auditorium auditorium = faculty.addAuditorium(123);
+        long auditoriumId = Helper.generateNewId();
+        auditorium.setId(auditoriumId);
+
+        Auditorium foundAuditorium = faculty.findAuditorium(auditoriumId);
+        assertEquals(123, foundAuditorium.getNumber());
+    }
+
+    @Test
+    public void findAuditoria() throws ValidationException{
+        University university = new University();
+        Faculty faculty = university.createFaculty("Faculty");
+        faculty.addAuditorium(123);
+        faculty.addAuditorium(234);
+        faculty.addAuditorium(345);
+        int size = faculty.findAuditoria().size();
+        assertEquals(3, size);
+    }
+
+    @Test
+    public void addSubject() throws ValidationException{
+        University university = new University();
+        Faculty faculty = university.createFaculty("Faculty");
+        faculty.addSubject("Math");
+        int size = faculty.findSubjects().size();
+        assertEquals(1, size);
+    }
+
+    @Test
+    public void findSubject() throws ValidationException, EntityNotFoundException{
+        University university = new University();
+        Faculty faculty = university.createFaculty("Faculty");
+        Subject subject = faculty.addSubject("Math");
+        long subjectId = Helper.generateNewId();
+        subject.setId(subjectId);
+
+        Subject foundSubject = faculty.findSubject(subjectId);
+        assertEquals("Math", foundSubject.getName());
+    }
+
+    @Test
+    public void findSubjects() throws ValidationException{
+        University university = new University();
+        Faculty faculty = university.createFaculty("Faculty");
+        faculty.addSubject("English");
+        faculty.addSubject("French");
+        faculty.addSubject("Japan");
+        int size = faculty.findSubjects().size();
+        assertEquals(3, size);
     }
 
     @Test

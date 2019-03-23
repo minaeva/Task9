@@ -29,7 +29,7 @@ public class UniversityTest {
     public void updateFaculty() throws ValidationException, EntityNotFoundException{
         University university = new University();
         Faculty faculty1 = university.createFaculty("F1");
-        long id = IdGenerator.newId();
+        long id = Helper.generateNewId();
         faculty1.setId(id);
         university.updateFaculty(id, "F1NEW");
 
@@ -47,7 +47,7 @@ public class UniversityTest {
     @Test(expected = EntityNotFoundException.class)
     public void updateFaculty_notExists_throwsException() throws EntityNotFoundException{
         University university = new University();
-        long id = IdGenerator.newId();
+        long id = Helper.generateNewId();
         university.updateFaculty(id, "NEW");
     }
 
@@ -55,7 +55,7 @@ public class UniversityTest {
     public void dismantleFaculty() throws EntityNotFoundException, ValidationException{
         University university = new University();
         Faculty createdFaculty = university.createFaculty("IASA");
-        long id = IdGenerator.newId();
+        long id = Helper.generateNewId();
         createdFaculty.setId(id);
         university.dismantleFaculty(createdFaculty.getId());
         university.findFaculty(createdFaculty.getId());
@@ -64,7 +64,7 @@ public class UniversityTest {
     @Test(expected = EntityNotFoundException.class)
     public void dismantleFaculty_notExists_throwsException() throws EntityNotFoundException{
         University university = new University();
-        long id = IdGenerator.newId();
+        long id = Helper.generateNewId();
         university.updateFaculty(id, "NEW");
     }
 
@@ -72,7 +72,7 @@ public class UniversityTest {
     public void findFaculty() throws ValidationException, EntityNotFoundException{
         University university = new University();
         Faculty createdFaculty = university.createFaculty("CMP");
-        long id = IdGenerator.newId();
+        long id = Helper.generateNewId();
         createdFaculty.setId(id);
         Faculty foundFaculty = university.findFaculty(createdFaculty.getId());
         assertEquals(createdFaculty.getName(), foundFaculty.getName());

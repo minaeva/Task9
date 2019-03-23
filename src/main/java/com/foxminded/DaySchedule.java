@@ -4,7 +4,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import lombok.Data;
 
 @Data
@@ -32,8 +31,7 @@ public class DaySchedule {
 
     public Pair findPair(long pairId) throws EntityNotFoundException{
         Predicate<Pair> p = pr -> pr.getId() == pairId;
-        if (pairs.stream().noneMatch(p)) throw new EntityNotFoundException("Pair with id " + pairId + " doesn't exist");
-        return pairs.stream().filter(p).collect(Collectors.toList()).get(0);
+        return Helper.validateIfExists(pairs, p, "Pair",pairId );
     }
 
     public void removePair (long pairId) throws EntityNotFoundException{

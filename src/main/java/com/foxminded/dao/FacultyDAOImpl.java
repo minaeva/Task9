@@ -3,7 +3,7 @@ package com.foxminded.dao;
 import com.foxminded.EntityNotFoundException;
 import com.foxminded.ValidationException;
 import com.foxminded.Faculty;
-import com.foxminded.IdGenerator;
+import com.foxminded.Helper;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -18,10 +18,10 @@ public class FacultyDAOImpl implements FacultyDAO{
         for (long id: faculties.keySet()){
             if (id == faculty.getId()) throw new ValidationException("Faculty with Id " + faculty.getId() + " already exists");
         }
-        long id = IdGenerator.newId();
+        long id = Helper.generateNewId();
         faculty.setId(id);
         faculties.put(id, faculty);
-        return faculty.clone();
+        return faculty;//.clone();
     }
 
     public Faculty update(Faculty faculty, String newName) throws ValidationException, EntityNotFoundException, CloneNotSupportedException {
@@ -30,7 +30,7 @@ public class FacultyDAOImpl implements FacultyDAO{
         if (!faculties.containsValue(faculty)) throw new EntityNotFoundException("Faculty " + faculty.getName() + " doesn't exist");
         faculty.setName(newName);
         faculties.put(faculty.getId(), faculty);
-        return faculty.clone();
+        return faculty;//.clone();
     }
 
     public void delete(long id) throws ValidationException, EntityNotFoundException {
@@ -42,7 +42,7 @@ public class FacultyDAOImpl implements FacultyDAO{
     public Faculty findById(long id) throws ValidationException, EntityNotFoundException, CloneNotSupportedException{
         if (id == 0) throw new ValidationException("Id is not");
         if (!faculties.containsKey(id)) throw new EntityNotFoundException("Faculty with id " + id + " doesn't exist");
-        return faculties.get(id).clone();
+        return faculties.get(id);//.clone();
     }
 
     public Faculty findByIdAndUniversityId(long facultyId, long universityId) throws ValidationException, EntityNotFoundException, CloneNotSupportedException{
@@ -50,7 +50,7 @@ public class FacultyDAOImpl implements FacultyDAO{
         if (!faculties.containsKey(facultyId)) throw new EntityNotFoundException("Faculty with id " + facultyId + " doesn't exist");
         if (!(faculties.get(facultyId).getUniversityId() == universityId)) throw new EntityNotFoundException("Faculty with university Id " + universityId + " doesn't exist");
         Faculty foundFaculty = faculties.get(facultyId);
-        return foundFaculty.clone();
+        return foundFaculty;//.clone();
     }
 
     public List<Faculty> findByUniversityId(long id) throws ValidationException{

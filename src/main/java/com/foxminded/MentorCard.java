@@ -30,9 +30,8 @@ public class MentorCard {
     }
 
     public Journal findJournal(long groupId) throws EntityNotFoundException{
-        Predicate<Journal> p = j -> j.getGroupId() == groupId;
+        Predicate<Journal> p = journal -> journal.getGroupId() == groupId;
         if (journals.stream().noneMatch(p)) throw new EntityNotFoundException("Journal for group with id " + groupId + " doesn't exist");
-        return journals.stream().filter(p).collect(Collectors.toList()).get(0);
+        return journals.stream().filter(p).findFirst().get();
     }
-
 }

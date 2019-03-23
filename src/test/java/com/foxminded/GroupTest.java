@@ -2,7 +2,6 @@ package com.foxminded;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
-import java.util.List;
 
 public class GroupTest {
 
@@ -10,11 +9,11 @@ public class GroupTest {
     public void takeStudent() throws ValidationException, EntityNotFoundException{
         University university = new University();
         Faculty faculty = university.createFaculty("Faculty");
-        StudentCard student = faculty.takeStudent("John");
         Group group = faculty.createGroup("Group");
+        StudentCard student = new StudentCard("Ted");
         StudentCard takenStudent = group.takeStudent(student);
 
-        long id = IdGenerator.newId();
+        long id = Helper.generateNewId();
         takenStudent.setId(id);
         StudentCard foundStudent = group.findStudent(id);
         assertEquals(takenStudent, foundStudent);
@@ -25,12 +24,15 @@ public class GroupTest {
         University university = new University();
         Faculty faculty = university.createFaculty("Faculty");
         Group group = faculty.createGroup("Group");
-        StudentCard student = faculty.takeStudent("Madonna");
+        long groupId = Helper.generateNewId();
+        group.setId(groupId);
+
+        StudentCard student = new StudentCard("Jed");
         StudentCard takenStudent = group.takeStudent(student);
-        long studentId = IdGenerator.newId();
+        long studentId = Helper.generateNewId();
         takenStudent.setId(studentId);
 
-        StudentCard foundStudent = faculty.findStudent(studentId);
+        StudentCard foundStudent = group.findStudent(studentId);
         assertEquals(takenStudent, foundStudent);
     }
 
@@ -39,29 +41,34 @@ public class GroupTest {
         University university = new University();
         Faculty faculty = university.createFaculty("Faculty");
         Group group = faculty.createGroup("Group");
-        StudentCard student = faculty.takeStudent("Bach");
-        StudentCard takenStudent =  group.takeStudent(student);
+        long groupId = Helper.generateNewId();
+        group.setId(groupId);
+
+        StudentCard student = faculty.takeStudent("Bach", groupId);
+
         int size = group.findStudents().size();
         assertEquals(1, size);
 
-        long studentId = IdGenerator.newId();
-        takenStudent.setId(studentId);
+        long studentId = Helper.generateNewId();
+        student.setId(studentId);
         group.dismissStudent(studentId);
         size = group.findStudents().size();
         assertEquals(0, size);
     }
 
-    private boolean areListsEqual(List<StudentCard> first, List<StudentCard> second) {
-        if (first.size() != second.size()) return false;
-        int equalCounter = 0;
-        for (StudentCard s1: first) {
-            for (StudentCard s2: second){
-                if ((s1.getName().equals(s2.getName())) && (s1.getId() == s2.getId()))
-                    equalCounter++;
-            }
-        }
-        return equalCounter == first.size();
+    @Test
+    public void findStudents() throws ValidationException, EntityNotFoundException{
+        University university = new University();
+        Faculty faculty = university.createFaculty("Faculty");
+        Group group = faculty.createGroup("Group");
+        StudentCard student1 = new StudentCard("Jed");
+        group.takeStudent(student1);
+        StudentCard student2 = new StudentCard("Jed");
+        group.takeStudent(student2);
+        StudentCard student3 = new StudentCard("Jed");
+        group.takeStudent(student3);
+
+        int size = group.findStudents().size();
+        assertEquals(3, size);
     }
-
-
 }

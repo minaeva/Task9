@@ -14,7 +14,7 @@ public class University implements Cloneable {
     public Faculty createFaculty(String facultyName) throws ValidationException{
         if (facultyName.equals("")) throw new ValidationException("Name cannot be empty");
         Predicate<Faculty> p = faculty -> faculty.getName() == facultyName;
-        validateIfNew(faculties, p, "Faculty", name);
+        Helper.validateIfNew(faculties, p, "Faculty", name);
         Faculty newFaculty = new Faculty(facultyName);
         faculties.add(newFaculty);
         return newFaculty;
@@ -33,7 +33,7 @@ public class University implements Cloneable {
 
     public Faculty findFaculty(long facultyId) throws EntityNotFoundException{
         Predicate<Faculty> p = faculty -> faculty.getId() == facultyId;
-        validateIfExists(faculties, p, "Faculty", facultyId);
+        Helper.validateIfExists(faculties, p, "Faculty", facultyId);
         return faculties.stream().filter(p).findFirst().get();
     }
 
@@ -49,15 +49,5 @@ public class University implements Cloneable {
             counter++;
         }
         return result/counter;
-    }
-
-    private <T> void validateIfNew(List<T> list, Predicate<T> predicate, String objectName, String name) throws ValidationException{
-        if (list.stream().anyMatch(predicate))
-            throw new ValidationException(objectName + " with name " + name + " already exists");
-    }
-
-    private <T> void validateIfExists(List<T> list, Predicate<T> predicate, String objectName, long id) throws EntityNotFoundException{
-        if (list.stream().noneMatch(predicate))
-            throw new EntityNotFoundException(objectName + " with id " + id + " doesn't exist");
     }
 }

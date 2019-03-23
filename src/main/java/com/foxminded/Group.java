@@ -15,10 +15,8 @@ public class Group {
 
     public Group(String name){
         this.name = name;
-        Journal journal = new Journal();
-        journal.setGroupId(this.id);
-        journal.setFacultyId(this.getFacultyId());
-        this.journal = journal;
+        Journal createdJournal = new Journal();
+        this.journal = createdJournal;
     }
 
     public StudentCard takeStudent(StudentCard studentCard){
@@ -29,7 +27,7 @@ public class Group {
 
     public StudentCard findStudent(long studentId) throws EntityNotFoundException{
         Predicate<StudentCard> p = s -> s.getId() == studentId;
-        validateIfExists(students, p, "Student", studentId);
+        Helper.validateIfExists(students, p, "Student", studentId);
         return students.stream().filter(p).findFirst().get();
     }
 
@@ -48,10 +46,5 @@ public class Group {
         for (StudentCard student: students) {
             student.setGroupId(0);
         }
-    }
-
-    private <T> void validateIfExists(List<T> list, Predicate<T> predicate, String objectName, long id) throws EntityNotFoundException{
-        if (list.stream().noneMatch(predicate))
-            throw new EntityNotFoundException(objectName + " with id " + id + " doesn't exist");
     }
 }

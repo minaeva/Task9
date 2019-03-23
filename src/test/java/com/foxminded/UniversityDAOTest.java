@@ -69,7 +69,7 @@ public class UniversityDAOTest {
     @Test(expected = EntityNotFoundException.class)
     public void update_notExists_throwsException() throws ValidationException, EntityNotFoundException, CloneNotSupportedException{
         University universityToSave = createStubUniversity("Non Saved, With Id");
-        long diffId = IdGenerator.newId();
+        long diffId = Helper.generateNewId();
         universityToSave.setId(diffId);
         universityDAO.update(universityToSave, "New name");
     }

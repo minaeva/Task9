@@ -24,7 +24,7 @@ public class Faculty implements Cloneable {
     public Group createGroup(String groupName) throws ValidationException{
         if (groupName.equals("")) throw new ValidationException("Name cannot be empty");
         Predicate<Group> p = group -> group.getName().equals(groupName);
-        validateIfNew(groups, p, "Group", groupName);
+        Helper.validateIfNew(groups, p, "Group", groupName);
         Group newGroup = new Group(groupName);
         groups.add(newGroup);
         return newGroup;
@@ -43,8 +43,7 @@ public class Faculty implements Cloneable {
 
     public Group findGroup(long groupId) throws EntityNotFoundException{
         Predicate<Group> p = group -> group.getId() == groupId;
-        validateIfExists(groups, p, "Group", groupId);
-        return groups.stream().filter(p).findFirst().get();
+        return Helper.validateIfExists(groups, p, "Group", groupId);
     }
 
     public List<Group> findGroups() {
@@ -59,18 +58,10 @@ public class Faculty implements Cloneable {
         return newStudent;
     }
 
-    public StudentCard findStudent(long studentId) throws EntityNotFoundException{
-        List<StudentCard> students = new ArrayList<>();
-        for (Group group: groups){
-            students.addAll(group.getStudents());
-        }
-        Predicate<StudentCard> p = student -> student.getId() == studentId;
-        validateIfExists(students, p, "Student", studentId);
-        return students.stream().filter(p).findFirst().get();
-    }
-
     public StudentCard changeStudentGroup(long studentId, long newGroupId) throws EntityNotFoundException{
-        StudentCard student = findStudent(studentId);
+        List<StudentCard> allStudents = findStudents();
+        Predicate<StudentCard> p = student -> student.getId() == studentId;
+        StudentCard student = Helper.validateIfExists(allStudents, p, "Student", studentId);
         student.setGroupId(newGroupId);
         return student;
     }
@@ -83,12 +74,12 @@ public class Faculty implements Cloneable {
         return students;
     }
 
-    public void dismissStudent(long studentId) throws EntityNotFoundException{
+    public void dismissStudent(long studentId){
         for (Group group: groups){
             try {
                 List<StudentCard> students = new ArrayList<>();
                 students.addAll(group.getStudents());
-                StudentCard student = findStudent(studentId);
+                StudentCard student = group.findStudent(studentId);
                 group.dismissStudent(student.getId());
                 break;
             }
@@ -103,7 +94,9 @@ public class Faculty implements Cloneable {
     }
 
     public void removeSchedule(long scheduleId) throws ValidationException, EntityNotFoundException{
-        if (this.schedule == null) throw new ValidationException("NULL schedule is not accepted");
+        if (this.schedule == null) {
+            throw new ValidationException("NULL schedule is not accepted");
+        }
         if (this.schedule.getId() != scheduleId) throw new EntityNotFoundException("Schedule with id " + scheduleId + " doesn't exist");
         this.schedule = null;
     }
@@ -117,8 +110,7 @@ public class Faculty implements Cloneable {
 
     public MentorCard findMentor(long mentorId) throws EntityNotFoundException{
         Predicate<MentorCard> p = mentor -> mentor.getId() == mentorId;
-        validateIfExists(mentors, p, "Mentor", mentorId);
-        return mentors.stream().filter(p).findFirst().get();
+        return Helper.validateIfExists(mentors, p, "Mentor", mentorId);
     }
 
     public List<MentorCard> findMentors(){
@@ -130,14 +122,46 @@ public class Faculty implements Cloneable {
         mentors.remove(mentor);
     }
 
-    private <T> void validateIfNew(List<T> list, Predicate<T> predicate, String objectName, String name) throws ValidationException{
-        if (list.stream().anyMatch(predicate))
-            throw new ValidationException(objectName + " with name " + name + " already exists");
+    public Auditorium addAuditorium(int auditoriumNumber) throws ValidationException{
+        if (auditoriumNumber <= 0) throw new ValidationException("Number should be positive");
+        Auditorium auditorium = new Auditorium(auditoriumNumber);
+        auditoria.add(auditorium);
+        return auditorium;
     }
 
-    private <T> void validateIfExists(List<T> list, Predicate<T> predicate, String objectName, long id) throws EntityNotFoundException{
-        if (list.stream().noneMatch(predicate))
-            throw new EntityNotFoundException(objectName + " with id " + id + " doesn't exist");
+    public void removeAuditorium(long auditoriumId) throws EntityNotFoundException{
+        Auditorium auditorium = findAuditorium(auditoriumId);
+        auditoria.remove(auditorium);
+    }
+
+    public Auditorium findAuditorium(long auditoriumId) throws EntityNotFoundException{
+        Predicate<Auditorium> p = auditorium -> auditorium.getId() == auditoriumId;
+        return Helper.validateIfExists(auditoria, p, "Auditorium", auditoriumId);
+    }
+
+    public List<Auditorium> findAuditoria(){
+        return auditoria;
+    }
+
+    public Subject addSubject(String subjectName) throws ValidationException{
+        if (subjectName.equals("")) throw new ValidationException("Subject cannot be empty");
+        Subject subject = new Subject(subjectName);
+        subjects.add(subject);
+        return subject;
+    }
+
+    public void removeSubject(long subjectId) throws EntityNotFoundException{
+        Subject subject = findSubject(subjectId);
+        subjects.remove(subject);
+    }
+
+    public Subject findSubject(long subjectId) throws EntityNotFoundException{
+        Predicate<Subject> p = subject -> subject.getId() == subjectId;
+        return Helper.validateIfExists(subjects, p, "Subject", subjectId);
+    }
+
+    public List<Subject> findSubjects(){
+        return subjects;
     }
 
     public double calculateAverageMark() {

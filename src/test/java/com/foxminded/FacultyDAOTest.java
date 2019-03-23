@@ -7,8 +7,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.Getter;
-import lombok.Setter;
 
 public class FacultyDAOTest {
 
@@ -21,7 +19,7 @@ public class FacultyDAOTest {
 
     @Test
     public void save() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
-        long universityId = IdGenerator.newId();
+        long universityId = Helper.generateNewId();
         Faculty facultyToSave = createStubFaculty("AM", universityId);
         Faculty savedFaculty = facultyDAO.save(facultyToSave);
         Faculty foundFaculty = facultyDAO.findById(savedFaculty.getId());
@@ -36,13 +34,13 @@ public class FacultyDAOTest {
 
     @Test
     public void save_idsAreDifferent() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
-        long universityId = IdGenerator.newId();
+        long universityId = Helper.generateNewId();
         Faculty facultyToSave = createStubFaculty("IT", universityId);
         Faculty savedFaculty = facultyDAO.save(facultyToSave);
         Faculty receivedFaculty = facultyDAO.findById(savedFaculty.getId());
 
         Faculty expected = createStubFaculty("IT", universityId);
-        long diffId = IdGenerator.newId();
+        long diffId = Helper.generateNewId();
         expected.setId(diffId);
 
         assertNotNull(savedFaculty.getId());
@@ -57,7 +55,7 @@ public class FacultyDAOTest {
 
     @Test(expected = ValidationException.class)
     public void save_withId_throwsException() throws ValidationException, CloneNotSupportedException {
-        long universityId = IdGenerator.newId();
+        long universityId = Helper.generateNewId();
         Faculty facultyToSave = createStubFaculty("LNG", universityId);
         facultyDAO.save(facultyToSave);
         facultyDAO.save(facultyToSave);
@@ -65,7 +63,7 @@ public class FacultyDAOTest {
 
     @Test
     public void save_returnsCopy() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
-        long universityId = IdGenerator.newId();
+        long universityId = Helper.generateNewId();
         Faculty beforeSave = createStubFaculty("MGMT", universityId);
         Faculty afterSave = facultyDAO.save(beforeSave);
         assertNotSame(beforeSave, afterSave);
@@ -83,7 +81,7 @@ public class FacultyDAOTest {
 
     @Test
     public void update() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
-        long universityId = IdGenerator.newId();
+        long universityId = Helper.generateNewId();
         Faculty facultyToSave = createStubFaculty("Old name", universityId);
 
         Faculty savedFaculty = facultyDAO.save(facultyToSave);
@@ -106,23 +104,23 @@ public class FacultyDAOTest {
 
     @Test(expected = EntityNotFoundException.class)
     public void update_withoutId_throwsException() throws ValidationException, EntityNotFoundException, CloneNotSupportedException {
-        long universityId = IdGenerator.newId();
+        long universityId = Helper.generateNewId();
         Faculty facultyToSave = createStubFaculty("Non Saved", universityId);
         facultyDAO.update(facultyToSave, "New name");
     }
 
     @Test(expected = EntityNotFoundException.class)
     public void update_notExists_throwsException() throws ValidationException, EntityNotFoundException, CloneNotSupportedException{
-        long universityId = IdGenerator.newId();
+        long universityId = Helper.generateNewId();
         Faculty facultyToSave = createStubFaculty("Non Saved, With Id", universityId);
-        long diffId = IdGenerator.newId();
+        long diffId = Helper.generateNewId();
         facultyToSave.setId(diffId);
         facultyDAO.update(facultyToSave, "New name");
     }
 
     @Test
     public void update_returnsCopy() throws ValidationException, EntityNotFoundException, CloneNotSupportedException {
-        long universityId = IdGenerator.newId();
+        long universityId = Helper.generateNewId();
         Faculty facultyToSave = createStubFaculty("ITS", universityId);
         Faculty beforeUpdate = facultyDAO.save(facultyToSave);
         Faculty afterUpdate = facultyDAO.update(beforeUpdate, "NEW ITS");
@@ -136,7 +134,7 @@ public class FacultyDAOTest {
 
     @Test(expected = EntityNotFoundException.class)
     public void delete() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
-        long universityId = IdGenerator.newId();
+        long universityId = Helper.generateNewId();
         Faculty facultyToSave = createStubFaculty("Saved", universityId);
         Faculty savedFaculty = facultyDAO.save(facultyToSave);
         Faculty foundFaculty = facultyDAO.findById(savedFaculty.getId());
@@ -148,7 +146,7 @@ public class FacultyDAOTest {
 
     @Test(expected = EntityNotFoundException.class)
     public void delete_notExists_throwsException() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
-        long universityId = IdGenerator.newId();
+        long universityId = Helper.generateNewId();
         Faculty facultyToSave = createStubFaculty("To be deleted twice", universityId);
         Faculty savedFaculty = facultyDAO.save(facultyToSave);
         facultyDAO.delete(savedFaculty.getId());
@@ -157,14 +155,14 @@ public class FacultyDAOTest {
 
     @Test(expected = ValidationException.class)
     public void delete_idIsNull_throwsException() throws ValidationException, EntityNotFoundException {
-        long universityId = IdGenerator.newId();
+        long universityId = Helper.generateNewId();
         Faculty facultyToSave = createStubFaculty("Non saved", universityId);
         facultyDAO.delete(facultyToSave.getId());
     }
 
     @Test
     public void findById() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
-        long universityId = IdGenerator.newId();
+        long universityId = Helper.generateNewId();
         Faculty facultyToSave1 = createStubFaculty("Same name, diff objects", universityId);
         Faculty facultyToSave2 = createStubFaculty("Same name, diff objects", universityId);
 
@@ -188,7 +186,7 @@ public class FacultyDAOTest {
 
     @Test
     public void findById_returnsCopy() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
-        long universityId = IdGenerator.newId();
+        long universityId = Helper.generateNewId();
         Faculty facultyToSave = createStubFaculty("SMM", universityId);
 
         Faculty savedFaculty = facultyDAO.save(facultyToSave);
@@ -205,7 +203,7 @@ public class FacultyDAOTest {
 
     @Test(expected = EntityNotFoundException.class)
     public void findById_notExists_throwsException() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
-        long universityId = IdGenerator.newId();
+        long universityId = Helper.generateNewId();
         Faculty facultyToSave = createStubFaculty("Saved and deleted", universityId);
         Faculty savedFaculty = facultyDAO.save(facultyToSave);
         facultyDAO.delete(savedFaculty.getId());
@@ -219,7 +217,7 @@ public class FacultyDAOTest {
 
     @Test
     public void findByIdAndUniversityId() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
-        long universityId = IdGenerator.newId();
+        long universityId = Helper.generateNewId();
         Faculty facultyToSave = createStubFaculty("FMM", universityId);
         Faculty savedFaculty = facultyDAO.save(facultyToSave);
         Faculty foundFaculty = facultyDAO.findByIdAndUniversityId(savedFaculty.getId(), universityId);
@@ -233,17 +231,17 @@ public class FacultyDAOTest {
 
     @Test(expected = EntityNotFoundException.class)
     public void findByIdAndUniversityId_universityIdNotExists_throwsException() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
-        long universityId = IdGenerator.newId();
+        long universityId = Helper.generateNewId();
         Faculty facultyToSave = createStubFaculty("Saved faculty, other university", universityId);
 
         Faculty savedFaculty = facultyDAO.save(facultyToSave);
-        long otherId = IdGenerator.newId();
+        long otherId = Helper.generateNewId();
         facultyDAO.findByIdAndUniversityId(savedFaculty.getId(), otherId);
     }
 
     @Test(expected = EntityNotFoundException.class)
     public void findByIdAndUniversityId_facultyIdNotExists_throwsException() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
-        long universityId = IdGenerator.newId();
+        long universityId = Helper.generateNewId();
         Faculty facultyToSave = createStubFaculty("Deleted", universityId);
         Faculty savedFaculty = facultyDAO.save(facultyToSave);
         facultyDAO.delete(savedFaculty.getId());
@@ -252,19 +250,19 @@ public class FacultyDAOTest {
 
     @Test(expected = ValidationException.class)
     public void findByIdAndUniversityId_universityIdIsNull_throwsException() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
-        long universityId = IdGenerator.newId();
+        long universityId = Helper.generateNewId();
         facultyDAO.findByIdAndUniversityId(0, universityId);
     }
 
     @Test(expected = ValidationException.class)
     public void findByIdAndUniversityId_facultyIdIsZero_throwsException() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
-        long facultyId = IdGenerator.newId();
+        long facultyId = Helper.generateNewId();
         facultyDAO.findByIdAndUniversityId(facultyId, 0);
     }
 
     @Test
     public void findByIdAndUniversityId_returnsCopy() throws ValidationException, CloneNotSupportedException, EntityNotFoundException {
-        long universityId = IdGenerator.newId();
+        long universityId = Helper.generateNewId();
         Faculty facultyToSave = createStubFaculty("FEL", universityId);
         Faculty savedFaculty = facultyDAO.save(facultyToSave);
         Faculty foundFaculty = facultyDAO.findByIdAndUniversityId(savedFaculty.getId(), universityId);
@@ -282,7 +280,7 @@ public class FacultyDAOTest {
 
     @Test
     public void findByUniversityId() throws ValidationException, CloneNotSupportedException {
-        long universityId = IdGenerator.newId();
+        long universityId = Helper.generateNewId();
         Faculty facultyToSave1 = createStubFaculty("F1", universityId);
         Faculty facultyToSave2 = createStubFaculty("F2", universityId);
         Faculty facultyToSave3 = createStubFaculty("F3", universityId);
@@ -308,17 +306,17 @@ public class FacultyDAOTest {
 
     @Test
     public void findByUniversityId_universityIdNotExists_returnsEmptyList() throws ValidationException, CloneNotSupportedException {
-        long universityId = IdGenerator.newId();
+        long universityId = Helper.generateNewId();
         Faculty facultyToSave = createStubFaculty("FTF", universityId);
         facultyDAO.save(facultyToSave);
-        long otherId = IdGenerator.newId();
+        long otherId = Helper.generateNewId();
         List<Faculty> foundFaculties = facultyDAO.findByUniversityId(otherId);
         assertNull(foundFaculties);
     }
 
     @Test
     public void findByUniversityId_returnsCopy() throws ValidationException, CloneNotSupportedException {
-        long universityId = IdGenerator.newId();
+        long universityId = Helper.generateNewId();
          Faculty facultyToSave1 = createStubFaculty("F1", universityId);
          Faculty facultyToSave2 = createStubFaculty("F2", universityId);
          Faculty facultyToSave3 = createStubFaculty("F3", universityId);

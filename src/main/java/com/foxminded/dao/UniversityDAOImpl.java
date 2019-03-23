@@ -1,7 +1,7 @@
 package com.foxminded.dao;
 
 import com.foxminded.EntityNotFoundException;
-import com.foxminded.IdGenerator;
+import com.foxminded.Helper;
 import com.foxminded.University;
 import com.foxminded.ValidationException;
 import java.util.*;
@@ -16,10 +16,10 @@ public class UniversityDAOImpl implements UniversityDAO {
         for (long id: universities.keySet()){
             if (id == university.getId()) throw new ValidationException("University with ID " + university.getId() + " already exists");
         }
-        long id = IdGenerator.newId();
+        long id = Helper.generateNewId();
         university.setId(id);
         universities.put(id, university);
-        return university.clone();
+        return university;//.clone();
     }
 
     public University update(University university, String newName) throws ValidationException, EntityNotFoundException, CloneNotSupportedException {
@@ -28,7 +28,7 @@ public class UniversityDAOImpl implements UniversityDAO {
         if (!universities.containsValue(university)) throw new EntityNotFoundException("University " + university.getName() + " doesn't exist");
         university.setName(newName);
         universities.put(university.getId(), university);
-        return university.clone();
+        return university;//.clone();
     }
 
     public void delete(long id) throws ValidationException, EntityNotFoundException {
@@ -40,7 +40,7 @@ public class UniversityDAOImpl implements UniversityDAO {
     public University findById(long id) throws ValidationException, EntityNotFoundException, CloneNotSupportedException{
         if (id == 0) throw new ValidationException("ID is not set");
         if (!universities.containsKey(id)) throw new EntityNotFoundException("University with id " + id + " doesn't exist");
-        return universities.get(id).clone();
+        return universities.get(id);//.clone();
     }
 
     public List<University> findAll(){
