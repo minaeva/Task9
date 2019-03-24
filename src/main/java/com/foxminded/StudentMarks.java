@@ -12,8 +12,6 @@ public class StudentMarks {
     private long sectionId;
     private List<Byte> marks = new ArrayList<>();
 
-    public StudentMarks(){}
-
     public StudentMarks(StudentCard studentCard, long sectionId){
         this.studentCard = studentCard;
         this.sectionId =  sectionId;

@@ -10,6 +10,7 @@ public class Pair {
     private long dayScheduleId;
     private LocalTime startTime;
     private Lesson lesson;
+    private final int DURATION = 90;
 
     public Pair(LocalTime startTime){
         this.startTime = startTime;

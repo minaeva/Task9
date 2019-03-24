@@ -9,10 +9,10 @@ import lombok.Data;
 @Data
 public class DaySchedule {
 
-        private long id;
-        private WorkDay workDay;
-        private long scheduleId;
-        private List<Pair> pairs = new ArrayList<>();
+    private long id;
+    private WorkDay workDay;
+    private long scheduleId;
+    private List<Pair> pairs = new ArrayList<>();
 
     public DaySchedule(WorkDay workDay){
         this.workDay = workDay;
@@ -39,4 +39,3 @@ public class DaySchedule {
         pairs.remove(pair);
     }
 }
-

@@ -25,13 +25,7 @@ public class Schedule {
     }
 
     public DaySchedule findDaySchedule(long dayScheduleId) throws EntityNotFoundException{
-        Predicate<DaySchedule> p = d -> d.getId() == dayScheduleId;
-        validateIfExists(daySchedules, p, "Day schedule",dayScheduleId );
-        return daySchedules.stream().filter(p).findFirst().get();
-    }
-
-    private <T> void validateIfExists(List<T> list, Predicate<T> predicate, String objectName, long id) throws EntityNotFoundException{
-        if (list.stream().noneMatch(predicate))
-            throw new EntityNotFoundException(objectName + " with id " + id + " doesn't exist");
+        Predicate<DaySchedule> p = daySchedule -> daySchedule.getId() == dayScheduleId;
+        return Helper.validateIfExists(daySchedules, p, "Day schedule", dayScheduleId);
     }
 }

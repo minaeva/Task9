@@ -24,15 +24,13 @@ public class Section {
     }
 
     public StudentMarks findStudentMarks(long marksId) throws EntityNotFoundException{
-        Predicate<StudentMarks> p = m -> m.getId() == marksId;
-        if (studentMarks.stream().noneMatch(p)) throw new EntityNotFoundException("Student marks with id " + marksId + " doesn't exist");
-        return studentMarks.stream().filter(p).findFirst().get();
+        Predicate<StudentMarks> p = studentMarks -> studentMarks.getId() == marksId;
+        return Helper.validateIfExists(studentMarks, p, "Student marks", marksId);
     }
 
     public StudentMarks findStudentMarks(StudentCard studentCard) throws EntityNotFoundException{
-        Predicate<StudentMarks> p = m -> m.getStudentCard() == studentCard;
-        if (studentMarks.stream().noneMatch(p)) throw new EntityNotFoundException("Marks for student " + studentCard.getName() + " don't exist");
-        return studentMarks.stream().filter(p).findFirst().get();
+        Predicate<StudentMarks> p = studentMarks -> studentMarks.getStudentCard() == studentCard;
+        return Helper.validateIfExists(studentMarks, p, "Student marks for student", studentCard.getId());
     }
 
     public void removeStudentMarks(long marksId) throws EntityNotFoundException{
