@@ -32,7 +32,7 @@ public class MentorCardTest {
         assertEquals(0, size);
 
         MentorCard mentor = faculty.hireMentor("Mozart");
-        mentor.addMark(student, subject, (byte)5);
+        mentor.addMark(student, subject, journal, (byte)5);
 
         size = section.findStudentMarks(studentMarksId).getMarks().size();
         assertEquals(1, size);
