@@ -16,7 +16,7 @@ public class Pair {
         this.startTime = startTime;
     }
 
-    public Lesson createlesson(Group group, Subject subject, MentorCard mentorCard, Auditorium auditorium){
+    public Lesson createLesson(Group group, Subject subject, MentorCard mentorCard, Auditorium auditorium){
         this.lesson = new Lesson();
         lesson.setGroup(group);
         lesson.setSubject(subject);

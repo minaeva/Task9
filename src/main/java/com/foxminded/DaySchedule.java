@@ -24,8 +24,7 @@ public class DaySchedule {
 
     public Pair createPair(LocalTime startTime) {
         Pair pair = new Pair(startTime);
-        //? pair.setDayScheduleId(this.id);
-        pairs.add(pair);
+         pairs.add(pair);
         return pair;
     }
 

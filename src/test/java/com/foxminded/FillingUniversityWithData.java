@@ -7,9 +7,11 @@ public class FillingUniversityWithData {
     static long faculty1Id, faculty2Id, groupAId, groupBId, groupCId, groupYId, groupZId,
             student1AId, student2AId, student3AId, student1ZId,
             journalAId, journalZId,
+            engMentorId , mathMentorId,
             subjectMathF1Id, subjectEnglishF1Id, subjectMathF2Id, subjectEnglishF2Id,
             sectionAMathId, sectionAEngId, sectionZMathId, sectionZEngId,
-            studentMarks1AMathId, studentMarks1AEngId;
+            studentMarks1AMathId, studentMarks1AEngId,
+            auditoriumId;
     static MentorCard engMentor, mathMentor;
 
     @BeforeClass
@@ -142,10 +144,10 @@ public class FillingUniversityWithData {
 
 //MENTORS
         engMentor = faculty1.hireMentor("ENGLISH teacher");
-        long engMentorId = Helper.generateNewId();
+        engMentorId = Helper.generateNewId();
         engMentor.setId(engMentorId);
         mathMentor = faculty1.hireMentor("MATH teacher");
-        long mathMentorId = Helper.generateNewId();
+        mathMentorId = Helper.generateNewId();
         mathMentor.setId(mathMentorId);
 
 //MARKS
@@ -183,5 +185,11 @@ public class FillingUniversityWithData {
         studentMarks1ZEng.addMark(2);
         studentMarks1ZEng.addMark(8);
         studentMarks1ZEng.addMark(2);
+
+//AUDITORIUM
+        Auditorium auditorium = faculty1.addAuditorium(111);
+        auditoriumId = Helper.generateNewId();
+        auditorium.setId(auditoriumId);
     }
+
 }
