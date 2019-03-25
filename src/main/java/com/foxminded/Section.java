@@ -29,8 +29,12 @@ public class Section {
     }
 
     public StudentMarks findStudentMarks(StudentCard studentCard) throws EntityNotFoundException{
-        Predicate<StudentMarks> p = studentMarks -> studentMarks.getStudentCard() == studentCard;
+        Predicate<StudentMarks> p = studentMarks -> studentMarks.getStudentCard().equals(studentCard);
         return Helper.validateIfExists(studentMarks, p, "Student marks for student", studentCard.getId());
+    }
+
+    public List<StudentMarks> findAllStudentMarks(){
+        return studentMarks;
     }
 
     public void removeStudentMarks(long marksId) throws EntityNotFoundException{
@@ -38,7 +42,7 @@ public class Section {
         studentMarks.remove(marks);
     }
 
-    public void addMark(StudentCard studentCard, byte mark) throws EntityNotFoundException, ValidationException{
+    public void addMark(StudentCard studentCard, int mark) throws EntityNotFoundException, ValidationException{
         StudentMarks marks = findStudentMarks(studentCard);
         marks.addMark(mark);
     }
@@ -48,9 +52,13 @@ public class Section {
         double result = 0.0;
         int counter = 0;
         for (StudentMarks marks: studentMarks) {
-            result += marks.calculateAverageMark();
-            counter++;
+            double midAverage = marks.calculateAverageMark();
+            if (midAverage != 0){
+                result += marks.calculateAverageMark();
+                counter++;
+            }
         }
+        if (result == 0) return 0;
         return result/counter;
     }
 }

@@ -169,9 +169,13 @@ public class Faculty implements Cloneable {
         double result = 0.0;
         int counter = 0;
         for (Journal journal: journals) {
-            result += journal.calculateAverageMark();
-            counter++;
+            double midAverage = journal.calculateAverageMark();
+            if (midAverage != 0){
+                result += journal.calculateAverageMark();
+                counter++;
+            }
         }
+        if (result == 0) return 0;
         return result/counter;
     }
 }

@@ -22,7 +22,7 @@ public class DaySchedule {
     return this;
     }
 
-    public Pair createPair (LocalTime startTime) {
+    public Pair createPair(LocalTime startTime) {
         Pair pair = new Pair(startTime);
         //? pair.setDayScheduleId(this.id);
         pairs.add(pair);
@@ -34,7 +34,7 @@ public class DaySchedule {
         return Helper.validateIfExists(pairs, p, "Pair",pairId );
     }
 
-    public void removePair (long pairId) throws EntityNotFoundException{
+    public void removePair(long pairId) throws EntityNotFoundException{
         Pair pair = findPair(pairId);
         pairs.remove(pair);
     }

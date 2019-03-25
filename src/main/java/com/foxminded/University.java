@@ -13,7 +13,7 @@ public class University implements Cloneable {
 
     public Faculty createFaculty(String facultyName) throws ValidationException{
         if (facultyName.equals("")) throw new ValidationException("Name cannot be empty");
-        Predicate<Faculty> p = faculty -> faculty.getName() == facultyName;
+        Predicate<Faculty> p = faculty -> faculty.getName().equals(facultyName);
         Helper.validateIfNew(faculties, p, "Faculty", name);
         Faculty newFaculty = new Faculty(facultyName);
         faculties.add(newFaculty);
@@ -45,9 +45,13 @@ public class University implements Cloneable {
         double result = 0.0;
         int counter = 0;
         for (Faculty faculty: faculties) {
-            result += faculty.calculateAverageMark();
-            counter++;
+            double midAverage = faculty.calculateAverageMark();
+            if (midAverage != 0){
+                result += faculty.calculateAverageMark();
+                counter++;
+            }
         }
+        if (result == 0) return 0;
         return result/counter;
     }
 }

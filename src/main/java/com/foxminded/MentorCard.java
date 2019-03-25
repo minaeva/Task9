@@ -18,7 +18,7 @@ public class MentorCard {
         System.out.println("Permission received. Mentor " + this.name + " can now be fired");
     }
 
-    public void addMark(StudentCard studentCard, Subject subject, Journal journal, byte mark) throws ValidationException, EntityNotFoundException{
+    public void addMark(StudentCard studentCard, Subject subject, Journal journal, int mark) throws ValidationException, EntityNotFoundException{
         journal.addMark(studentCard, subject, mark);
     }
 }

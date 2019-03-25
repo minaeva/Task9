@@ -48,13 +48,17 @@ public class Journal {
         double result = 0.0;
         int counter = 0;
         for (Section section: sections) {
-            result += section.calculateAverageMark();
-            counter++;
+            double midAverage = section.calculateAverageMark();
+            if (midAverage != 0){
+                result += section.calculateAverageMark();
+                counter++;
+            }
         }
+        if (result == 0) return 0;
         return result/counter;
     }
 
-    public void addMark(StudentCard studentCard, Subject subject, byte mark) throws EntityNotFoundException, ValidationException{
+    public void addMark(StudentCard studentCard, Subject subject, int mark) throws EntityNotFoundException, ValidationException{
         Section section = findSection(subject);
         section.addMark(studentCard, mark);
     }

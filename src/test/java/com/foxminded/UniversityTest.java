@@ -4,96 +4,76 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 import java.util.List;
 
-public class UniversityTest {
+public class UniversityTest extends FillingUniversityWithData {
 
     @Test
     public void createFaculty() throws ValidationException{
-    University university = new University();
-    university.createFaculty("IT");
-    int size = university.findFaculties().size();
-    assertEquals(1, size);
+        int beforeSize = university.findFaculties().size();
+        Faculty f1 = university.createFaculty("F1");
+        long f1Id = Helper.generateNewId();
+        f1.setId(f1Id);
 
-    university.createFaculty("AM");
-    int secondSize = university.findFaculties().size();
-    assertEquals(2, secondSize);
+        int afterSize = university.findFaculties().size();
+        assertEquals(beforeSize + 1, afterSize);
     }
 
     @Test(expected = ValidationException.class)
     public void createFaculty_same_throwsException() throws ValidationException{
-        University university = new University();
-        university.createFaculty("F1");
-        university.createFaculty("F1");
+        Faculty f2 = university.createFaculty("F2");
+        long f2Id = Helper.generateNewId();
+        f2.setId(f2Id);
+        university.createFaculty("F2");
     }
 
    @Test
     public void updateFaculty() throws ValidationException, EntityNotFoundException{
-        University university = new University();
-        Faculty faculty1 = university.createFaculty("F1");
-        long id = Helper.generateNewId();
-        faculty1.setId(id);
-        university.updateFaculty(id, "F1NEW");
+       int sizeBefore = university.findFaculties().size();
+       Faculty f3 = university.createFaculty("F3");
+       long f3Id = Helper.generateNewId();
+       f3.setId(f3Id);
+       university.updateFaculty(f3Id, "F3 NEW");
 
-        List<Faculty> foundFaculties = university.findFaculties();
-        assertEquals("F1NEW", foundFaculties.get(0).getName());
-        int size = university.findFaculties().size();
-        assertEquals(1, size);
-
-        Faculty faculty2 = university.createFaculty("F2");
-        university.updateFaculty(id, "F1NEW2");
-        size = university.findFaculties().size();
-        assertEquals(2, size);
-    }
+       Faculty foundFaculty = university.findFaculty(f3Id);
+       assertEquals("F3 NEW", foundFaculty.getName());
+       int sizeAfter = university.findFaculties().size();
+       assertEquals(sizeBefore + 1, sizeAfter);
+  }
 
     @Test(expected = EntityNotFoundException.class)
     public void updateFaculty_notExists_throwsException() throws EntityNotFoundException{
-        University university = new University();
         long id = Helper.generateNewId();
         university.updateFaculty(id, "NEW");
     }
 
     @Test(expected = EntityNotFoundException.class)
     public void dismantleFaculty() throws EntityNotFoundException, ValidationException{
-        University university = new University();
-        Faculty createdFaculty = university.createFaculty("IASA");
-        long id = Helper.generateNewId();
-        createdFaculty.setId(id);
-        university.dismantleFaculty(createdFaculty.getId());
-        university.findFaculty(createdFaculty.getId());
+        Faculty f4 = university.createFaculty("F4");
+        long f4Id = Helper.generateNewId();
+        f4.setId(f4Id);
+        university.dismantleFaculty(f4Id);
+        university.findFaculty(f4Id);
     }
 
     @Test(expected = EntityNotFoundException.class)
     public void dismantleFaculty_notExists_throwsException() throws EntityNotFoundException{
-        University university = new University();
         long id = Helper.generateNewId();
         university.updateFaculty(id, "NEW");
     }
 
     @Test
     public void findFaculty() throws ValidationException, EntityNotFoundException{
-        University university = new University();
-        Faculty createdFaculty = university.createFaculty("CMP");
-        long id = Helper.generateNewId();
-        createdFaculty.setId(id);
-        Faculty foundFaculty = university.findFaculty(createdFaculty.getId());
-        assertEquals(createdFaculty.getName(), foundFaculty.getName());
+        Faculty f5 = university.createFaculty("F5");
+        long f5Id = Helper.generateNewId();
+        f5.setId(f5Id);
+        Faculty foundFaculty = university.findFaculty(f5Id);
+        assertEquals("F5", foundFaculty.getName());
     }
 
     @Test
     public void calculateAverageMark() throws ValidationException{
-        University university = new University();
-        university.createFaculty("1");
-        university.createFaculty("2");
-        university.createFaculty("3");
-        university.createFaculty("4");
         double average = university.calculateAverageMark();
         double expected = 1.0;
-        assertEquals(expected , average, 0.005);
+        assertEquals(expected, average, 0.005);
     }
 
-    private Faculty createStubFaculty(String name, long universityId){
-        Faculty faculty = new Faculty(name);
-        faculty.setName(name);
-        faculty.setUniversityId(universityId);
-        return faculty;
-    }
 }

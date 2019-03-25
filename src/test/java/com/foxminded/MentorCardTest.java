@@ -6,35 +6,31 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class MentorCardTest {
+public class MentorCardTest extends FillingUniversityWithData{
 
     @Test
     public void addMark() throws ValidationException, EntityNotFoundException{
-        University university = new University();
-        Faculty faculty = university.createFaculty("Faculty");
-        Group group = faculty.createGroup("Group");
-        long groupId = Helper.generateNewId();
-        group.setId(groupId);
-
-        StudentCard student = faculty.takeStudent("Ivan", groupId);
+        Faculty faculty = university.findFaculty(faculty1Id);
+        Group group = faculty.findGroup(groupAId);
+        StudentCard student = group.findStudent(student1AId);
         Journal journal = group.getJournal();
-        journal.setGroupId(groupId);
+        Section section = journal.findSection(sectionAEngId);
+        Subject subject = faculty.findSubject(subjectEnglishF2Id);
 
-        Subject subject = faculty.addSubject("Math");
-        Section section = journal.createSection(subject);
-        section.setSubject(subject);
+        int beforeSize = section.findStudentMarks(studentMarks1AEngId).getMarks().size();
 
-        StudentMarks studentMarks = section.createStudentMarks(student);
-        long studentMarksId = Helper.generateNewId();
-        studentMarks.setId(studentMarksId);
+        engMentor.addMark(student, subject, journal, 5);
+        engMentor.addMark(student, subject, journal, 3);
+        engMentor.addMark(student, subject, journal, 3);
+        engMentor.addMark(student, subject, journal, 5);
+        engMentor.addMark(student, subject, journal, 4);
 
-        int size = section.findStudentMarks(studentMarksId).getMarks().size();
-        assertEquals(0, size);
 
-        MentorCard mentor = faculty.hireMentor("Mozart");
-        mentor.addMark(student, subject, journal, (byte)5);
+        int afterSize = section.findStudentMarks(studentMarks1AEngId).getMarks().size();
+        assertEquals(beforeSize + 5, afterSize);
 
-        size = section.findStudentMarks(studentMarksId).getMarks().size();
-        assertEquals(1, size);
+        double actual = section.calculateAverageMark();
+        double expected = 4.0;
+        assertEquals(expected, actual, 0.005);
     }
 }
