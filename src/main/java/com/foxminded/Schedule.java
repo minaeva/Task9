@@ -3,7 +3,6 @@ package com.foxminded;
 import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 @Data
 public class Schedule {
@@ -14,18 +13,15 @@ public class Schedule {
 
     public DaySchedule createDaySchedule(WorkDay workDay){
         DaySchedule daySchedule = new DaySchedule(workDay);
-        //daySchedule.setScheduleId(this.id);
-        daySchedules.add(daySchedule);
+         daySchedules.add(daySchedule);
         return daySchedule;
     }
 
-    public void removeDaySchedule(long dayScheduleId) throws EntityNotFoundException{
-        DaySchedule daySchedule = findDaySchedule(dayScheduleId);
-        daySchedules.remove(daySchedule);
+    public boolean removeDaySchedule(long dayScheduleId) throws IllegalArgumentException{
+        return daySchedules.removeIf(daySchedule1 -> daySchedule1.getId() == dayScheduleId);
     }
 
-    public DaySchedule findDaySchedule(long dayScheduleId) throws EntityNotFoundException{
-        Predicate<DaySchedule> p = daySchedule -> daySchedule.getId() == dayScheduleId;
-        return Helper.validateIfExists(daySchedules, p, "Day schedule", dayScheduleId);
+    public DaySchedule findDaySchedule(long dayScheduleId) throws IllegalArgumentException{
+        return Helper.validateObjectExists(daySchedules, daySchedule -> daySchedule.getId() == dayScheduleId, "Day schedule", dayScheduleId);
     }
 }

@@ -6,7 +6,7 @@ import static org.junit.Assert.assertEquals;
 
 public class DayScheduleTest extends FillingUniversityWithData {
 
-    @Test
+/*    @Test
     public void createPair() throws EntityNotFoundException{
         Faculty faculty = university.findFaculty(faculty1Id);
         Schedule schedule = faculty.createSchedule();
@@ -32,4 +32,6 @@ public class DayScheduleTest extends FillingUniversityWithData {
        int afterSize = daySchedule.getPairs().size();
        assertEquals(beforeSize - 1, afterSize);
     }
+
+ */
 }

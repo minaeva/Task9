@@ -23,26 +23,19 @@ public class Section {
         return newStudentMarks;
     }
 
-    public StudentMarks findStudentMarks(long marksId) throws EntityNotFoundException{
-        Predicate<StudentMarks> p = studentMarks -> studentMarks.getId() == marksId;
-        return Helper.validateIfExists(studentMarks, p, "Student marks", marksId);
+    public StudentMarks findStudentMarks(long marksId) throws IllegalArgumentException{
+        return Helper.validateObjectExists(studentMarks, studentMarks -> studentMarks.getId() == marksId, "Student marks", marksId);
     }
 
-    public StudentMarks findStudentMarks(StudentCard studentCard) throws EntityNotFoundException{
-        Predicate<StudentMarks> p = studentMarks -> studentMarks.getStudentCard().equals(studentCard);
-        return Helper.validateIfExists(studentMarks, p, "Student marks for student", studentCard.getId());
+    public StudentMarks findStudentMarks(StudentCard studentCard) throws IllegalArgumentException{
+        return Helper.validateObjectExists(studentMarks, studentMarks -> studentMarks.getStudentCard().equals(studentCard), "Student marks for student", studentCard.getId());
     }
 
-    public List<StudentMarks> findAllStudentMarks(){
-        return studentMarks;
+    public boolean removeStudentMarks(long marksId) throws IllegalArgumentException{
+        return studentMarks.removeIf(studentMarks1 -> studentMarks1.getId() == marksId);
     }
 
-    public void removeStudentMarks(long marksId) throws EntityNotFoundException{
-        StudentMarks marks = findStudentMarks(marksId);
-        studentMarks.remove(marks);
-    }
-
-    public void addMark(StudentCard studentCard, int mark) throws EntityNotFoundException, ValidationException{
+    public void addMark(StudentCard studentCard, int mark) throws IllegalArgumentException{
         StudentMarks marks = findStudentMarks(studentCard);
         marks.addMark(mark);
     }

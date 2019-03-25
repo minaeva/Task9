@@ -14,7 +14,7 @@ public class MentorCard {
         this.name = name;
     }
 
-    public void addMark(StudentCard studentCard, Subject subject, Journal journal, int mark) throws ValidationException, EntityNotFoundException{
+    public void addMark(StudentCard studentCard, Subject subject, Journal journal, int mark) throws IllegalArgumentException{
         journal.addMark(studentCard, subject, mark);
     }
 }

@@ -2,7 +2,6 @@ package com.foxminded;
 
 import lombok.Data;
 import java.util.*;
-import java.util.function.Predicate;
 
 @Data
 public class Group {
@@ -25,18 +24,11 @@ public class Group {
         return studentCard;
     }
 
-    public StudentCard findStudent(long studentId) throws EntityNotFoundException{
-        Predicate<StudentCard> p = s -> s.getId() == studentId;
-        Helper.validateIfExists(students, p, "Student", studentId);
-        return students.stream().filter(p).findFirst().get();
+    public StudentCard findStudent(long studentId) throws IllegalArgumentException{
+        return Helper.validateObjectExists(students, studentCard -> studentCard.getId() == studentId, "Student", studentId);
     }
 
-    public void dismissStudent(long studentId) throws EntityNotFoundException{
-        StudentCard student = findStudent(studentId);
-        students.remove(student);
-    }
-
-    public List<StudentCard> findStudents(){
-        return students;
+    public boolean dismissStudent(long studentId) throws IllegalArgumentException{
+        return students.removeIf(studentCard -> studentCard.getId() == studentId);
     }
 }

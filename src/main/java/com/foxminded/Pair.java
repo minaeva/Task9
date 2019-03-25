@@ -25,9 +25,9 @@ public class Pair {
         return lesson;
     }
 
-    public void removeLesson(long id) throws ValidationException{
+    public void removeLesson(long id) throws IllegalArgumentException{
         if (this.lesson.getId() != id)
-            throw new ValidationException("Lesson with id " + id + " does't exist");
+            throw new IllegalArgumentException("Lesson with id " + id + " does't exist");
         this.lesson = null;
     }
 }

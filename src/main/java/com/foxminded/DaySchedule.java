@@ -28,13 +28,11 @@ public class DaySchedule {
         return pair;
     }
 
-    public Pair findPair(long pairId) throws EntityNotFoundException{
-        Predicate<Pair> p = pr -> pr.getId() == pairId;
-        return Helper.validateIfExists(pairs, p, "Pair",pairId );
+    public Pair findPair(long pairId) throws IllegalArgumentException{
+        return Helper.validateObjectExists(pairs, pair1 -> pair1.getId() == pairId, "Pair",pairId );
     }
 
-    public void removePair(long pairId) throws EntityNotFoundException{
-        Pair pair = findPair(pairId);
-        pairs.remove(pair);
+    public boolean removePair(long pairId) throws IllegalArgumentException{
+        return pairs.removeIf(pair1 -> pair1.getId() == pairId);
     }
 }

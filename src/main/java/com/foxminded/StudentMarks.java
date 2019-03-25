@@ -29,8 +29,8 @@ public class StudentMarks {
         return result/counter;
     }
 
-    public void addMark(int mark) throws ValidationException{
-        if ((mark < 1) || (mark > 12)) throw new ValidationException("Mark should be [1;12]");
+    public void addMark(int mark) throws IllegalArgumentException{
+        if ((mark < 1) || (mark > 12)) throw new IllegalArgumentException("Mark should be [1;12]");
         marks.add(mark);
     }
 }

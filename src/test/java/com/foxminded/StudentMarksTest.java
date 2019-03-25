@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 
 public class StudentMarksTest extends FillingUniversityWithData{
 
-    @Test
+ /*   @Test
     public void calculateAverageMark_A1Eng() throws EntityNotFoundException{
         Faculty faculty = university.findFaculty(faculty1Id);
         Group group = faculty.findGroup(groupAId);
@@ -35,5 +35,7 @@ public class StudentMarksTest extends FillingUniversityWithData{
         double expected = 9.5;
         assertEquals(expected, actual, 0.005);
     }
+
+  */
 }
 

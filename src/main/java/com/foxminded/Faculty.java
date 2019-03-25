@@ -5,7 +5,7 @@ import java.util.function.Predicate;
 import lombok.Data;
 
 @Data
-public class Faculty implements Cloneable {
+public class Faculty {
 
     private long id;
     private String name;
@@ -21,48 +21,44 @@ public class Faculty implements Cloneable {
         this.name = name;
     }
 
-    public Group createGroup(String groupName) throws ValidationException{
-        if (groupName.equals("")) throw new ValidationException("Name cannot be empty");
-        Predicate<Group> p = group -> group.getName().equals(groupName);
-        Helper.validateIfNew(groups, p, "Group", groupName);
+    public Group createGroup(String groupName) throws IllegalArgumentException{
+        if (groupName.equals("")) throw new IllegalArgumentException("Name cannot be empty");
+        Helper.validateNameIsUnique(groups, group -> group.getName().equals(groupName), "Group", groupName);
         Group newGroup = new Group(groupName);
         groups.add(newGroup);
         return newGroup;
     }
 
-    public Group updateGroup(long groupId, String newName) throws EntityNotFoundException {
+    public Group updateGroup(long groupId, String newName) throws IllegalArgumentException {
         Group group = findGroup(groupId);
         group.setName(newName);
         return group;
     }
 
-    public void dismantleGroup(long groupId) throws EntityNotFoundException{
-        Group group = findGroup(groupId);
-        groups.remove(group);
+    public boolean dismantleGroup(long groupId) throws IllegalArgumentException{
+        return groups.removeIf(group1 -> group1.getId() == groupId);
     }
 
-    public Group findGroup(long groupId) throws EntityNotFoundException{
-        Predicate<Group> p = group -> group.getId() == groupId;
-        return Helper.validateIfExists(groups, p, "Group", groupId);
+    public Group findGroup(long groupId) throws IllegalArgumentException{
+        return Helper.validateObjectExists(groups, group -> group.getId() == groupId, "Group", groupId);
     }
 
-    public List<Group> findGroups() {
-        return groups;
-    }
-
-    public StudentCard takeStudent(String studentName, long groupId) throws EntityNotFoundException, ValidationException{
-        if (studentName.equals("")) throw new ValidationException("Name cannot be empty");
+    public StudentCard takeStudent(String studentName, long groupId) throws IllegalArgumentException{
+        if (studentName.equals("")) throw new IllegalArgumentException("Name cannot be empty");
         Group group = findGroup(groupId);
         StudentCard newStudent = new StudentCard(studentName);
         group.takeStudent(newStudent);
         return newStudent;
     }
 
-    public StudentCard changeStudentGroup(long studentId, long newGroupId) throws EntityNotFoundException{
+    public StudentCard changeStudentGroup(long studentId, long newGroupId) throws IllegalArgumentException{
         List<StudentCard> allStudents = findStudents();
-        Predicate<StudentCard> p = student -> student.getId() == studentId;
-        StudentCard student = Helper.validateIfExists(allStudents, p, "Student", studentId);
-        student.setGroupId(newGroupId);
+        StudentCard student = Helper.validateObjectExists(allStudents, student1 -> student1.getId() == studentId, "Student", studentId);
+        Group oldGroup = findGroup(student.getGroupId());
+        oldGroup.dismissStudent(studentId);
+
+        Group newGroup = findGroup(newGroupId);
+        newGroup.takeStudent(student);
         return student;
     }
 
@@ -83,7 +79,7 @@ public class Faculty implements Cloneable {
                 group.dismissStudent(student.getId());
                 break;
             }
-            catch (EntityNotFoundException e){}
+            catch (IllegalArgumentException e){}
         }
     }
 
@@ -93,75 +89,57 @@ public class Faculty implements Cloneable {
         return newSchedule;
     }
 
-    public void removeSchedule(long scheduleId) throws ValidationException, EntityNotFoundException{
+    public void removeSchedule(long scheduleId) throws IllegalArgumentException{
         if (this.schedule == null) {
-            throw new ValidationException("NULL schedule is not accepted");
+            throw new IllegalArgumentException("NULL schedule is not accepted");
         }
-        if (this.schedule.getId() != scheduleId) throw new EntityNotFoundException("Schedule with id " + scheduleId + " doesn't exist");
+        if (this.schedule.getId() != scheduleId) throw new IllegalArgumentException("Schedule with id " + scheduleId + " doesn't exist");
         this.schedule = null;
     }
 
-    public MentorCard hireMentor(String mentorName) throws ValidationException{
-        if (mentorName.equals("")) throw new ValidationException("Name cannot be empty");
+    public MentorCard hireMentor(String mentorName) throws IllegalArgumentException{
+        if (mentorName.equals("")) throw new IllegalArgumentException("Name cannot be empty");
         MentorCard newMentor = new MentorCard(mentorName);
         mentors.add(newMentor);
         return newMentor;
     }
 
-    public MentorCard findMentor(long mentorId) throws EntityNotFoundException{
-        Predicate<MentorCard> p = mentor -> mentor.getId() == mentorId;
-        return Helper.validateIfExists(mentors, p, "Mentor", mentorId);
+    public MentorCard findMentor(long mentorId) throws IllegalArgumentException{
+        return Helper.validateObjectExists(mentors, mentor -> mentor.getId() == mentorId, "Mentor", mentorId);
     }
 
-    public List<MentorCard> findMentors(){
-        return mentors;
+    public boolean fireMentor(long mentorId) throws IllegalArgumentException{
+        return mentors.removeIf(mentor1 -> mentor1.getId() == mentorId);
     }
 
-    public void fireMentor(long mentorId) throws EntityNotFoundException{
-        MentorCard mentor = findMentor(mentorId);
-        mentors.remove(mentor);
-    }
-
-    public Auditorium addAuditorium(int auditoriumNumber) throws ValidationException{
-        if (auditoriumNumber <= 0) throw new ValidationException("Number should be positive");
+    public Auditorium addAuditorium(int auditoriumNumber) throws IllegalArgumentException{
+        if (auditoriumNumber <= 0) throw new IllegalArgumentException("Number should be positive");
         Auditorium auditorium = new Auditorium(auditoriumNumber);
         auditoria.add(auditorium);
         return auditorium;
     }
 
-    public void removeAuditorium(long auditoriumId) throws EntityNotFoundException{
-        Auditorium auditorium = findAuditorium(auditoriumId);
-        auditoria.remove(auditorium);
+    public boolean removeAuditorium(long auditoriumId) throws IllegalArgumentException{
+        return auditoria.removeIf(auditorium1 -> auditorium1.getId() == auditoriumId);
     }
 
-    public Auditorium findAuditorium(long auditoriumId) throws EntityNotFoundException{
-        Predicate<Auditorium> p = auditorium -> auditorium.getId() == auditoriumId;
-        return Helper.validateIfExists(auditoria, p, "Auditorium", auditoriumId);
+    public Auditorium findAuditorium(long auditoriumId) throws IllegalArgumentException{
+        return Helper.validateObjectExists(auditoria, auditorium -> auditorium.getId() == auditoriumId, "Auditorium", auditoriumId);
     }
 
-    public List<Auditorium> findAuditoria(){
-        return auditoria;
-    }
-
-    public Subject addSubject(String subjectName) throws ValidationException{
-        if (subjectName.equals("")) throw new ValidationException("Subject cannot be empty");
+    public Subject addSubject(String subjectName) throws IllegalArgumentException{
+        if (subjectName.equals("")) throw new IllegalArgumentException("Subject cannot be empty");
         Subject subject = new Subject(subjectName);
         subjects.add(subject);
         return subject;
     }
 
-    public void removeSubject(long subjectId) throws EntityNotFoundException{
-        Subject subject = findSubject(subjectId);
-        subjects.remove(subject);
+    public boolean removeSubject(long subjectId) throws IllegalArgumentException{
+        return subjects.removeIf(subject1 -> subject1.getId() == subjectId);
     }
 
-    public Subject findSubject(long subjectId) throws EntityNotFoundException{
-        Predicate<Subject> p = subject -> subject.getId() == subjectId;
-        return Helper.validateIfExists(subjects, p, "Subject", subjectId);
-    }
-
-    public List<Subject> findSubjects(){
-        return subjects;
+    public Subject findSubject(long subjectId) throws IllegalArgumentException{
+        return Helper.validateObjectExists(subjects, subject -> subject.getId() == subjectId, "Subject", subjectId);
     }
 
     public double calculateAverageMark() {

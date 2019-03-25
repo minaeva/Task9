@@ -6,18 +6,18 @@ import org.junit.Test;
 public class UniversityTest extends FillingUniversityWithData {
 
     @Test
-    public void createFaculty() throws ValidationException{
-        int beforeSize = university.findFaculties().size();
+    public void createFaculty() throws IllegalArgumentException{
+        int beforeSize = university.getFaculties().size();
         Faculty f1 = university.createFaculty("F1");
         long f1Id = Helper.generateNewId();
         f1.setId(f1Id);
 
-        int afterSize = university.findFaculties().size();
+        int afterSize = university.getFaculties().size();
         assertEquals(beforeSize + 1, afterSize);
     }
 
-    @Test(expected = ValidationException.class)
-    public void createFaculty_same_throwsException() throws ValidationException{
+    @Test(expected = IllegalArgumentException.class)
+    public void createFaculty_same_throwsException() throws IllegalArgumentException{
         Faculty f2 = university.createFaculty("F2");
         long f2Id = Helper.generateNewId();
         f2.setId(f2Id);
@@ -25,8 +25,8 @@ public class UniversityTest extends FillingUniversityWithData {
     }
 
    @Test
-    public void updateFaculty() throws ValidationException, EntityNotFoundException{
-       int sizeBefore = university.findFaculties().size();
+    public void updateFaculty() throws IllegalArgumentException{
+       int sizeBefore = university.getFaculties().size();
        Faculty f3 = university.createFaculty("F3");
        long f3Id = Helper.generateNewId();
        f3.setId(f3Id);
@@ -34,18 +34,18 @@ public class UniversityTest extends FillingUniversityWithData {
 
        Faculty foundFaculty = university.findFaculty(f3Id);
        assertEquals("F3 NEW", foundFaculty.getName());
-       int sizeAfter = university.findFaculties().size();
+       int sizeAfter = university.getFaculties().size();
        assertEquals(sizeBefore + 1, sizeAfter);
   }
 
-    @Test(expected = EntityNotFoundException.class)
-    public void updateFaculty_notExists_throwsException() throws EntityNotFoundException{
+    @Test(expected = IllegalArgumentException.class)
+    public void updateFaculty_notExists_throwsException() throws IllegalArgumentException{
         long id = Helper.generateNewId();
         university.updateFaculty(id, "NEW");
     }
 
-    @Test(expected = EntityNotFoundException.class)
-    public void dismantleFaculty() throws EntityNotFoundException, ValidationException{
+    @Test(expected = IllegalArgumentException.class)
+    public void dismantleFaculty() throws IllegalArgumentException{
         Faculty f4 = university.createFaculty("F4");
         long f4Id = Helper.generateNewId();
         f4.setId(f4Id);
@@ -53,14 +53,14 @@ public class UniversityTest extends FillingUniversityWithData {
         university.findFaculty(f4Id);
     }
 
-    @Test(expected = EntityNotFoundException.class)
-    public void dismantleFaculty_notExists_throwsException() throws EntityNotFoundException{
+    @Test(expected = IllegalArgumentException.class)
+    public void dismantleFaculty_notExists_throwsException() throws IllegalArgumentException{
         long id = Helper.generateNewId();
         university.updateFaculty(id, "NEW");
     }
 
     @Test
-    public void findFaculty() throws ValidationException, EntityNotFoundException{
+    public void findFaculty() throws IllegalArgumentException{
         Faculty f5 = university.createFaculty("F5");
         long f5Id = Helper.generateNewId();
         f5.setId(f5Id);

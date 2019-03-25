@@ -21,21 +21,16 @@ public class Journal {
         return section;
     }
 
-    public Section findSection(long sectionId) throws EntityNotFoundException{
-        Predicate<Section> p = section -> section.getId() == sectionId;
-        Helper.validateIfExists(sections, p, "Section", sectionId);
-        return sections.stream().filter(p).findFirst().get();
+    public Section findSection(long sectionId) throws IllegalArgumentException{
+        return Helper.validateObjectExists(sections, section -> section.getId() == sectionId, "Section", sectionId);
     }
 
-    public Section findSection(Subject subject) throws EntityNotFoundException{
-        Predicate<Section> p = s -> s.getSubject() == subject;
-        Helper.validateIfExists(sections, p, "Subject", subject.getId());
-        return sections.stream().filter(p).findFirst().get();
+    public Section findSection(Subject subject) throws IllegalArgumentException{
+        return Helper.validateObjectExists(sections, section -> section.getSubject().equals(subject), "Section", subject.getId());
     }
 
-    public void removeSection(long sectionId) throws EntityNotFoundException{
-        Section section = findSection(sectionId);
-        sections.remove(section);
+    public boolean removeSection(long sectionId) throws IllegalArgumentException{
+        return sections.removeIf(section1 -> section1.getId() == sectionId);
     }
 
     public double calculateAverageMark() {
@@ -53,7 +48,7 @@ public class Journal {
         return result/counter;
     }
 
-    public void addMark(StudentCard studentCard, Subject subject, int mark) throws EntityNotFoundException, ValidationException{
+    public void addMark(StudentCard studentCard, Subject subject, int mark) throws IllegalArgumentException{
         Section section = findSection(subject);
         section.addMark(studentCard, mark);
     }

@@ -11,14 +11,15 @@ public class Helper {
         return id++;
     }
 
-    public static <T> void validateIfNew(List<T> list, Predicate<T> predicate, String objectName, String name) throws ValidationException{
+     public static <T> void validateNameIsUnique(List<T> list, Predicate<T> predicate, String objectName, String name) throws IllegalArgumentException{
         if (list.stream().anyMatch(predicate))
-            throw new ValidationException(objectName + " with name " + name + " already exists");
+            throw new IllegalArgumentException(objectName + " with name " + name + " already exists");
     }
 
-    public static <T> T validateIfExists(List<T> list, Predicate<T> predicate, String objectName, long id) throws EntityNotFoundException{
-        if (list.stream().noneMatch(predicate))
-            throw new EntityNotFoundException(objectName + " with id " + id + " doesn't exist");
+    public static <T> T validateObjectExists(List<T> list, Predicate<T> predicate, String objectName, long id) throws IllegalArgumentException{
+        if (list.stream().noneMatch(predicate)) {
+            throw new IllegalArgumentException(objectName + " with id " + id + " doesn't exist");
+        }
         return list.stream().filter(predicate).findFirst().get();
     }
 

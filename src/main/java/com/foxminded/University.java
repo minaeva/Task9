@@ -5,40 +5,32 @@ import java.util.function.Predicate;
 import lombok.Data;
 
 @Data
-public class University implements Cloneable {
+public class University {
 
     private long id;
     private String name;
     private List<Faculty> faculties = new ArrayList<>();
 
-    public Faculty createFaculty(String facultyName) throws ValidationException{
-        if (facultyName.equals("")) throw new ValidationException("Name cannot be empty");
-        Predicate<Faculty> p = faculty -> faculty.getName().equals(facultyName);
-        Helper.validateIfNew(faculties, p, "Faculty", name);
+    public Faculty createFaculty(String facultyName) throws IllegalArgumentException{
+        if (facultyName.equals("")) throw new IllegalArgumentException("Name cannot be empty");
+        Helper.validateNameIsUnique(faculties, faculty -> faculty.getName().equals(facultyName), "Faculty", name);
         Faculty newFaculty = new Faculty(facultyName);
         faculties.add(newFaculty);
         return newFaculty;
     }
 
-    public Faculty updateFaculty(long facultyId, String newName) throws EntityNotFoundException{
+    public Faculty updateFaculty(long facultyId, String newName) throws IllegalArgumentException{
         Faculty faculty = findFaculty(facultyId);
         faculty.setName(newName);
         return faculty;
     }
 
-   public void dismantleFaculty(long facultyId) throws EntityNotFoundException{
-        Faculty faculty = findFaculty(facultyId);
-        faculties.remove(faculty);
+    public boolean dismantleFaculty(long facultyId) throws IllegalArgumentException{
+        return faculties.removeIf(faculty1 -> faculty1.getId() == facultyId);
     }
 
-    public Faculty findFaculty(long facultyId) throws EntityNotFoundException{
-        Predicate<Faculty> p = faculty -> faculty.getId() == facultyId;
-        Helper.validateIfExists(faculties, p, "Faculty", facultyId);
-        return faculties.stream().filter(p).findFirst().get();
-    }
-
-    public List<Faculty> findFaculties(){
-        return faculties;
+    public Faculty findFaculty(long facultyId) throws IllegalArgumentException{
+        return Helper.validateObjectExists(faculties, faculty -> faculty.getId() == facultyId, "Faculty", facultyId);
     }
 
     public double calculateAverageMark(){
@@ -51,7 +43,9 @@ public class University implements Cloneable {
                 counter++;
             }
         }
-        if (result == 0) return 0;
+        if (result == 0) {
+            return 0;
+        }
         return result/counter;
     }
 }

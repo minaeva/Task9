@@ -1,157 +1,198 @@
 package com.foxminded;
 
-import org.junit.BeforeClass;
+import org.junit.Before;
 
 public class FillingUniversityWithData {
-    static final protected University university =  new University();
-    static long faculty1Id, faculty2Id, groupAId, groupBId, groupCId, groupYId, groupZId,
-            student1AId, student2AId, student3AId, student1ZId,
-            journalAId, journalZId,
-            engMentorId , mathMentorId,
-            subjectMathF1Id, subjectEnglishF1Id, subjectMathF2Id, subjectEnglishF2Id,
-            sectionAMathId, sectionAEngId, sectionZMathId, sectionZEngId,
-            studentMarks1AMathId, studentMarks1AEngId,
-            auditoriumId;
-    static MentorCard engMentor, mathMentor;
+    protected University university;
+    Faculty faculty1;
+    Faculty faculty2;
+    Group groupA;
+    Group groupB;
+    Group groupC;
+    Group groupY;
+    Group groupZ;
+    StudentCard student1A;
+    StudentCard student2A;
+    StudentCard student3A;
+    StudentCard student1Z;
+    Journal journalA;
+    Journal journalZ;
+    Subject subjectMathF1;
+    Subject subjectEnglishF1;
+    Subject subjectMathF2;
+    Subject subjectEnglishF2;
+    Section sectionAMath;
+    Section sectionAEng;
+    Section sectionZMath;
+    Section sectionZEng;
+    StudentMarks studentMarks1AMath;
+    StudentMarks studentMarks1AEng;
+    StudentMarks studentMarks2AMath;
+    StudentMarks studentMarks2AEng;
+    StudentMarks studentMarks3AMath;
+    StudentMarks studentMarks3AEng;
+    StudentMarks studentMarks1ZMath;
+    StudentMarks studentMarks1ZEng;
+    MentorCard engMentor;
+    MentorCard mathMentor;
+    Auditorium auditorium;
 
-    @BeforeClass
-    public static void fillData() throws ValidationException{
-        Faculty faculty1 = university.createFaculty("Faculty1");
-        faculty1Id = Helper.generateNewId();
-        faculty1.setId(faculty1Id);
+    @Before
+    public void fillData() throws ValidationException {
+        createFaculties();
+        createStudents();
+        createJournals();
+        createSubjects();
+        createSections();
+        createStudentMarks();
+        createMentors();
+        createMarks();
+        createAuditoria();
+    }
 
-        Faculty faculty2 = university.createFaculty("Faculty2");
-        faculty2Id = Helper.generateNewId();
-        faculty2.setId(faculty2Id);
+     private void createFaculties() throws IllegalArgumentException {
+         university = new University();
+         faculty1 = university.createFaculty("Faculty1");
+         long faculty1Id = Helper.generateNewId();
+         faculty1.setId(faculty1Id);
 
-        Group groupA = faculty1.createGroup("GroupA");
-        groupAId = Helper.generateNewId();
-        groupA.setId(groupAId);
+         faculty2 = university.createFaculty("Faculty2");
+         long faculty2Id = Helper.generateNewId();
+         faculty2.setId(faculty2Id);
 
-        Group groupB = faculty1.createGroup("GroupB");
-        groupBId = Helper.generateNewId();
-        groupB.setId(groupBId);
+         groupA = faculty1.createGroup("GroupA");
+         long groupAId = Helper.generateNewId();
+         groupA.setId(groupAId);
 
-        Group groupC = faculty1.createGroup("GroupC");
-        groupCId = Helper.generateNewId();
-        groupC.setId(groupCId);
+         groupB = faculty1.createGroup("GroupB");
+         long groupBId = Helper.generateNewId();
+         groupB.setId(groupBId);
 
-        Group groupY = faculty2.createGroup("GroupY");
-        groupYId = Helper.generateNewId();
-        groupY.setId(groupYId);
+         groupC = faculty1.createGroup("GroupC");
+         long groupCId = Helper.generateNewId();
+         groupC.setId(groupCId);
 
-        Group groupZ = faculty2.createGroup("GroupZ");
-        groupZId = Helper.generateNewId();
-        groupZ.setId(groupZId);
+         groupY = faculty2.createGroup("GroupY");
+         long groupYId = Helper.generateNewId();
+         groupY.setId(groupYId);
 
-//STUDENTS
+         groupZ = faculty2.createGroup("GroupZ");
+         long groupZId = Helper.generateNewId();
+         groupZ.setId(groupZId);
+     }
+
+    private void createStudents(){
         StudentCard studentTed = new StudentCard("Ted");
-        StudentCard student1A = groupA.takeStudent(studentTed);
-        student1AId = Helper.generateNewId();
+        student1A = groupA.takeStudent(studentTed);
+        long student1AId = Helper.generateNewId();
         student1A.setId(student1AId);
 
         StudentCard studentBen = new StudentCard("Ben");
-        StudentCard student2A = groupA.takeStudent(studentBen);
-        student2AId = Helper.generateNewId();
+        student2A = groupA.takeStudent(studentBen);
+        long student2AId = Helper.generateNewId();
         student2A.setId(student2AId);
 
         StudentCard studentAnn = new StudentCard("Ann");
-        StudentCard student3A = groupA.takeStudent(studentAnn);
-        student3AId = Helper.generateNewId();
+        student3A = groupA.takeStudent(studentAnn);
+        long student3AId = Helper.generateNewId();
         student3A.setId(student3AId);
 
         StudentCard studentMargaret = new StudentCard("Margaret");
-        StudentCard student1Z = groupA.takeStudent(studentMargaret);
-        student1ZId = Helper.generateNewId();
+        student1Z = groupZ.takeStudent(studentMargaret);
+        long student1ZId = Helper.generateNewId();
         student1Z.setId(student1ZId);
+    }
 
-        Journal journalA = groupA.getJournal();
-        journalAId = Helper.generateNewId();
+    private void createJournals(){
+        journalA = groupA.getJournal();
+        long journalAId = Helper.generateNewId();
         journalA.setId(journalAId);
 
-        Journal journalZ = groupZ.getJournal();
-        journalZId = Helper.generateNewId();
+        journalZ = groupZ.getJournal();
+        long journalZId = Helper.generateNewId();
         journalZ.setId(journalZId);
+    }
 
-        Subject subjectMathF1 = faculty1.addSubject("Math");
-        subjectMathF1Id = Helper.generateNewId();
+    private void createSubjects() throws IllegalArgumentException {
+        subjectMathF1 = faculty1.addSubject("Math");
+        long subjectMathF1Id = Helper.generateNewId();
         subjectMathF1.setId(subjectMathF1Id);
 
-        Subject subjectEnglishF1 = faculty1.addSubject("English");
-        subjectEnglishF1Id = Helper.generateNewId();
+        subjectEnglishF1 = faculty1.addSubject("English");
+        long subjectEnglishF1Id = Helper.generateNewId();
         subjectEnglishF1.setId(subjectEnglishF1Id);
 
-        Subject subjectMathF2 = faculty1.addSubject("Math");
-        subjectMathF2Id = Helper.generateNewId();
+        subjectMathF2 = faculty1.addSubject("Math");
+        long subjectMathF2Id = Helper.generateNewId();
         subjectMathF2.setId(subjectMathF2Id);
 
-        Subject subjectEnglishF2 = faculty1.addSubject("English");
-        subjectEnglishF2Id = Helper.generateNewId();
+        subjectEnglishF2 = faculty1.addSubject("English");
+        long subjectEnglishF2Id = Helper.generateNewId();
         subjectEnglishF2.setId(subjectEnglishF2Id);
+    }
 
-///SECTIONS
-
-        Section sectionAMath = journalA.createSection(subjectMathF1);
-        sectionAMathId = Helper.generateNewId();
+    private void createSections(){
+        sectionAMath = journalA.createSection(subjectMathF1);
+        long sectionAMathId = Helper.generateNewId();
         sectionAMath.setId(sectionAMathId);
 
-        Section sectionAEng = journalA.createSection(subjectEnglishF1);
-        sectionAEngId = Helper.generateNewId();
+        sectionAEng = journalA.createSection(subjectEnglishF1);
+        long sectionAEngId = Helper.generateNewId();
         sectionAEng.setId(sectionAEngId);
 
-        Section sectionZMath = journalZ.createSection(subjectMathF2);
-        sectionZMathId = Helper.generateNewId();
+        sectionZMath = journalZ.createSection(subjectMathF2);
+        long sectionZMathId = Helper.generateNewId();
         sectionZMath.setId(sectionZMathId);
 
-        Section sectionZEng = journalZ.createSection(subjectEnglishF2);
-        sectionZEngId = Helper.generateNewId();
+        sectionZEng = journalZ.createSection(subjectEnglishF2);
+        long sectionZEngId = Helper.generateNewId();
         sectionZEng.setId(sectionZEngId);
+    }
 
-//STUDENT MARKS
-
-        StudentMarks studentMarks1AMath = sectionAMath.createStudentMarks(student1A);
-        studentMarks1AMathId = Helper.generateNewId();
+    private void createStudentMarks(){
+        studentMarks1AMath = sectionAMath.createStudentMarks(student1A);
+        long studentMarks1AMathId = Helper.generateNewId();
         studentMarks1AMath.setId(studentMarks1AMathId);
 
-        StudentMarks studentMarks1AEng = sectionAEng.createStudentMarks(student1A);
-        studentMarks1AEngId = Helper.generateNewId();
+        studentMarks1AEng = sectionAEng.createStudentMarks(student1A);
+        long studentMarks1AEngId = Helper.generateNewId();
         studentMarks1AEng.setId(studentMarks1AEngId);
 
-        StudentMarks studentMarks2AMath = sectionAMath.createStudentMarks(student2A);
+        studentMarks2AMath = sectionAMath.createStudentMarks(student2A);
         long studentMarks2AMathId = Helper.generateNewId();
         studentMarks2AMath.setId(studentMarks2AMathId);
 
-        StudentMarks studentMarks2AEng = sectionAEng.createStudentMarks(student2A);
+        studentMarks2AEng = sectionAEng.createStudentMarks(student2A);
         long studentMarks2AEngId = Helper.generateNewId();
         studentMarks2AEng.setId(studentMarks2AEngId);
 
-        StudentMarks studentMarks3AMath = sectionAMath.createStudentMarks(student3A);
+        studentMarks3AMath = sectionAMath.createStudentMarks(student3A);
         long studentMarks3AMathId = Helper.generateNewId();
         studentMarks3AMath.setId(studentMarks3AMathId);
 
-        StudentMarks studentMarks3AEng = sectionAEng.createStudentMarks(student3A);
+        studentMarks3AEng = sectionAEng.createStudentMarks(student3A);
         long studentMarks3AEngId = Helper.generateNewId();
         studentMarks3AEng.setId(studentMarks3AEngId);
 
-        StudentMarks studentMarks1ZMath = sectionZMath.createStudentMarks(student1Z);
+        studentMarks1ZMath = sectionZMath.createStudentMarks(student1Z);
         long studentMarks1ZMathId = Helper.generateNewId();
         studentMarks1ZMath.setId(studentMarks1ZMathId);
 
-        StudentMarks studentMarks1ZEng = sectionZEng.createStudentMarks(student1Z);
+        studentMarks1ZEng = sectionZEng.createStudentMarks(student1Z);
         long studentMarks1ZEngId = Helper.generateNewId();
         studentMarks1ZEng.setId(studentMarks1ZEngId);
+    }
 
-
-//MENTORS
+    private void createMentors() throws ValidationException {
         engMentor = faculty1.hireMentor("ENGLISH teacher");
-        engMentorId = Helper.generateNewId();
+        long engMentorId = Helper.generateNewId();
         engMentor.setId(engMentorId);
         mathMentor = faculty1.hireMentor("MATH teacher");
-        mathMentorId = Helper.generateNewId();
+        long mathMentorId = Helper.generateNewId();
         mathMentor.setId(mathMentorId);
+    }
 
-//MARKS
-
+    private void createMarks() throws ValidationException {
         //1A Math average = 9
         studentMarks1AMath.addMark(10);
         studentMarks1AMath.addMark(8);
@@ -185,11 +226,11 @@ public class FillingUniversityWithData {
         studentMarks1ZEng.addMark(2);
         studentMarks1ZEng.addMark(8);
         studentMarks1ZEng.addMark(2);
-
-//AUDITORIUM
-        Auditorium auditorium = faculty1.addAuditorium(111);
-        auditoriumId = Helper.generateNewId();
-        auditorium.setId(auditoriumId);
     }
 
+    private void createAuditoria() throws ValidationException {
+        auditorium = faculty1.addAuditorium(111);
+        long auditoriumId = Helper.generateNewId();
+        auditorium.setId(auditoriumId);
+    }
 }

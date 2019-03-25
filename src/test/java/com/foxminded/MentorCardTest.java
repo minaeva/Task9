@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 
 public class MentorCardTest extends FillingUniversityWithData{
 
-    @Test
+  /*  @Test
     public void addMark() throws ValidationException, EntityNotFoundException{
         Faculty faculty = university.findFaculty(faculty1Id);
         MentorCard mentor = faculty.hireMentor("Blokhin");
@@ -33,4 +33,6 @@ public class MentorCardTest extends FillingUniversityWithData{
         double expected = 4.0;
         assertEquals(expected, actual, 0.005);
     }
+
+   */
 }

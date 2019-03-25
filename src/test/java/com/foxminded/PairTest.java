@@ -3,46 +3,33 @@ package com.foxminded;
 import org.junit.Test;
 import java.time.LocalTime;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class PairTest extends FillingUniversityWithData {
 
     @Test
-    public void createLesson() throws EntityNotFoundException{
-        Faculty faculty = university.findFaculty(faculty1Id);
-        Group group = faculty.findGroup(groupAId);
-        Subject subject = faculty.findSubject(subjectMathF1Id);
-
-        Auditorium auditorium = faculty.findAuditorium(auditoriumId);
-        MentorCard mentor = faculty.findMentor(mathMentorId);
-
-        Schedule schedule = faculty.createSchedule();
+    public void createLesson(){
+        Schedule schedule = faculty1.createSchedule();
         DaySchedule daySchedule = schedule.createDaySchedule(WorkDay.MONDAY);
         Pair pair = daySchedule.createPair(LocalTime.of(8, 30));
 
-        pair.createLesson(group, subject, mentor, auditorium);
+        pair.createLesson(groupA, subjectEnglishF1, engMentor, auditorium);
         Lesson foundLesson = pair.getLesson();
-        assertEquals("Math", foundLesson.getSubject().getName());
+        assertEquals("English", foundLesson.getSubject().getName());
     }
 
     @Test
-    public void removePair() throws EntityNotFoundException, ValidationException{
-        Faculty faculty = university.findFaculty(faculty1Id);
-        Group group = faculty.findGroup(groupAId);
-        Subject subject = faculty.findSubject(subjectMathF1Id);
-
-        Auditorium auditorium = faculty.findAuditorium(auditoriumId);
-        MentorCard mentor = faculty.findMentor(mathMentorId);
-
-        Schedule schedule = faculty.createSchedule();
+    public void removeLesson() throws IllegalArgumentException{
+        Schedule schedule = faculty1.createSchedule();
         DaySchedule daySchedule = schedule.createDaySchedule(WorkDay.TUESDAY);
         Pair pair = daySchedule.createPair(LocalTime.of(8, 30));
 
-        pair.createLesson(group, subject, mentor, auditorium);
+        pair.createLesson(groupA, subjectMathF1, mathMentor, auditorium);
         Lesson foundLesson = pair.getLesson();
         long lessonId = Helper.generateNewId();
         foundLesson.setId(lessonId);
 
         pair.removeLesson(lessonId);
-        assertEquals(null, pair.getLesson());
+        assertNull(pair.getLesson());
     }
 }
