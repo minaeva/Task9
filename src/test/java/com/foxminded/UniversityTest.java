@@ -2,7 +2,6 @@ package com.foxminded;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
-import java.util.List;
 
 public class UniversityTest extends FillingUniversityWithData {
 
@@ -70,10 +69,9 @@ public class UniversityTest extends FillingUniversityWithData {
     }
 
     @Test
-    public void calculateAverageMark() throws ValidationException{
+    public void calculateAverageMark(){
         double average = university.calculateAverageMark();
-        double expected = 1.0;
+        double expected = 7.875;
         assertEquals(expected, average, 0.005);
     }
-
 }

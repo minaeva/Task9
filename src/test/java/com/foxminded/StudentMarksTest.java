@@ -1,7 +1,6 @@
 package com.foxminded;
 
 import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 
 public class StudentMarksTest extends FillingUniversityWithData{
@@ -27,10 +26,8 @@ public class StudentMarksTest extends FillingUniversityWithData{
         StudentMarks studentMarks = section.findStudentMarks(studentMarks1AMathId);
 
         int beforeSize = section.findStudentMarks(studentMarks1AMathId).getMarks().size();
-
         studentMarks.addMark(8);
         studentMarks.addMark(12);
-
         int afterSize = section.findStudentMarks(studentMarks1AMathId).getMarks().size();
         assertEquals(beforeSize + 2, afterSize);
 
@@ -38,6 +35,5 @@ public class StudentMarksTest extends FillingUniversityWithData{
         double expected = 9.5;
         assertEquals(expected, actual, 0.005);
     }
-
 }
 

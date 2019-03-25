@@ -47,7 +47,7 @@ public class University implements Cloneable {
         for (Faculty faculty: faculties) {
             double midAverage = faculty.calculateAverageMark();
             if (midAverage != 0){
-                result += faculty.calculateAverageMark();
+                result += midAverage;
                 counter++;
             }
         }

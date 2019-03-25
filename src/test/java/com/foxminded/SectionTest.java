@@ -1,10 +1,10 @@
 package com.foxminded;
 
 import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 
 public class SectionTest extends FillingUniversityWithData {
+
     @Test
     public void createStudentMarks() throws ValidationException, EntityNotFoundException{
         Faculty faculty = university.createFaculty("Fa11");
@@ -23,7 +23,6 @@ public class SectionTest extends FillingUniversityWithData {
 
         StudentMarks foundStudentMarksById = section.findStudentMarks(studentMarksId);
         assertEquals("Bill", foundStudentMarksById.getStudentCard().getName());
-
     }
 
     @Test
@@ -62,5 +61,27 @@ public class SectionTest extends FillingUniversityWithData {
         double average = journal.calculateAverageMark();
         double expected = 6.0;
         assertEquals(expected, average, 0.005);
+    }
+
+    @Test
+    public void addMark() throws ValidationException, EntityNotFoundException{
+        Faculty faculty = university.findFaculty(faculty1Id);
+        Group group = faculty.createGroup("G");
+        StudentCard student = group.takeStudent(new StudentCard("STD"));
+        Journal journal = group.getJournal();
+
+        Subject subject = faculty.addSubject("French");
+        Section section = journal.createSection(subject);
+        section.createStudentMarks(student);
+
+        int beforeSize = section.findStudentMarks(student).getMarks().size();
+        section.addMark(student, 6);
+        section.addMark(student, 8);
+        int afterSize = section.findStudentMarks(student).getMarks().size();
+        assertEquals(beforeSize + 2, afterSize);
+
+        double actual = section.calculateAverageMark();
+        double expected = 7.0;
+        assertEquals(expected, actual, 0.005);
     }
 }

@@ -33,18 +33,10 @@ public class Group {
 
     public void dismissStudent(long studentId) throws EntityNotFoundException{
         StudentCard student = findStudent(studentId);
-        student.dismiss();
         students.remove(student);
     }
 
     public List<StudentCard> findStudents(){
         return students;
-    }
-
-    //???
-    public void dismantle(){
-        for (StudentCard student: students) {
-            student.setGroupId(0);
-        }
     }
 }

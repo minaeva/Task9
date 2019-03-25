@@ -51,7 +51,7 @@ public class GroupTest extends FillingUniversityWithData{
     }
 
     @Test
-    public void findStudents() throws ValidationException, EntityNotFoundException{
+    public void findStudents() throws ValidationException{
         Faculty faculty = university.createFaculty("FFF4");
         Group group = faculty.createGroup("GG4");
         int beforeSize = group.findStudents().size();

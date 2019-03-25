@@ -54,7 +54,7 @@ public class Section {
         for (StudentMarks marks: studentMarks) {
             double midAverage = marks.calculateAverageMark();
             if (midAverage != 0){
-                result += marks.calculateAverageMark();
+                result += midAverage;
                 counter++;
             }
         }

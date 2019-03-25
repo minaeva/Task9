@@ -2,7 +2,6 @@ package com.foxminded;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
-import java.util.List;
 
 public class FacultyTest extends FillingUniversityWithData {
 
@@ -211,6 +210,21 @@ public class FacultyTest extends FillingUniversityWithData {
     }
 
     @Test
+    public void removeAuditorium() throws ValidationException, EntityNotFoundException{
+        Faculty faculty = university.createFaculty("FF21");
+        Auditorium auditorium = faculty.addAuditorium(11);
+        long auditoriumId = Helper.generateNewId();
+        auditorium.setId(auditoriumId);
+
+        faculty.addAuditorium(22);
+        int beforeSize = faculty.findAuditoria().size();
+        faculty.removeAuditorium(auditoriumId);
+        int afterSize = faculty.findAuditoria().size();
+
+        assertEquals(beforeSize - 1, afterSize);
+    }
+
+    @Test
     public void addSubject() throws ValidationException{
         Faculty faculty = university.createFaculty("FF17");
         int beforeSize = faculty.findSubjects().size();
@@ -241,11 +255,23 @@ public class FacultyTest extends FillingUniversityWithData {
     }
 
     @Test
+    public void removeSubject() throws ValidationException, EntityNotFoundException{
+        Faculty faculty = university.createFaculty("FF20");
+        Subject subject = faculty.addSubject("SS");
+        long subjectId = Helper.generateNewId();
+        subject.setId(subjectId);
+        int beforeSize = faculty.findSubjects().size();
+        faculty.removeSubject(subjectId);
+        int afterSize = faculty.findSubjects().size();
+
+        assertEquals(beforeSize - 1, afterSize);
+    }
+
+    @Test
     public void calculateAverageMark() throws EntityNotFoundException{
         Faculty faculty = university.findFaculty(faculty1Id);
         double average = faculty.calculateAverageMark();
-        double expected = 0;
+        double expected = 9.75;
         assertEquals(expected, average, 0.005);
     }
-
 }

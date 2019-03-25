@@ -1,7 +1,6 @@
 package com.foxminded;
 
 import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 
 public class JournalTest extends FillingUniversityWithData{
@@ -45,7 +44,7 @@ public class JournalTest extends FillingUniversityWithData{
         Journal journal = group.getJournal();
         Subject subject = faculty.addSubject("Sub3");
         Section section = journal.createSection(subject);
-        StudentMarks studentMarks = section.createStudentMarks(student);
+        section.createStudentMarks(student);
 
         double average = journal.calculateAverageMark();
         double expected = 0;
@@ -65,28 +64,21 @@ public class JournalTest extends FillingUniversityWithData{
     @Test
     public void addMark() throws ValidationException, EntityNotFoundException{
         Faculty faculty = university.findFaculty(faculty1Id);
-        Group group = faculty.findGroup(groupAId);
-        StudentCard student = group.findStudent(student1AId);
+        Group group = faculty.createGroup("GG");
+        StudentCard student = group.takeStudent(new StudentCard("STD"));
         Journal journal = group.getJournal();
+        Subject subject = faculty.addSubject("Painting");
+        Section section = journal.createSection(subject);
+        section.createStudentMarks(student);
 
-        Section section = journal.findSection(sectionAEngId);
-        Subject subject = faculty.findSubject(subjectEnglishF2Id);
+        int beforeSize = section.findStudentMarks(student).getMarks().size();
+        journal.addMark(student, subject, 7);
+        journal.addMark(student, subject, 9);
+        int afterSize = section.findStudentMarks(student).getMarks().size();
+        assertEquals(beforeSize + 2, afterSize);
 
-        int beforeSize = section.findStudentMarks(studentMarks1AEngId).getMarks().size();
-
-        journal.addMark(student, subject, 5);
-        journal.addMark(student, subject, 3);
-        journal.addMark(student, subject, 3);
-        journal.addMark(student, subject, 5);
-        journal.addMark(student, subject, 4);
-
-
-        int afterSize = section.findStudentMarks(studentMarks1AEngId).getMarks().size();
-        assertEquals(beforeSize + 5, afterSize);
-
-        double actual = section.calculateAverageMark();
-        double expected = 4.0;
+        double actual = journal.calculateAverageMark();
+        double expected = 8.0;
         assertEquals(expected, actual, 0.005);
     }
-
 }

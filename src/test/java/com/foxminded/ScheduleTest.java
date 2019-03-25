@@ -1,7 +1,6 @@
 package com.foxminded;
 
 import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
 
 public class ScheduleTest extends FillingUniversityWithData {
@@ -20,7 +19,6 @@ public class ScheduleTest extends FillingUniversityWithData {
         assertEquals(beforeSize + 3, afterSize);
     }
 
-
     @Test
     public void removeDaySchedule() throws EntityNotFoundException{
         Faculty faculty = university.findFaculty(faculty1Id);
@@ -32,7 +30,6 @@ public class ScheduleTest extends FillingUniversityWithData {
         DaySchedule daySchedule2 = schedule.createDaySchedule(WorkDay.THURSDAY);
         long schedule2Id = Helper.generateNewId();
         daySchedule2.setId(schedule2Id);
-
         schedule.createDaySchedule(WorkDay.FRIDAY);
 
         int beforeSize = schedule.getDaySchedules().size();

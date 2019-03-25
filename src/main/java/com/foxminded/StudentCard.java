@@ -13,8 +13,4 @@ public class StudentCard {
     public StudentCard(String name){
         this.name = name;
     }
-
-    public void dismiss(){
-        System.out.println("Permission received. Student " + this.name + " can now be dismissed");
-    }
 }

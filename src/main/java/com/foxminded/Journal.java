@@ -12,7 +12,6 @@ public class Journal {
     private long groupId;
     private long facultyId;
     private List<Section> sections = new ArrayList<>();
-    private List<StudentMarks> studentMarks = new ArrayList<>();
 
     public Journal(){}
 
@@ -39,10 +38,6 @@ public class Journal {
         sections.remove(section);
     }
 
-    public void dismantle(){
-        sections = null;
-    }
-
     public double calculateAverageMark() {
         if (sections.size() == 0) return 0;
         double result = 0.0;
@@ -50,7 +45,7 @@ public class Journal {
         for (Section section: sections) {
             double midAverage = section.calculateAverageMark();
             if (midAverage != 0){
-                result += section.calculateAverageMark();
+                result += midAverage;
                 counter++;
             }
         }
