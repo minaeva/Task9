@@ -1,6 +1,7 @@
 package com.foxminded;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public class Helper {
@@ -17,10 +18,12 @@ public class Helper {
     }
 
     public static <T> T validateObjectExists(List<T> list, Predicate<T> predicate, String objectName, long id) throws IllegalArgumentException{
-        if (list.stream().noneMatch(predicate)) {
+        Optional<T> found = list.stream().filter(predicate).findFirst();
+        if (!found.isPresent()) {
             throw new IllegalArgumentException(objectName + " with id " + id + " doesn't exist");
         }
-        return list.stream().filter(predicate).findFirst().get();
+        else
+        return found.get();
     }
 
 }
