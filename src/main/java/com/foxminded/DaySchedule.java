@@ -3,7 +3,6 @@ package com.foxminded;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 import lombok.Data;
 
 @Data
@@ -24,7 +23,7 @@ public class DaySchedule {
 
     public Pair createPair(LocalTime startTime) {
         Pair pair = new Pair(startTime);
-         pairs.add(pair);
+        pairs.add(pair);
         return pair;
     }
 

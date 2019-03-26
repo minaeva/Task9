@@ -1,7 +1,6 @@
 package com.foxminded;
 
 import java.util.*;
-import java.util.function.Predicate;
 import lombok.Data;
 
 @Data
@@ -12,7 +11,9 @@ public class University {
     private List<Faculty> faculties = new ArrayList<>();
 
     public Faculty createFaculty(String facultyName) throws IllegalArgumentException{
-        if (facultyName.equals("")) throw new IllegalArgumentException("Name cannot be empty");
+        if (facultyName.equals("")) {
+            throw new IllegalArgumentException("Name cannot be empty");
+        }
         Helper.validateNameIsUnique(faculties, faculty -> faculty.getName().equals(facultyName), "Faculty", name);
         Faculty newFaculty = new Faculty(facultyName);
         faculties.add(newFaculty);

@@ -13,8 +13,9 @@ public class Helper {
     }
 
      public static <T> void validateNameIsUnique(List<T> list, Predicate<T> predicate, String objectName, String name) throws IllegalArgumentException{
-        if (list.stream().anyMatch(predicate))
+        if (list.stream().anyMatch(predicate)){
             throw new IllegalArgumentException(objectName + " with name " + name + " already exists");
+        }
     }
 
     public static <T> T validateObjectExists(List<T> list, Predicate<T> predicate, String objectName, long id) throws IllegalArgumentException{
@@ -22,8 +23,9 @@ public class Helper {
         if (!found.isPresent()) {
             throw new IllegalArgumentException(objectName + " with id " + id + " doesn't exist");
         }
-        else
-        return found.get();
+        else{
+            return found.get();
+        }
     }
 
 }

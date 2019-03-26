@@ -18,19 +18,25 @@ public class StudentMarks {
     }
 
     public double calculateAverageMark() {
-        if (marks.size() == 0) return 0;
+        if (marks.size() == 0) {
+            return 0;
+        }
         double result =  0.0;
         int counter = 0;
         for(Integer mark: marks){
             result += mark;
             counter++;
         }
-        if (result == 0) return 0;
+        if (result == 0) {
+            return 0;
+        }
         return result/counter;
     }
 
     public void addMark(int mark) throws IllegalArgumentException{
-        if ((mark < 1) || (mark > 12)) throw new IllegalArgumentException("Mark should be [1;12]");
+        if ((mark < 1) || (mark > 12)) {
+            throw new IllegalArgumentException("Mark should be [1;12]");
+        }
         marks.add(mark);
     }
 }

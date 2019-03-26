@@ -26,8 +26,9 @@ public class Pair {
     }
 
     public void removeLesson(long id) throws IllegalArgumentException{
-        if (this.lesson.getId() != id)
+        if (this.lesson.getId() != id){
             throw new IllegalArgumentException("Lesson with id " + id + " does't exist");
+        }
         this.lesson = null;
     }
 }

@@ -1,7 +1,6 @@
 package com.foxminded;
 
 import java.util.*;
-import java.util.function.Predicate;
 import lombok.Data;
 
 @Data
@@ -22,7 +21,9 @@ public class Faculty {
     }
 
     public Group createGroup(String groupName) throws IllegalArgumentException{
-        if (groupName.equals("")) throw new IllegalArgumentException("Name cannot be empty");
+        if (groupName.equals("")) {
+            throw new IllegalArgumentException("Name cannot be empty");
+        }
         Helper.validateNameIsUnique(groups, group -> group.getName().equals(groupName), "Group", groupName);
         Group newGroup = new Group(groupName);
         groups.add(newGroup);
@@ -44,7 +45,9 @@ public class Faculty {
     }
 
     public StudentCard takeStudent(String studentName, long groupId) throws IllegalArgumentException{
-        if (studentName.equals("")) throw new IllegalArgumentException("Name cannot be empty");
+        if (studentName.equals("")) {
+            throw new IllegalArgumentException("Name cannot be empty");
+        }
         Group group = findGroup(groupId);
         StudentCard newStudent = new StudentCard(studentName);
         group.takeStudent(newStudent);
@@ -93,12 +96,16 @@ public class Faculty {
         if (this.schedule == null) {
             throw new IllegalArgumentException("NULL schedule is not accepted");
         }
-        if (this.schedule.getId() != scheduleId) throw new IllegalArgumentException("Schedule with id " + scheduleId + " doesn't exist");
+        if (this.schedule.getId() != scheduleId) {
+            throw new IllegalArgumentException("Schedule with id " + scheduleId + " doesn't exist");
+        }
         this.schedule = null;
     }
 
     public MentorCard hireMentor(String mentorName) throws IllegalArgumentException{
-        if (mentorName.equals("")) throw new IllegalArgumentException("Name cannot be empty");
+        if (mentorName.equals("")) {
+            throw new IllegalArgumentException("Name cannot be empty");
+        }
         MentorCard newMentor = new MentorCard(mentorName);
         mentors.add(newMentor);
         return newMentor;
@@ -113,7 +120,9 @@ public class Faculty {
     }
 
     public Auditorium addAuditorium(int auditoriumNumber) throws IllegalArgumentException{
-        if (auditoriumNumber <= 0) throw new IllegalArgumentException("Number should be positive");
+        if (auditoriumNumber <= 0) {
+            throw new IllegalArgumentException("Number should be positive");
+        }
         Auditorium auditorium = new Auditorium(auditoriumNumber);
         auditoria.add(auditorium);
         return auditorium;
@@ -128,7 +137,9 @@ public class Faculty {
     }
 
     public Subject addSubject(String subjectName) throws IllegalArgumentException{
-        if (subjectName.equals("")) throw new IllegalArgumentException("Subject cannot be empty");
+        if (subjectName.equals("")) {
+            throw new IllegalArgumentException("Subject cannot be empty");
+        }
         Subject subject = new Subject(subjectName);
         subjects.add(subject);
         return subject;
@@ -143,7 +154,9 @@ public class Faculty {
     }
 
     public double calculateAverageMark() {
-        if (groups.size() == 0) return 0;
+        if (groups.size() == 0) {
+            return 0;
+        }
         double result = 0.0;
         int counter = 0;
         for (Group group: groups) {
@@ -153,7 +166,9 @@ public class Faculty {
                 counter++;
             }
         }
-        if (result == 0) return 0;
+        if (result == 0) {
+            return 0;
+        }
         return result/counter;
     }
 }

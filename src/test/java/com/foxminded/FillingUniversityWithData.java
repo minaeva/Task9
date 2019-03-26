@@ -38,7 +38,7 @@ public class FillingUniversityWithData {
     Auditorium auditorium;
 
     @Before
-    public void fillData() throws ValidationException {
+    public void fillData() throws IllegalArgumentException {
         createFaculties();
         createStudents();
         createJournals();
@@ -183,7 +183,7 @@ public class FillingUniversityWithData {
         studentMarks1ZEng.setId(studentMarks1ZEngId);
     }
 
-    private void createMentors() throws ValidationException {
+    private void createMentors() throws IllegalArgumentException {
         engMentor = faculty1.hireMentor("ENGLISH teacher");
         long engMentorId = Helper.generateNewId();
         engMentor.setId(engMentorId);
@@ -192,7 +192,7 @@ public class FillingUniversityWithData {
         mathMentor.setId(mathMentorId);
     }
 
-    private void createMarks() throws ValidationException {
+    private void createMarks() throws IllegalArgumentException {
         //1A Math average = 9
         studentMarks1AMath.addMark(10);
         studentMarks1AMath.addMark(8);
@@ -228,7 +228,7 @@ public class FillingUniversityWithData {
         studentMarks1ZEng.addMark(2);
     }
 
-    private void createAuditoria() throws ValidationException {
+    private void createAuditoria() throws IllegalArgumentException {
         auditorium = faculty1.addAuditorium(111);
         long auditoriumId = Helper.generateNewId();
         auditorium.setId(auditoriumId);

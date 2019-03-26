@@ -3,7 +3,6 @@ package com.foxminded;
 import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 
 @Data
 public class Section {
@@ -41,7 +40,9 @@ public class Section {
     }
 
     public double calculateAverageMark() {
-        if (studentMarks.size() == 0) return 0;
+        if (studentMarks.size() == 0) {
+            return 0;
+        }
         double result = 0.0;
         int counter = 0;
         for (StudentMarks marks: studentMarks) {
@@ -51,7 +52,9 @@ public class Section {
                 counter++;
             }
         }
-        if (result == 0) return 0;
+        if (result == 0) {
+            return 0;
+        }
         return result/counter;
     }
 }
