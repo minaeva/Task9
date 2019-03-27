@@ -23,11 +23,11 @@ public class Section {
     }
 
     public StudentMarks findStudentMarks(long marksId) throws IllegalArgumentException{
-        return Helper.validateObjectExists(studentMarks, studentMarks -> studentMarks.getId() == marksId, "Student marks", marksId);
+        return Helper.findObjectIfExists(studentMarks, studentMarks -> studentMarks.getId() == marksId, "Student marks", marksId);
     }
 
     public StudentMarks findStudentMarks(StudentCard studentCard) throws IllegalArgumentException{
-        return Helper.validateObjectExists(studentMarks, studentMarks -> studentMarks.getStudentCard().equals(studentCard), "Student marks for student", studentCard.getId());
+        return Helper.findObjectIfExists(studentMarks, studentMarks -> studentMarks.getStudentCard().equals(studentCard), "Student marks for student", studentCard.getId());
     }
 
     public boolean removeStudentMarks(long marksId) throws IllegalArgumentException{

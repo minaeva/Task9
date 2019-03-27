@@ -21,11 +21,11 @@ public class Journal {
     }
 
     public Section findSection(long sectionId) throws IllegalArgumentException{
-        return Helper.validateObjectExists(sections, section -> section.getId() == sectionId, "Section", sectionId);
+        return Helper.findObjectIfExists(sections, section -> section.getId() == sectionId, "Section", sectionId);
     }
 
     public Section findSection(Subject subject) throws IllegalArgumentException{
-        return Helper.validateObjectExists(sections, section -> section.getSubject().equals(subject), "Section", subject.getId());
+        return Helper.findObjectIfExists(sections, section -> section.getSubject().equals(subject), "Section", subject.getId());
     }
 
     public boolean removeSection(long sectionId) throws IllegalArgumentException{

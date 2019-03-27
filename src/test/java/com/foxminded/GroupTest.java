@@ -30,7 +30,7 @@ public class GroupTest extends FillingUniversityWithData{
     @Test
     public void dismissStudent() throws IllegalArgumentException{
         int beforeSize = groupA.getStudents().size();
-        groupA.dismissStudent(student1A.getId());
+        groupA.dismissStudent(student1A.getName());
         int afterSize = groupA.getStudents().size();
         assertEquals(beforeSize - 1, afterSize);
     }

@@ -22,6 +22,6 @@ public class Schedule {
     }
 
     public DaySchedule findDaySchedule(long dayScheduleId) throws IllegalArgumentException{
-        return Helper.validateObjectExists(daySchedules, daySchedule -> daySchedule.getId() == dayScheduleId, "Day schedule", dayScheduleId);
+        return Helper.findObjectIfExists(daySchedules, daySchedule -> daySchedule.getId() == dayScheduleId, "Day schedule", dayScheduleId);
     }
 }

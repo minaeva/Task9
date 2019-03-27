@@ -20,7 +20,7 @@ public class Faculty {
         this.name = name;
     }
 
-    public Group createGroup(String groupName) throws IllegalArgumentException{
+    public Group createGroup(String groupName){
         if (groupName.equals("")) {
             throw new IllegalArgumentException("Name cannot be empty");
         }
@@ -30,39 +30,37 @@ public class Faculty {
         return newGroup;
     }
 
-    public Group updateGroup(long groupId, String newName) throws IllegalArgumentException {
-        Group group = findGroup(groupId);
-        group.setName(newName);
+    public Group updateGroup(String groupName, String newGroupName) {
+        Group group = findGroup(groupName);
+        group.setName(newGroupName);
         return group;
     }
 
-    public boolean dismantleGroup(long groupId) throws IllegalArgumentException{
-        return groups.removeIf(group1 -> group1.getId() == groupId);
+    public boolean dismantleGroup(String groupName){
+        return groups.removeIf(group -> group.getName().equals(groupName));
     }
 
-    public Group findGroup(long groupId) throws IllegalArgumentException{
-        return Helper.validateObjectExists(groups, group -> group.getId() == groupId, "Group", groupId);
+    public Group findGroup(String groupName) {
+        return Helper.findObjectByNameIfExists(groups, group -> group.getName().equals(groupName), "Group", groupName);
     }
 
-    public StudentCard takeStudent(String studentName, long groupId) throws IllegalArgumentException{
+    public StudentCard takeStudent(String studentName, String groupName){
         if (studentName.equals("")) {
             throw new IllegalArgumentException("Name cannot be empty");
         }
-        Group group = findGroup(groupId);
+        Group group = findGroup(groupName);
         StudentCard newStudent = new StudentCard(studentName);
         group.takeStudent(newStudent);
         return newStudent;
     }
 
-    public StudentCard changeStudentGroup(long studentId, long newGroupId) throws IllegalArgumentException{
-        List<StudentCard> allStudents = findStudents();
-        StudentCard student = Helper.validateObjectExists(allStudents, student1 -> student1.getId() == studentId, "Student", studentId);
-        Group oldGroup = findGroup(student.getGroupId());
-        oldGroup.dismissStudent(studentId);
+    public StudentCard changeStudentGroup(String studentName, String newGroupName) {
+        Group newGroup = findGroup(newGroupName);
+        return newGroup.takeStudent(findStudent(studentName));
+    }
 
-        Group newGroup = findGroup(newGroupId);
-        newGroup.takeStudent(student);
-        return student;
+    private StudentCard findStudent(String studentName){
+        return Helper.findObjectByNameIfExists(findStudents(), foundStudent -> foundStudent.getName().equals(studentName), "Student", studentName);
     }
 
     public List<StudentCard> findStudents(){
@@ -73,16 +71,9 @@ public class Faculty {
         return students;
     }
 
-    public void dismissStudent(long studentId){
-        for (Group group: groups){
-            try {
-                List<StudentCard> students = new ArrayList<>();
-                students.addAll(group.getStudents());
-                StudentCard student = group.findStudent(studentId);
-                group.dismissStudent(student.getId());
-                break;
-            }
-            catch (IllegalArgumentException e){}
+    public void dismissStudent(String studentName){
+        for (Group group: groups) {
+            group.dismissStudent(studentName);
         }
     }
 
@@ -92,7 +83,7 @@ public class Faculty {
         return newSchedule;
     }
 
-    public void removeSchedule(long scheduleId) throws IllegalArgumentException{
+    public void removeSchedule(long scheduleId){
         if (this.schedule == null) {
             throw new IllegalArgumentException("NULL schedule is not accepted");
         }
@@ -102,7 +93,7 @@ public class Faculty {
         this.schedule = null;
     }
 
-    public MentorCard hireMentor(String mentorName) throws IllegalArgumentException{
+    public MentorCard hireMentor(String mentorName){
         if (mentorName.equals("")) {
             throw new IllegalArgumentException("Name cannot be empty");
         }
@@ -111,15 +102,15 @@ public class Faculty {
         return newMentor;
     }
 
-    public MentorCard findMentor(long mentorId) throws IllegalArgumentException{
-        return Helper.validateObjectExists(mentors, mentor -> mentor.getId() == mentorId, "Mentor", mentorId);
+    public MentorCard findMentor(String mentorName) {
+        return Helper.findObjectByNameIfExists(mentors, mentor -> mentor.getName().equals(mentorName), "Mentor", mentorName);
     }
 
-    public boolean fireMentor(long mentorId) throws IllegalArgumentException{
-        return mentors.removeIf(mentor1 -> mentor1.getId() == mentorId);
+    public boolean fireMentor(String mentorName) {
+        return mentors.removeIf(mentor -> mentor.getName().equals(mentorName));
     }
 
-    public Auditorium addAuditorium(int auditoriumNumber) throws IllegalArgumentException{
+    public Auditorium addAuditorium(int auditoriumNumber){
         if (auditoriumNumber <= 0) {
             throw new IllegalArgumentException("Number should be positive");
         }
@@ -128,15 +119,15 @@ public class Faculty {
         return auditorium;
     }
 
-    public boolean removeAuditorium(long auditoriumId) throws IllegalArgumentException{
-        return auditoria.removeIf(auditorium1 -> auditorium1.getId() == auditoriumId);
+    public boolean removeAuditorium(int auditoriumNumber) {
+        return auditoria.removeIf(auditorium -> auditorium.getNumber() == auditoriumNumber);
     }
 
-    public Auditorium findAuditorium(long auditoriumId) throws IllegalArgumentException{
-        return Helper.validateObjectExists(auditoria, auditorium -> auditorium.getId() == auditoriumId, "Auditorium", auditoriumId);
+    public Auditorium findAuditorium(int auditoriumNumber){
+        return Helper.findObjectIfExists(auditoria, auditorium -> auditorium.getNumber() == auditoriumNumber, "Auditorium", auditoriumNumber);
     }
 
-    public Subject addSubject(String subjectName) throws IllegalArgumentException{
+    public Subject addSubject(String subjectName){
         if (subjectName.equals("")) {
             throw new IllegalArgumentException("Subject cannot be empty");
         }
@@ -145,12 +136,12 @@ public class Faculty {
         return subject;
     }
 
-    public boolean removeSubject(long subjectId) throws IllegalArgumentException{
-        return subjects.removeIf(subject1 -> subject1.getId() == subjectId);
+    public boolean removeSubject(String subjectName){
+        return subjects.removeIf(subject -> subject.getName().equals(subjectName));
     }
 
-    public Subject findSubject(long subjectId) throws IllegalArgumentException{
-        return Helper.validateObjectExists(subjects, subject -> subject.getId() == subjectId, "Subject", subjectId);
+    public Subject findSubject(String subjectName){
+        return Helper.findObjectByNameIfExists(subjects, subject -> subject.getName().equals(subjectName), "Subject", subjectName);
     }
 
     public double calculateAverageMark() {
@@ -165,9 +156,6 @@ public class Faculty {
                 result += midAverage;
                 counter++;
             }
-        }
-        if (result == 0) {
-            return 0;
         }
         return result/counter;
     }

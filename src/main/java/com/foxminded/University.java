@@ -10,7 +10,7 @@ public class University {
     private String name;
     private List<Faculty> faculties = new ArrayList<>();
 
-    public Faculty createFaculty(String facultyName) throws IllegalArgumentException{
+    public Faculty createFaculty(String facultyName){
         if (facultyName.equals("")) {
             throw new IllegalArgumentException("Name cannot be empty");
         }
@@ -20,18 +20,18 @@ public class University {
         return newFaculty;
     }
 
-    public Faculty updateFaculty(long facultyId, String newName) throws IllegalArgumentException{
-        Faculty faculty = findFaculty(facultyId);
+    public Faculty updateFaculty(String facultyName, String newName){
+        Faculty faculty = findFaculty(facultyName);
         faculty.setName(newName);
         return faculty;
     }
 
-    public boolean dismantleFaculty(long facultyId) throws IllegalArgumentException{
-        return faculties.removeIf(faculty1 -> faculty1.getId() == facultyId);
+    public boolean dismantleFaculty(String facultyName){
+        return faculties.removeIf(faculty -> faculty.getName().equals(facultyName));
     }
 
-    public Faculty findFaculty(long facultyId) throws IllegalArgumentException{
-        return Helper.validateObjectExists(faculties, faculty -> faculty.getId() == facultyId, "Faculty", facultyId);
+    public Faculty findFaculty(String facultyName){
+        return Helper.findObjectByNameIfExists(faculties, faculty -> faculty.getName().equals(facultyName), "Faculty", facultyName);
     }
 
     public double calculateAverageMark(){
@@ -43,9 +43,6 @@ public class University {
                 result += midAverage;
                 counter++;
             }
-        }
-        if (result == 0) {
-            return 0;
         }
         return result/counter;
     }

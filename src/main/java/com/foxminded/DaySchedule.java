@@ -28,7 +28,7 @@ public class DaySchedule {
     }
 
     public Pair findPair(long pairId) throws IllegalArgumentException{
-        return Helper.validateObjectExists(pairs, pair1 -> pair1.getId() == pairId, "Pair",pairId );
+        return Helper.findObjectIfExists(pairs, pair1 -> pair1.getId() == pairId, "Pair",pairId );
     }
 
     public boolean removePair(long pairId) throws IllegalArgumentException{

@@ -122,11 +122,11 @@ public class FillingUniversityWithData {
         long subjectEnglishF1Id = Helper.generateNewId();
         subjectEnglishF1.setId(subjectEnglishF1Id);
 
-        subjectMathF2 = faculty1.addSubject("Math");
+        subjectMathF2 = faculty2.addSubject("Math");
         long subjectMathF2Id = Helper.generateNewId();
         subjectMathF2.setId(subjectMathF2Id);
 
-        subjectEnglishF2 = faculty1.addSubject("English");
+        subjectEnglishF2 = faculty2.addSubject("English");
         long subjectEnglishF2Id = Helper.generateNewId();
         subjectEnglishF2.setId(subjectEnglishF2Id);
     }

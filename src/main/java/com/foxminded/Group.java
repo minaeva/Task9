@@ -25,10 +25,14 @@ public class Group {
     }
 
     public StudentCard findStudent(long studentId) throws IllegalArgumentException{
-        return Helper.validateObjectExists(students, studentCard -> studentCard.getId() == studentId, "Student", studentId);
+        return Helper.findObjectIfExists(students, studentCard -> studentCard.getId() == studentId, "Student", studentId);
     }
 
-    public boolean dismissStudent(long studentId) throws IllegalArgumentException{
-        return students.removeIf(studentCard -> studentCard.getId() == studentId);
+    public StudentCard findStudent(String studentName) throws IllegalArgumentException{
+        return Helper.findObjectByNameIfExists(students, studentCard -> studentCard.getName() == studentName, "Student", studentName);
+    }
+
+    public boolean dismissStudent(String studentName) throws IllegalArgumentException{
+        return students.removeIf(studentCard -> studentCard.getName() == studentName);
     }
 }

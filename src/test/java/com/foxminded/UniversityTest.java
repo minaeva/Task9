@@ -6,65 +6,46 @@ import org.junit.Test;
 public class UniversityTest extends FillingUniversityWithData {
 
     @Test
-    public void createFaculty() throws IllegalArgumentException{
-        int beforeSize = university.getFaculties().size();
-        Faculty f1 = university.createFaculty("F1");
-        long f1Id = Helper.generateNewId();
-        f1.setId(f1Id);
-
-        int afterSize = university.getFaculties().size();
-        assertEquals(beforeSize + 1, afterSize);
+    public void createFaculty(){
+        Faculty faculty = university.createFaculty("F1");
+        assertEquals("F1", faculty.getName());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void createFaculty_same_throwsException() throws IllegalArgumentException{
-        Faculty f2 = university.createFaculty("F2");
-        long f2Id = Helper.generateNewId();
-        f2.setId(f2Id);
+    public void createFaculty_same_throwsException(){
+        university.createFaculty("F2");
         university.createFaculty("F2");
     }
 
    @Test
-    public void updateFaculty() throws IllegalArgumentException{
-       int sizeBefore = university.getFaculties().size();
-       Faculty f3 = university.createFaculty("F3");
-       long f3Id = Helper.generateNewId();
-       f3.setId(f3Id);
-       university.updateFaculty(f3Id, "F3 NEW");
-
-       Faculty foundFaculty = university.findFaculty(f3Id);
+    public void updateFaculty(){
+       university.createFaculty("F3");
+       university.updateFaculty("F3", "F3 NEW");
+       Faculty foundFaculty = university.findFaculty("F3 NEW");
        assertEquals("F3 NEW", foundFaculty.getName());
-       int sizeAfter = university.getFaculties().size();
-       assertEquals(sizeBefore + 1, sizeAfter);
   }
 
     @Test(expected = IllegalArgumentException.class)
-    public void updateFaculty_notExists_throwsException() throws IllegalArgumentException{
-        long id = Helper.generateNewId();
-        university.updateFaculty(id, "NEW");
+    public void updateFaculty_notExists_throwsException(){
+        university.updateFaculty("NOT EXISTENT", "NEW");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void dismantleFaculty() throws IllegalArgumentException{
+    public void dismantleFaculty(){
         Faculty f4 = university.createFaculty("F4");
-        long f4Id = Helper.generateNewId();
-        f4.setId(f4Id);
-        university.dismantleFaculty(f4Id);
-        university.findFaculty(f4Id);
+        university.dismantleFaculty("F4");
+        university.findFaculty("F4");
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void dismantleFaculty_notExists_throwsException() throws IllegalArgumentException{
-        long id = Helper.generateNewId();
-        university.updateFaculty(id, "NEW");
+    public void dismantleFaculty_notExists_throwsException(){
+        university.updateFaculty("NOTHING", "NEW");
     }
 
     @Test
-    public void findFaculty() throws IllegalArgumentException{
-        Faculty f5 = university.createFaculty("F5");
-        long f5Id = Helper.generateNewId();
-        f5.setId(f5Id);
-        Faculty foundFaculty = university.findFaculty(f5Id);
+    public void findFaculty(){
+        university.createFaculty("F5");
+        Faculty foundFaculty = university.findFaculty("F5");
         assertEquals("F5", foundFaculty.getName());
     }
 
