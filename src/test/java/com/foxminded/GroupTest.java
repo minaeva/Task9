@@ -6,15 +6,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class GroupTest{
-    private University university;
-    private Faculty faculty;
+
     private Group group;
 
     @Before
     public void before(){
-        university = new University();
-        faculty = university.createFaculty("FACULTY");
-        group = faculty.createGroup("GROUP");
+        group = new Group("GROUP");
     }
 
     @Test
@@ -47,7 +44,6 @@ public class GroupTest{
     @Test
     public void getStudents(){
         int beforeSize = group.getStudents().size();
-
         StudentCard student1 = new StudentCard("S4");
         group.takeStudent(student1);
         StudentCard student2 = new StudentCard("S5");

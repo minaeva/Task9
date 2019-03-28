@@ -5,15 +5,12 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class ScheduleTest {
-    private University university;
-    private Faculty faculty;
+
     private Schedule schedule;
 
     @Before
     public void before(){
-        university = new University();
-        faculty = university.createFaculty("FACULTY");
-        schedule = faculty.createSchedule();
+        schedule = new Schedule();
     }
 
     @Test

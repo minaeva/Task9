@@ -5,24 +5,20 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class SectionTest{
-    private University university;
-    private Faculty faculty;
+
     private Group group;
-    private Journal journal;
     private Section section;
 
     @Before
     public void before(){
-        university = new University();
-        faculty = university.createFaculty("FACULTY");
-        group = faculty.createGroup("GROUP");
-        journal = group.getJournal();
-        section = journal.createSection("SECTION");
+        group = new Group("GROUP");
+        section = group.getJournal().createSection("SECTION");
     }
 
     @Test
     public void createStudentMarks(){
         group.takeStudent(new StudentCard("Arina"));
+
         section.createStudentMarks("Arina");
 
         assertEquals(1, section.getStudentMarks().size());
@@ -49,11 +45,10 @@ public class SectionTest{
         section.addMark("Frol", 6);
         section.addMark("Frol", 8);
         int afterSize = section.findStudentMarks("Frol").getMarks().size();
-        assertEquals(beforeSize + 2, afterSize);
 
+        assertEquals(beforeSize + 2, afterSize);
         double actual = section.calculateAverageMark();
         double expected = 7.0;
         assertEquals(expected, actual, 0.005);
     }
 }
-

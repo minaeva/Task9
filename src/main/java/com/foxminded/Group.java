@@ -25,12 +25,12 @@ public class Group {
 
     public StudentCard findStudent(String studentName){
         return findObjectByNameIfExists(students,
-                studentCard -> studentCard.getName().equals(studentName),
+                student -> Objects.equals(student.getName(), studentName),
                 "Student",
                 studentName);
     }
 
     public boolean dismissStudent(String studentName){
-        return students.removeIf(studentCard -> studentCard.getName().equals(studentName));
+        return students.removeIf(student -> Objects.equals(student.getName(), studentName));
     }
 }

@@ -2,7 +2,7 @@ package com.foxminded;
 
 import org.junit.Before;
 
-public class FillingUniversityWithData {
+public class FillingDataForCalculateAverage {
     protected University university;
     Faculty faculty1;
     Faculty faculty2;

@@ -6,28 +6,28 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class FacultyTest {
-    private University university;
+
     private Faculty faculty;
 
     @Before
     public void before(){
-        university = new University();
-        faculty = university.createFaculty("FACULTY");
+        faculty = new Faculty("FACULTY");
     }
 
     @Test
     public void createGroup() {
         faculty.createGroup("G1");
+
         assertEquals(1, faculty.getGroups().size());
     }
 
     @Test
     public void updateGroup() {
         faculty.createGroup("G2");
+
         faculty.updateGroup("G2", "NEW");
 
         Group foundGroup = faculty.findGroup("NEW");
-
         assertEquals("NEW", foundGroup.getName());
     }
 
@@ -54,10 +54,10 @@ public class FacultyTest {
    @Test
     public void takeStudent(){
         Group group = faculty.createGroup("G5");
+
         StudentCard takenStudent = faculty.takeStudent("John", "G5");
 
         StudentCard foundStudent = group.findStudent(takenStudent.getName());
-
         assertEquals(takenStudent, foundStudent);
     }
 
@@ -78,6 +78,7 @@ public class FacultyTest {
         faculty.takeStudent("Alex", "G7");
 
         StudentCard foundStudent = group.findStudent("Alex");
+
         assertEquals("Alex", foundStudent.getName());
     }
 
@@ -103,7 +104,6 @@ public class FacultyTest {
     @Test
     public void removeSchedule(){
         faculty.createSchedule();
-
         assertNotNull(faculty.getSchedule());
 
         faculty.clearSchedule();
@@ -151,17 +151,19 @@ public class FacultyTest {
     @Test
     public void findAuditorium(){
         Auditorium auditorium = faculty.addAuditorium(33);
+
         Auditorium foundAuditorium = faculty.findAuditorium(auditorium.getNumber());
 
         assertEquals(33, foundAuditorium.getNumber());
     }
 
     @Test
-    public void findAuditoria(){
+    public void getAuditoria(){
         int beforeSize = faculty.getAuditoria().size();
         faculty.addAuditorium(44);
         faculty.addAuditorium(55);
         faculty.addAuditorium(66);
+
         int afterSize = faculty.getAuditoria().size();
 
         assertEquals(beforeSize + 3, afterSize);
@@ -188,6 +190,7 @@ public class FacultyTest {
     @Test
     public void findSubject(){
         faculty.addSubject("S2");
+
         Subject foundSubject = faculty.findSubject("S2");
 
         assertEquals("S2", foundSubject.getName());
@@ -196,6 +199,7 @@ public class FacultyTest {
     @Test
     public void removeSubject(){
         faculty.addSubject("French");
+
         int beforeSize = faculty.getSubjects().size();
         faculty.removeSubject("French");
         int afterSize = faculty.getSubjects().size();

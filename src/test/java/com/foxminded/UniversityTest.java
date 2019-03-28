@@ -1,11 +1,11 @@
 package com.foxminded;
 
 import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
 
-public class UniversityTest{// extends FillingUniversityWithData {
+public class UniversityTest{
+
     private University university;
 
     @Before
@@ -16,6 +16,7 @@ public class UniversityTest{// extends FillingUniversityWithData {
     @Test
     public void createFaculty(){
         Faculty faculty = university.createFaculty("F1");
+
         assertEquals("F1", faculty.getName());
         assertEquals(1, university.getFaculties().size());
     }
@@ -32,7 +33,6 @@ public class UniversityTest{// extends FillingUniversityWithData {
        university.updateFaculty("F3", "F3 NEW");
 
        Faculty foundFaculty = university.findFaculty("F3 NEW");
-
        assertEquals("F3 NEW", foundFaculty.getName());
   }
 
@@ -43,7 +43,8 @@ public class UniversityTest{// extends FillingUniversityWithData {
 
     @Test(expected = IllegalArgumentException.class)
     public void dismantleFaculty(){
-        Faculty f4 = university.createFaculty("F4");
+        university.createFaculty("F4");
+
         university.dismantleFaculty("F4");
 
         university.findFaculty("F4");
@@ -57,7 +58,9 @@ public class UniversityTest{// extends FillingUniversityWithData {
     @Test
     public void findFaculty(){
         university.createFaculty("F5");
+
         Faculty foundFaculty = university.findFaculty("F5");
+
         assertEquals("F5", foundFaculty.getName());
     }
 }

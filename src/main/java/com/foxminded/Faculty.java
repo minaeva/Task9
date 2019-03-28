@@ -2,6 +2,7 @@ package com.foxminded;
 
 import java.util.*;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 import static com.foxminded.Validator.*;
 
 @Data
@@ -20,11 +21,11 @@ public class Faculty {
     }
 
     public Group createGroup(String groupName){
-        if (groupName.equals("")) {
+        if (StringUtils.isBlank(groupName)){
             throw new IllegalArgumentException("Name cannot be empty");
         }
         validateNameIsUnique(groups,
-                group -> group.getName().equals(groupName),
+                group -> Objects.equals(group.getName(), groupName),
                 "Group",
                 groupName);
         Group newGroup = new Group(groupName);
@@ -34,23 +35,27 @@ public class Faculty {
 
     public Group updateGroup(String groupName, String newGroupName) {
         Group group = findGroup(groupName);
+        validateNameIsUnique(groups,
+                groupToCheck -> Objects.equals(groupToCheck.getName(), newGroupName),
+                "Group",
+                name);
         group.setName(newGroupName);
         return group;
     }
 
     public boolean dismantleGroup(String groupName){
-        return groups.removeIf(group -> group.getName().equals(groupName));
+        return groups.removeIf(group -> Objects.equals(group.getName(), groupName));
     }
 
     public Group findGroup(String groupName) {
         return findObjectByNameIfExists(groups,
-                group -> group.getName().equals(groupName),
+                group -> Objects.equals(group.getName(), groupName),
                 "Group",
                 groupName);
     }
 
     public StudentCard takeStudent(String studentName, String groupName){
-        if (studentName.equals("")) {
+        if (StringUtils.isBlank(studentName)){
             throw new IllegalArgumentException("Name cannot be empty");
         }
         Group group = findGroup(groupName);
@@ -66,7 +71,7 @@ public class Faculty {
 
     private StudentCard findStudent(String studentName){
         return findObjectByNameIfExists(getAllStudents(),
-                foundStudent -> foundStudent.getName().equals(studentName),
+                student -> Objects.equals(student.getName(), studentName),
                 "Student",
                 studentName);
     }
@@ -91,12 +96,12 @@ public class Faculty {
         return newSchedule;
     }
 
-    public void clearSchedule(){
+    public void clearSchedule() {
         this.schedule = null;
     }
 
     public MentorCard hireMentor(String mentorName){
-        if (mentorName.equals("")) {
+        if (StringUtils.isBlank(mentorName)){
             throw new IllegalArgumentException("Name cannot be empty");
         }
         MentorCard newMentor = new MentorCard(mentorName);
@@ -106,13 +111,13 @@ public class Faculty {
 
     public MentorCard findMentor(String mentorName) {
         return findObjectByNameIfExists(mentors,
-                mentor -> mentor.getName().equals(mentorName),
+                mentor -> Objects.equals(mentor.getName(), mentorName),
                 "Mentor",
                 mentorName);
     }
 
     public boolean fireMentor(String mentorName) {
-        return mentors.removeIf(mentor -> mentor.getName().equals(mentorName));
+        return mentors.removeIf(mentor -> Objects.equals(mentor.getName(), mentorName));
     }
 
     public Auditorium addAuditorium(int auditoriumNumber){
@@ -125,18 +130,18 @@ public class Faculty {
     }
 
     public boolean removeAuditorium(int auditoriumNumber) {
-        return auditoria.removeIf(auditorium -> auditorium.getNumber() == auditoriumNumber);
+        return auditoria.removeIf(auditorium -> Objects.equals(auditorium.getNumber(), auditoriumNumber));
     }
 
     public Auditorium findAuditorium(int auditoriumNumber){
         return findObjectByNumberIfExists(auditoria,
-                auditorium -> auditorium.getNumber() == auditoriumNumber,
+                auditorium -> Objects.equals(auditorium.getNumber(), auditoriumNumber),
                 "Auditorium",
                 auditoriumNumber);
     }
 
     public Subject addSubject(String subjectName){
-        if (subjectName.equals("")) {
+        if (StringUtils.isBlank(subjectName)){
             throw new IllegalArgumentException("Subject cannot be empty");
         }
         Subject subject = new Subject(subjectName);
@@ -145,14 +150,12 @@ public class Faculty {
     }
 
     public boolean removeSubject(String subjectName){
-        return subjects.removeIf(subject -> subject.getName().equals(subjectName));
+        return subjects.removeIf(subject -> Objects.equals(subject.getName(), subjectName));
     }
 
     public Subject findSubject(String subjectName){
         return findObjectByNameIfExists(subjects,
-                subject -> subject
-                .getName()
-                .equals(subjectName),
+                subject -> Objects.equals(subject.getName(), subjectName),
                 "Subject",
                 subjectName);
     }

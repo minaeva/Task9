@@ -3,6 +3,8 @@ package com.foxminded;
 import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import static com.foxminded.Validator.*;
 
 @Data
@@ -17,12 +19,12 @@ public class Schedule {
     }
 
     public boolean removeDaySchedule(WorkDay day) throws IllegalArgumentException{
-        return daySchedules.removeIf(daySchedule -> daySchedule.getWorkDay().equals(day));
+        return daySchedules.removeIf(daySchedule -> Objects.equals(daySchedule.getWorkDay(), day));
     }
 
     public DaySchedule findDaySchedule(WorkDay day) throws IllegalArgumentException{
         return findObjectByWorkdayIfExists(daySchedules,
-                daySchedule -> daySchedule.getWorkDay().equals(day),
+                daySchedule -> Objects.equals(daySchedule.getWorkDay(), equals(day)),
                 "Day schedule",
                 day);
     }

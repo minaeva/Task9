@@ -1,8 +1,10 @@
 package com.foxminded;
 
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import static com.foxminded.Validator.*;
 
 @Data
@@ -16,6 +18,9 @@ public class Section {
     }
 
     public StudentMarks createStudentMarks(String studentName){
+        if (StringUtils.isBlank(studentName)) {
+            throw new IllegalArgumentException("Student cannot be empty");
+        }
         StudentMarks newStudentMarks = new StudentMarks(studentName, this.sectionName);
         studentMarks.add(newStudentMarks);
         return newStudentMarks;
@@ -23,13 +28,13 @@ public class Section {
 
     public StudentMarks findStudentMarks(String studentName){
         return findObjectByNameIfExists(studentMarks,
-                studentMarks -> studentMarks.getStudentName().equals(studentName),
+                studentMarks -> Objects.equals(studentMarks.getStudentName(), studentName),
                 "Student marks",
                 studentName);
     }
 
     public boolean removeStudentMarks(String studentName){
-        return studentMarks.removeIf(marksToRemove -> marksToRemove.getStudentName().equals(studentName));
+        return studentMarks.removeIf(marks -> Objects.equals(marks.getStudentName(), studentName));
     }
 
     public void addMark(String studentName, int mark){

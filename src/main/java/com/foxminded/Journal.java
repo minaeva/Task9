@@ -1,10 +1,11 @@
 package com.foxminded;
 
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import static com.foxminded.Validator.*;
-
 
 @Data
 public class Journal {
@@ -12,20 +13,23 @@ public class Journal {
     private List<Section> sections = new ArrayList<>();
 
     public Section createSection(String subjectName){
-        Section section = new Section(subjectName);
+        if (StringUtils.isBlank(subjectName)) {
+            throw new IllegalArgumentException("Subject cannot be empty");
+        }
+            Section section = new Section(subjectName);
         sections.add(section);
         return section;
     }
 
     public Section findSection(String sectionName){
         return findObjectByNameIfExists(sections,
-                section -> section.getSectionName().equals(sectionName),
+                section -> Objects.equals(section.getSectionName(), sectionName),
                 "Section",
                 sectionName);
     }
 
     public boolean removeSection(String sectionName){
-        return sections.removeIf(section -> section.getSectionName().equals(sectionName));
+        return sections.removeIf(section -> Objects.equals(section.getSectionName(), sectionName));
     }
 
     public double calculateAverageMark() {

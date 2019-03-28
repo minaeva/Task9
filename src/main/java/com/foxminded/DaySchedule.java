@@ -3,6 +3,7 @@ package com.foxminded;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import lombok.Data;
 import static com.foxminded.Validator.*;
 
@@ -28,12 +29,12 @@ public class DaySchedule {
 
     public Pair findPair(LocalTime startTime){
         return findObjectByTimeIfExists(pairs,
-                pair -> pair.getStartTime().equals(startTime),
+                pair -> Objects.equals(pair.getStartTime(), startTime),
                 "Pair",
                 startTime);
     }
 
     public boolean removePair(LocalTime startTime) {
-        return pairs.removeIf(pair -> pair.getStartTime().equals(startTime));
+        return pairs.removeIf(pair -> Objects.equals(pair.getStartTime(), startTime));
     }
 }

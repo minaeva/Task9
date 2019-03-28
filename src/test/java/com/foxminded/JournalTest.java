@@ -4,17 +4,14 @@ import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
-public class JournalTest extends FillingUniversityWithData{
-    private University university;
-    private Faculty faculty;
+public class JournalTest{
+
     private Group group;
     private Journal journal;
 
     @Before
     public void before(){
-        university = new University();
-        faculty = university.createFaculty("FACULTY");
-        group = faculty.createGroup("GROUP");
+        group = new Group("GROUP");
         journal = group.getJournal();
     }
 
