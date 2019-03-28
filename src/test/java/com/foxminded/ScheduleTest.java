@@ -1,44 +1,36 @@
 package com.foxminded;
 
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
-public class ScheduleTest extends FillingUniversityWithData {
+public class ScheduleTest {
+    private University university;
+    private Faculty faculty;
+    private Schedule schedule;
 
- /*   @Test
-    public void createDaySchedule() throws EntityNotFoundException{
-        Faculty faculty = university.findFaculty(faculty1Id);
-        Schedule schedule = faculty.createSchedule();
-
-        int beforeSize = schedule.getDaySchedules().size();
-        schedule.createDaySchedule(WorkDay.MONDAY);
-        schedule.createDaySchedule(WorkDay.THURSDAY);
-        schedule.createDaySchedule(WorkDay.FRIDAY);
-        int afterSize = schedule.getDaySchedules().size();
-
-        assertEquals(beforeSize + 3, afterSize);
+    @Before
+    public void before(){
+        university = new University();
+        faculty = university.createFaculty("FACULTY");
+        schedule = faculty.createSchedule();
     }
 
     @Test
-    public void removeDaySchedule() throws EntityNotFoundException{
-        Faculty faculty = university.findFaculty(faculty1Id);
-        Schedule schedule = faculty.createSchedule();
-        DaySchedule daySchedule1 = schedule.createDaySchedule(WorkDay.MONDAY);
-        long schedule1Id = Helper.generateNewId();
-        daySchedule1.setId(schedule1Id);
-
-        DaySchedule daySchedule2 = schedule.createDaySchedule(WorkDay.THURSDAY);
-        long schedule2Id = Helper.generateNewId();
-        daySchedule2.setId(schedule2Id);
+    public void createDaySchedule(){
+        schedule.createDaySchedule(WorkDay.MONDAY);
+        schedule.createDaySchedule(WorkDay.TUESDAY);
         schedule.createDaySchedule(WorkDay.FRIDAY);
 
-        int beforeSize = schedule.getDaySchedules().size();
-        schedule.removeDaySchedule(schedule1Id);
-        schedule.removeDaySchedule(schedule2Id);
-        int afterSize = schedule.getDaySchedules().size();
-
-        assertEquals(beforeSize - 2, afterSize);
+        assertEquals(3, schedule.getDaySchedules().size());
     }
 
-  */
+    @Test(expected = IllegalArgumentException.class)
+    public void removeDaySchedule() {
+        schedule.createDaySchedule(WorkDay.THURSDAY);
+
+        schedule.removeDaySchedule(WorkDay.THURSDAY);
+
+        schedule.findDaySchedule(WorkDay.THURSDAY);
+    }
 }

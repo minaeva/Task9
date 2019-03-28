@@ -7,14 +7,13 @@ import java.util.List;
 @Data
 public class StudentMarks {
 
-    private long id;
-    private StudentCard studentCard;
-    private long sectionId;
+    private String studentName;
+    private String sectionName;
     private List<Integer> marks = new ArrayList<>();
 
-    public StudentMarks(StudentCard studentCard, long sectionId){
-        this.studentCard = studentCard;
-        this.sectionId =  sectionId;
+    public StudentMarks(String studentName, String sectionName){
+        this.studentName = studentName;
+        this.sectionName = sectionName;
     }
 
     public double calculateAverageMark() {
@@ -27,10 +26,7 @@ public class StudentMarks {
             result += mark;
             counter++;
         }
-        if (result == 0) {
-            return 0;
-        }
-        return result/counter;
+        return (result == 0) ? 0 : result/counter;
     }
 
     public void addMark(int mark) throws IllegalArgumentException{

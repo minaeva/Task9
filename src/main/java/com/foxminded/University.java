@@ -2,11 +2,11 @@ package com.foxminded;
 
 import java.util.*;
 import lombok.Data;
+import static com.foxminded.Validator.*;
 
 @Data
 public class University {
 
-    private long id;
     private String name;
     private List<Faculty> faculties = new ArrayList<>();
 
@@ -14,15 +14,22 @@ public class University {
         if (facultyName.equals("")) {
             throw new IllegalArgumentException("Name cannot be empty");
         }
-        Helper.validateNameIsUnique(faculties, faculty -> faculty.getName().equals(facultyName), "Faculty", name);
+        validateNameIsUnique(faculties,
+                faculty -> faculty.getName().equals(facultyName),
+                "Faculty",
+                name);
         Faculty newFaculty = new Faculty(facultyName);
         faculties.add(newFaculty);
         return newFaculty;
     }
 
-    public Faculty updateFaculty(String facultyName, String newName){
+    public Faculty updateFaculty(String facultyName, String newGroupName){
         Faculty faculty = findFaculty(facultyName);
-        faculty.setName(newName);
+        validateNameIsUnique(faculties,
+                facultyToCheck -> facultyToCheck.getName().equals(newGroupName),
+                "Faculty",
+                name);
+        faculty.setName(newGroupName);
         return faculty;
     }
 
@@ -31,7 +38,10 @@ public class University {
     }
 
     public Faculty findFaculty(String facultyName){
-        return Helper.findObjectByNameIfExists(faculties, faculty -> faculty.getName().equals(facultyName), "Faculty", facultyName);
+        return findObjectByNameIfExists(faculties,
+                faculty -> faculty.getName().equals(facultyName),
+                "Faculty",
+                facultyName);
     }
 
     public double calculateAverageMark(){

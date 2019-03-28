@@ -1,51 +1,62 @@
 package com.foxminded;
 
 import static org.junit.Assert.*;
+
+import org.junit.Before;
 import org.junit.Test;
 
-public class GroupTest extends FillingUniversityWithData{
+public class GroupTest{
+    private University university;
+    private Faculty faculty;
+    private Group group;
+
+    @Before
+    public void before(){
+        university = new University();
+        faculty = university.createFaculty("FACULTY");
+        group = faculty.createGroup("GROUP");
+    }
 
     @Test
-    public void takeStudent() throws IllegalArgumentException{
-        StudentCard student = new StudentCard("SS1");
-        StudentCard takenStudent = groupA.takeStudent(student);
-        long id = Helper.generateNewId();
-        takenStudent.setId(id);
+    public void takeStudent(){
+        group.takeStudent(new StudentCard("S1"));
 
-        StudentCard foundStudent = groupA.findStudent(id);
+        assertEquals(1, group.getStudents().size());
+    }
+
+    @Test
+    public void findStudent(){
+        StudentCard takenStudent = group.takeStudent(new StudentCard("S2"));
+
+        StudentCard foundStudent = group.findStudent("S2");
+
         assertEquals(takenStudent, foundStudent);
     }
 
     @Test
-    public void findStudent() throws IllegalArgumentException{
-        StudentCard student = new StudentCard("SS2");
-        StudentCard takenStudent = groupA.takeStudent(student);
-        long studentId = Helper.generateNewId();
-        takenStudent.setId(studentId);
+    public void dismissStudent(){
+        group.takeStudent(new StudentCard("S3"));
 
-        StudentCard foundStudent = groupA.findStudent(studentId);
-        assertEquals(takenStudent, foundStudent);
-    }
+        int beforeSize = group.getStudents().size();
+        group.dismissStudent("S3");
+        int afterSize = group.getStudents().size();
 
-    @Test
-    public void dismissStudent() throws IllegalArgumentException{
-        int beforeSize = groupA.getStudents().size();
-        groupA.dismissStudent(student1A.getName());
-        int afterSize = groupA.getStudents().size();
         assertEquals(beforeSize - 1, afterSize);
     }
 
     @Test
-    public void getStudents() throws IllegalArgumentException{
-        int beforeSize = groupB.getStudents().size();
-        StudentCard student1 = new StudentCard("SS5");
-        groupB.takeStudent(student1);
-        StudentCard student2 = new StudentCard("SS5");
-        groupB.takeStudent(student2);
-        StudentCard student3 = new StudentCard("SS5");
-        groupB.takeStudent(student3);
+    public void getStudents(){
+        int beforeSize = group.getStudents().size();
 
-        int afterSize = groupB.getStudents().size();
+        StudentCard student1 = new StudentCard("S4");
+        group.takeStudent(student1);
+        StudentCard student2 = new StudentCard("S5");
+        group.takeStudent(student2);
+        StudentCard student3 = new StudentCard("S5");
+        group.takeStudent(student3);
+
+        int afterSize = group.getStudents().size();
+
         assertEquals(beforeSize + 3, afterSize);
     }
 }

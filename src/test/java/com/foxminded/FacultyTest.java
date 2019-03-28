@@ -1,186 +1,205 @@
 package com.foxminded;
 
 import static org.junit.Assert.*;
+
+import org.junit.Before;
 import org.junit.Test;
 
-public class FacultyTest extends FillingUniversityWithData {
+public class FacultyTest {
+    private University university;
+    private Faculty faculty;
+
+    @Before
+    public void before(){
+        university = new University();
+        faculty = university.createFaculty("FACULTY");
+    }
 
     @Test
     public void createGroup() {
-        int beforeSize = faculty1.getGroups().size();
-        Group createdGroup = faculty1.createGroup("G1");
-        int afterSize = faculty1.getGroups().size();
-        assertEquals(beforeSize + 1, afterSize);
-
-        Group foundGroup = faculty1.findGroup("G1");
-        assertEquals(createdGroup, foundGroup);
+        faculty.createGroup("G1");
+        assertEquals(1, faculty.getGroups().size());
     }
 
     @Test
     public void updateGroup() {
-        int beforeSize = faculty1.getGroups().size();
-        faculty1.updateGroup(groupA.getName(), "NEW");
-        Group foundGroup = faculty1.findGroup(groupA.getName());
+        faculty.createGroup("G2");
+        faculty.updateGroup("G2", "NEW");
+
+        Group foundGroup = faculty.findGroup("NEW");
+
         assertEquals("NEW", foundGroup.getName());
-        int afterSize = faculty1.getGroups().size();
-        assertEquals(beforeSize, afterSize);
     }
 
     @Test
     public void findGroup(){
-        Group group = faculty1.createGroup("G3");
-        Group foundGroup = faculty1.findGroup("G3");
+        faculty.createGroup("G3");
+
+        Group foundGroup = faculty.findGroup("G3");
+
         assertEquals("G3", foundGroup.getName());
     }
 
     @Test
     public void dismantleGroup(){
-        int beforeSize = faculty1.getGroups().size();
-        faculty1.dismantleGroup(groupA.getName());
-        int afterSize = faculty1.getGroups().size();
+        faculty.createGroup("G4");
+
+        int beforeSize = faculty.getGroups().size();
+        faculty.dismantleGroup("G4");
+        int afterSize = faculty.getGroups().size();
+
         assertEquals(beforeSize - 1, afterSize);
     }
 
    @Test
     public void takeStudent(){
-        StudentCard takenStudent = faculty1.takeStudent("John", groupB.getName());
-        StudentCard foundStudent = groupB.findStudent(takenStudent.getName());
+        Group group = faculty.createGroup("G5");
+        StudentCard takenStudent = faculty.takeStudent("John", "G5");
+
+        StudentCard foundStudent = group.findStudent(takenStudent.getName());
+
         assertEquals(takenStudent, foundStudent);
     }
 
     @Test
     public void changeStudentGroup(){
-        faculty1.changeStudentGroup(student1A.getName(), groupB.getName());
+        Group group = faculty.createGroup("G6");
+        faculty.takeStudent("Ben", "G6");
 
-        StudentCard foundStudent = groupB.findStudent(student1A.getName());
-        assertEquals(groupB.getId(), foundStudent.getGroupId());
+        faculty.changeStudentGroup("Ben", "G6");
+
+        StudentCard foundStudent = group.findStudent("Ben");
+        assertEquals(group.getName(), foundStudent.getGroupName());
     }
 
     @Test
     public void findStudent(){
-        StudentCard student = faculty1.takeStudent("Madonna", groupB.getName());
-        long studentId = Helper.generateNewId();
-        student.setId(studentId);
+        Group group = faculty.createGroup("G7");
+        faculty.takeStudent("Alex", "G7");
 
-        StudentCard foundStudent = groupB.findStudent(studentId);
-        assertEquals("Madonna", foundStudent.getName());
+        StudentCard foundStudent = group.findStudent("Alex");
+        assertEquals("Alex", foundStudent.getName());
     }
 
     @Test
     public void dismissStudent(){
-        int beforeSize = faculty1.findStudents().size();
+        faculty.createGroup("G8");
+        faculty.takeStudent("Ira", "G8");
 
-        faculty1.dismissStudent(student1A.getName());
-        int afterSize = faculty1.findStudents().size();
+        int beforeSize = faculty.getAllStudents().size();
+        faculty.dismissStudent("Ira");
+        int afterSize = faculty.getAllStudents().size();
+
         assertEquals(beforeSize - 1, afterSize);
     }
 
     @Test
     public void createSchedule(){
-        Schedule schedule = faculty2.createSchedule();
-        long scheduleId = Helper.generateNewId();
-        schedule.setId(scheduleId);
-        assertEquals(scheduleId, faculty2.getSchedule().getId());
+        Schedule schedule = faculty.createSchedule();
+
+        assertEquals(schedule, faculty.getSchedule());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void removeSchedule(){
-        Schedule schedule = faculty2.createSchedule();
-        long scheduleId = Helper.generateNewId();
-        schedule.setId(scheduleId);
+        faculty.createSchedule();
 
-        faculty2.removeSchedule(scheduleId);
-        faculty2.removeSchedule(scheduleId);
+        assertNotNull(faculty.getSchedule());
+
+        faculty.clearSchedule();
+
+        assertNull(faculty.getSchedule());
     }
 
    @Test
     public void hireMentor(){
-        int beforeSize = faculty1.getMentors().size();
-        faculty1.hireMentor("M1");
-        int afterSize = faculty1.getMentors().size();
+        int beforeSize = faculty.getMentors().size();
+        faculty.hireMentor("M1");
+        int afterSize = faculty.getMentors().size();
+
         assertEquals(beforeSize + 1, afterSize);
     }
 
     @Test
     public void findMentor(){
-        MentorCard mentor = faculty1.hireMentor("M2");
+        MentorCard mentor = faculty.hireMentor("M2");
 
-        MentorCard foundMentor = faculty1.findMentor(mentor.getName());
+        MentorCard foundMentor = faculty.findMentor(mentor.getName());
+
         assertEquals("M2", foundMentor.getName());
     }
 
     @Test
     public void fireMentor(){
-        MentorCard mentor = faculty2.hireMentor("M3");
-        int beforeSize = faculty2.getMentors().size();
+        MentorCard mentor = faculty.hireMentor("M3");
 
-        faculty2.fireMentor(mentor.getName());
-        int afterSize = faculty2.getMentors().size();
+        int beforeSize = faculty.getMentors().size();
+        faculty.fireMentor(mentor.getName());
+        int afterSize = faculty.getMentors().size();
+
         assertEquals(beforeSize - 1, afterSize);
     }
 
     @Test
     public void addAuditorium(){
-        int beforeSize = faculty1.getAuditoria().size();
-        faculty1.addAuditorium(11);
-        faculty1.addAuditorium(22);
-        int afterSize = faculty1.getAuditoria().size();
-        assertEquals(beforeSize + 2, afterSize);
+        faculty.addAuditorium(11);
+        faculty.addAuditorium(22);
+
+        assertEquals(2, faculty.getAuditoria().size());
     }
 
     @Test
     public void findAuditorium(){
-        Auditorium auditorium = faculty2.addAuditorium(33);
-        Auditorium foundAuditorium = faculty2.findAuditorium(auditorium.getNumber());
+        Auditorium auditorium = faculty.addAuditorium(33);
+        Auditorium foundAuditorium = faculty.findAuditorium(auditorium.getNumber());
+
         assertEquals(33, foundAuditorium.getNumber());
     }
 
     @Test
     public void findAuditoria(){
-        int beforeSize = faculty1.getAuditoria().size();
-        faculty1.addAuditorium(44);
-        faculty1.addAuditorium(55);
-        faculty1.addAuditorium(66);
-        int afterSize = faculty1.getAuditoria().size();
+        int beforeSize = faculty.getAuditoria().size();
+        faculty.addAuditorium(44);
+        faculty.addAuditorium(55);
+        faculty.addAuditorium(66);
+        int afterSize = faculty.getAuditoria().size();
+
         assertEquals(beforeSize + 3, afterSize);
     }
 
     @Test
     public void removeAuditorium(){
-        int beforeSize = faculty1.getAuditoria().size();
-        faculty1.removeAuditorium(auditorium.getNumber());
-        int afterSize = faculty1.getAuditoria().size();
+        faculty.addAuditorium(77);
+
+        int beforeSize = faculty.getAuditoria().size();
+        faculty.removeAuditorium(77);
+        int afterSize = faculty.getAuditoria().size();
+
         assertEquals(beforeSize - 1, afterSize);
     }
 
     @Test
     public void addSubject(){
-        int beforeSize = faculty1.getSubjects().size();
-        faculty1.addSubject("S1");
-        int afterSize = faculty1.getSubjects().size();
-        assertEquals(beforeSize + 1, afterSize);
+        faculty.addSubject("S1");
+
+        assertEquals(1, faculty.getSubjects().size());
     }
 
     @Test
     public void findSubject(){
-        Subject foundSubject = faculty1.findSubject(subjectMathF1.getName());
-        assertEquals("Math", foundSubject.getName());
+        faculty.addSubject("S2");
+        Subject foundSubject = faculty.findSubject("S2");
+
+        assertEquals("S2", foundSubject.getName());
     }
 
     @Test
     public void removeSubject(){
-        faculty1.addSubject("French");
-        int beforeSize = faculty1.getSubjects().size();
-        faculty1.removeSubject("French");
-        int afterSize = faculty1.getSubjects().size();
-        assertEquals(beforeSize - 1, afterSize);
-    }
+        faculty.addSubject("French");
+        int beforeSize = faculty.getSubjects().size();
+        faculty.removeSubject("French");
+        int afterSize = faculty.getSubjects().size();
 
-    @Test
-    public void calculateAverageMark(){
-        Faculty faculty = university.findFaculty(faculty1.getName());
-        double average = faculty.calculateAverageMark();
-        double expected = 9.75;
-        assertEquals(expected, average, 0.005);
+        assertEquals(beforeSize - 1, afterSize);
     }
 }

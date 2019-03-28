@@ -4,13 +4,12 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Data;
+import static com.foxminded.Validator.*;
 
 @Data
 public class DaySchedule {
 
-    private long id;
     private WorkDay workDay;
-    private long scheduleId;
     private List<Pair> pairs = new ArrayList<>();
 
     public DaySchedule(WorkDay workDay){
@@ -27,11 +26,14 @@ public class DaySchedule {
         return pair;
     }
 
-    public Pair findPair(long pairId) throws IllegalArgumentException{
-        return Helper.findObjectIfExists(pairs, pair1 -> pair1.getId() == pairId, "Pair",pairId );
+    public Pair findPair(LocalTime startTime){
+        return findObjectByTimeIfExists(pairs,
+                pair -> pair.getStartTime().equals(startTime),
+                "Pair",
+                startTime);
     }
 
-    public boolean removePair(long pairId) throws IllegalArgumentException{
-        return pairs.removeIf(pair1 -> pair1.getId() == pairId);
+    public boolean removePair(LocalTime startTime) {
+        return pairs.removeIf(pair -> pair.getStartTime().equals(startTime));
     }
 }

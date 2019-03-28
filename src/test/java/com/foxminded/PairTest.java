@@ -1,35 +1,43 @@
 package com.foxminded;
 
+import org.junit.Before;
 import org.junit.Test;
 import java.time.LocalTime;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class PairTest extends FillingUniversityWithData {
+public class PairTest {
+    private University university;
+    private Faculty faculty;
+    private Group group;
+    private Schedule schedule;
+    private DaySchedule daySchedule;
+    private Pair pair;
 
-    @Test
-    public void createLesson(){
-        Schedule schedule = faculty1.createSchedule();
-        DaySchedule daySchedule = schedule.createDaySchedule(WorkDay.MONDAY);
-        Pair pair = daySchedule.createPair(LocalTime.of(8, 30));
-
-        pair.createLesson(groupA, subjectEnglishF1, engMentor, auditorium);
-        Lesson foundLesson = pair.getLesson();
-        assertEquals("English", foundLesson.getSubject().getName());
+    @Before
+    public void before(){
+        university = new University();
+        faculty = university.createFaculty("FACULTY");
+        group = faculty.createGroup("GROUP");
+        schedule = faculty.createSchedule();
+        daySchedule = schedule.createDaySchedule(WorkDay.MONDAY);
+        pair = daySchedule.createPair(LocalTime.of(8, 30));
     }
 
     @Test
-    public void removeLesson() throws IllegalArgumentException{
-        Schedule schedule = faculty1.createSchedule();
-        DaySchedule daySchedule = schedule.createDaySchedule(WorkDay.TUESDAY);
-        Pair pair = daySchedule.createPair(LocalTime.of(8, 30));
-
-        pair.createLesson(groupA, subjectMathF1, mathMentor, auditorium);
+    public void createLesson(){
+        pair.createLesson("GROUP", "English", "MENTOR", 555);
         Lesson foundLesson = pair.getLesson();
-        long lessonId = Helper.generateNewId();
-        foundLesson.setId(lessonId);
 
-        pair.removeLesson(lessonId);
+        assertEquals("English", foundLesson.getSubjectName());
+    }
+
+    @Test
+    public void removeLesson(){
+        pair.createLesson("GROUP2", "German", "MENTOR2", 444);
+
+        pair.removeLesson();
+
         assertNull(pair.getLesson());
     }
 }

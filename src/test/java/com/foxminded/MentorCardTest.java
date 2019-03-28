@@ -9,7 +9,7 @@ public class MentorCardTest extends FillingUniversityWithData{
     public void addMark() throws ValidationException, EntityNotFoundException{
         Faculty faculty = university.findFaculty(faculty1Id);
         MentorCard mentor = faculty.hireMentor("Blokhin");
-        long mentorId = Helper.generateNewId();
+        long mentorId = Validator.generateNewId();
         mentor.setId(mentorId);
 
         Group group = faculty.createGroup("G78");

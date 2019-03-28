@@ -2,13 +2,12 @@ package com.foxminded;
 
 import java.util.*;
 import lombok.Data;
+import static com.foxminded.Validator.*;
 
 @Data
 public class Faculty {
 
-    private long id;
     private String name;
-    private long universityId;
     private List<Group> groups = new ArrayList<>();
     private List<MentorCard> mentors = new ArrayList<>();
     private List<Subject> subjects = new ArrayList<>();
@@ -24,7 +23,10 @@ public class Faculty {
         if (groupName.equals("")) {
             throw new IllegalArgumentException("Name cannot be empty");
         }
-        Helper.validateNameIsUnique(groups, group -> group.getName().equals(groupName), "Group", groupName);
+        validateNameIsUnique(groups,
+                group -> group.getName().equals(groupName),
+                "Group",
+                groupName);
         Group newGroup = new Group(groupName);
         groups.add(newGroup);
         return newGroup;
@@ -41,7 +43,10 @@ public class Faculty {
     }
 
     public Group findGroup(String groupName) {
-        return Helper.findObjectByNameIfExists(groups, group -> group.getName().equals(groupName), "Group", groupName);
+        return findObjectByNameIfExists(groups,
+                group -> group.getName().equals(groupName),
+                "Group",
+                groupName);
     }
 
     public StudentCard takeStudent(String studentName, String groupName){
@@ -60,10 +65,13 @@ public class Faculty {
     }
 
     private StudentCard findStudent(String studentName){
-        return Helper.findObjectByNameIfExists(findStudents(), foundStudent -> foundStudent.getName().equals(studentName), "Student", studentName);
+        return findObjectByNameIfExists(getAllStudents(),
+                foundStudent -> foundStudent.getName().equals(studentName),
+                "Student",
+                studentName);
     }
 
-    public List<StudentCard> findStudents(){
+    public List<StudentCard> getAllStudents(){
         List<StudentCard> students = new ArrayList<>();
         for (Group group: groups){
             students.addAll(group.getStudents());
@@ -83,13 +91,7 @@ public class Faculty {
         return newSchedule;
     }
 
-    public void removeSchedule(long scheduleId){
-        if (this.schedule == null) {
-            throw new IllegalArgumentException("NULL schedule is not accepted");
-        }
-        if (this.schedule.getId() != scheduleId) {
-            throw new IllegalArgumentException("Schedule with id " + scheduleId + " doesn't exist");
-        }
+    public void clearSchedule(){
         this.schedule = null;
     }
 
@@ -103,7 +105,10 @@ public class Faculty {
     }
 
     public MentorCard findMentor(String mentorName) {
-        return Helper.findObjectByNameIfExists(mentors, mentor -> mentor.getName().equals(mentorName), "Mentor", mentorName);
+        return findObjectByNameIfExists(mentors,
+                mentor -> mentor.getName().equals(mentorName),
+                "Mentor",
+                mentorName);
     }
 
     public boolean fireMentor(String mentorName) {
@@ -124,7 +129,10 @@ public class Faculty {
     }
 
     public Auditorium findAuditorium(int auditoriumNumber){
-        return Helper.findObjectIfExists(auditoria, auditorium -> auditorium.getNumber() == auditoriumNumber, "Auditorium", auditoriumNumber);
+        return findObjectByNumberIfExists(auditoria,
+                auditorium -> auditorium.getNumber() == auditoriumNumber,
+                "Auditorium",
+                auditoriumNumber);
     }
 
     public Subject addSubject(String subjectName){
@@ -141,7 +149,12 @@ public class Faculty {
     }
 
     public Subject findSubject(String subjectName){
-        return Helper.findObjectByNameIfExists(subjects, subject -> subject.getName().equals(subjectName), "Subject", subjectName);
+        return findObjectByNameIfExists(subjects,
+                subject -> subject
+                .getName()
+                .equals(subjectName),
+                "Subject",
+                subjectName);
     }
 
     public double calculateAverageMark() {
@@ -157,6 +170,6 @@ public class Faculty {
                 counter++;
             }
         }
-        return result/counter;
+        return (result == 0) ? 0 : result/counter;
     }
 }

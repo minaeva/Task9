@@ -3,33 +3,29 @@ package com.foxminded;
 import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
+import static com.foxminded.Validator.*;
+
 
 @Data
 public class Journal {
 
-    private long id;
-    private long groupId;
-    private long facultyId;
     private List<Section> sections = new ArrayList<>();
 
-    public Journal(){}
-
-    public Section createSection(Subject subject){
-        Section section = new Section(subject);
+    public Section createSection(String subjectName){
+        Section section = new Section(subjectName);
         sections.add(section);
         return section;
     }
 
-    public Section findSection(long sectionId) throws IllegalArgumentException{
-        return Helper.findObjectIfExists(sections, section -> section.getId() == sectionId, "Section", sectionId);
+    public Section findSection(String sectionName){
+        return findObjectByNameIfExists(sections,
+                section -> section.getSectionName().equals(sectionName),
+                "Section",
+                sectionName);
     }
 
-    public Section findSection(Subject subject) throws IllegalArgumentException{
-        return Helper.findObjectIfExists(sections, section -> section.getSubject().equals(subject), "Section", subject.getId());
-    }
-
-    public boolean removeSection(long sectionId) throws IllegalArgumentException{
-        return sections.removeIf(section1 -> section1.getId() == sectionId);
+    public boolean removeSection(String sectionName){
+        return sections.removeIf(section -> section.getSectionName().equals(sectionName));
     }
 
     public double calculateAverageMark() {
@@ -45,14 +41,11 @@ public class Journal {
                 counter++;
             }
         }
-        if (result == 0) {
-            return 0;
-        }
-        return result/counter;
+        return (result == 0) ? 0 : result/counter;
     }
 
-    public void addMark(StudentCard studentCard, Subject subject, int mark) throws IllegalArgumentException{
-        Section section = findSection(subject);
-        section.addMark(studentCard, mark);
+    public void addMark(String studentName, String subjectName, int mark){
+        Section section = findSection(subjectName);
+        section.addMark(studentName, mark);
     }
 }

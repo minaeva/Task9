@@ -3,39 +3,37 @@ package com.foxminded;
 import lombok.Data;
 import java.util.ArrayList;
 import java.util.List;
+import static com.foxminded.Validator.*;
 
 @Data
 public class Section {
 
-    private long id;
-    private Subject subject;
-    private long journalId;
+    private String sectionName;
     private List<StudentMarks> studentMarks = new ArrayList<>();
 
-    public Section(Subject subject){
-        this.subject = subject;
+    public Section(String subjectName){
+        this.sectionName = subjectName;
     }
 
-    public StudentMarks createStudentMarks(StudentCard studentCard){
-        StudentMarks newStudentMarks = new StudentMarks(studentCard, this.id);
+    public StudentMarks createStudentMarks(String studentName){
+        StudentMarks newStudentMarks = new StudentMarks(studentName, this.sectionName);
         studentMarks.add(newStudentMarks);
         return newStudentMarks;
     }
 
-    public StudentMarks findStudentMarks(long marksId) throws IllegalArgumentException{
-        return Helper.findObjectIfExists(studentMarks, studentMarks -> studentMarks.getId() == marksId, "Student marks", marksId);
+    public StudentMarks findStudentMarks(String studentName){
+        return findObjectByNameIfExists(studentMarks,
+                studentMarks -> studentMarks.getStudentName().equals(studentName),
+                "Student marks",
+                studentName);
     }
 
-    public StudentMarks findStudentMarks(StudentCard studentCard) throws IllegalArgumentException{
-        return Helper.findObjectIfExists(studentMarks, studentMarks -> studentMarks.getStudentCard().equals(studentCard), "Student marks for student", studentCard.getId());
+    public boolean removeStudentMarks(String studentName){
+        return studentMarks.removeIf(marksToRemove -> marksToRemove.getStudentName().equals(studentName));
     }
 
-    public boolean removeStudentMarks(long marksId) throws IllegalArgumentException{
-        return studentMarks.removeIf(studentMarks1 -> studentMarks1.getId() == marksId);
-    }
-
-    public void addMark(StudentCard studentCard, int mark) throws IllegalArgumentException{
-        StudentMarks marks = findStudentMarks(studentCard);
+    public void addMark(String studentName, int mark){
+        StudentMarks marks = findStudentMarks(studentName);
         marks.addMark(mark);
     }
 
@@ -52,9 +50,6 @@ public class Section {
                 counter++;
             }
         }
-        if (result == 0) {
-            return 0;
-        }
-        return result/counter;
+        return (result == 0) ? 0 : result/counter;
     }
 }

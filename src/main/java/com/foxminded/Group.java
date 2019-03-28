@@ -2,13 +2,12 @@ package com.foxminded;
 
 import lombok.Data;
 import java.util.*;
+import static com.foxminded.Validator.*;
 
 @Data
 public class Group {
 
-    private long id;
     private String name;
-    private long facultyId;
     private List<StudentCard> students = new ArrayList<>();
     private Journal journal;
 
@@ -20,19 +19,18 @@ public class Group {
 
     public StudentCard takeStudent(StudentCard studentCard){
         students.add(studentCard);
-        studentCard.setGroupId(this.id);
+        studentCard.setGroupName(this.name);
         return studentCard;
     }
 
-    public StudentCard findStudent(long studentId) throws IllegalArgumentException{
-        return Helper.findObjectIfExists(students, studentCard -> studentCard.getId() == studentId, "Student", studentId);
+    public StudentCard findStudent(String studentName){
+        return findObjectByNameIfExists(students,
+                studentCard -> studentCard.getName().equals(studentName),
+                "Student",
+                studentName);
     }
 
-    public StudentCard findStudent(String studentName) throws IllegalArgumentException{
-        return Helper.findObjectByNameIfExists(students, studentCard -> studentCard.getName() == studentName, "Student", studentName);
-    }
-
-    public boolean dismissStudent(String studentName) throws IllegalArgumentException{
-        return students.removeIf(studentCard -> studentCard.getName() == studentName);
+    public boolean dismissStudent(String studentName){
+        return students.removeIf(studentCard -> studentCard.getName().equals(studentName));
     }
 }

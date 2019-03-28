@@ -5,10 +5,8 @@ import lombok.Data;
 @Data
 public class Lesson {
 
-    private long id;
-    private long pairId;
-    private Group group;
-    private Subject subject;
-    private MentorCard mentorCard;
-    private Auditorium auditorium;
+    private String groupName;
+    private String subjectName;
+    private String mentorName;
+    private int auditoriumNumber;
 }
