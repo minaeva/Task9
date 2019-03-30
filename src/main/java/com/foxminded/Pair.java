@@ -17,7 +17,6 @@ public class Pair {
 
     public Lesson createLesson(String groupName, String subjectName,
                                String mentorName, int auditoriumNumber){
-        this.lesson = new Lesson();
         if (StringUtils.isBlank(groupName)) {
             throw new IllegalArgumentException("Group name cannot be empty");
         }
@@ -31,6 +30,7 @@ public class Pair {
             throw new IllegalArgumentException("Auditorium number cannot be negative");
         }
 
+        this.lesson = new Lesson();
         lesson.setGroupName(groupName);
         lesson.setSubjectName(subjectName);
         lesson.setMentorName(mentorName);
